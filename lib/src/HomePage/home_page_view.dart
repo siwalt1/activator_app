@@ -36,7 +36,8 @@ class _HomePageState extends State<HomePage> {
         selectedFontSize: 12,
         unselectedFontSize: 12,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.groups), label: 'Communities'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.groups), label: 'Communities'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),

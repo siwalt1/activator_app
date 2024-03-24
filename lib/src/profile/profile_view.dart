@@ -1,8 +1,6 @@
 import 'package:activator_app/src/profile/profile_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
-import '../settings/settings_view.dart';
 
 /// Displays the user profile information.
 class ProfileView extends StatelessWidget {
@@ -21,7 +19,6 @@ class ProfileView extends StatelessWidget {
       body: Center(
         child: Container(
           padding: const EdgeInsets.all(16.0),
-          
           child: const Column(
             children: <Widget>[
               ProfileWidget(),
@@ -32,4 +29,3 @@ class ProfileView extends StatelessWidget {
     );
   }
 }
-

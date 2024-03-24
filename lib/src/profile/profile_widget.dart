@@ -8,33 +8,6 @@ class ProfileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // color: Colors.grey[400],
-      // padding: const EdgeInsets.all(16),
-      // child: const Row(
-      //   mainAxisAlignment: MainAxisAlignment.start,
-      //   children: <Widget>[
-      //     CircleAvatar(
-      //       radius: 50,
-      //       backgroundColor: Colors.white,
-      //       child: Icon(Icons.person, size: 50),
-      //     ),
-      //     Padding(
-      //       padding: EdgeInsets.only(left: 16),
-      //       child: Row(
-      //         children: <Widget> [
-      //           Column(
-      //             crossAxisAlignment: CrossAxisAlignment.start,
-      //             children: <Widget>[
-      //               Text('John Doe', style: TextStyle(fontSize: 24)),
-      //               Text('john.doe@example.de'),
-      //             ],
-      //           ),
-
-      //         ],
-      //       ),
-      //     ),
-      //   ],
-      // ),
       child: ListTile(
         leading: const CircleAvatar(
           radius: 50,
