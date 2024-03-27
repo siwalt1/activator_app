@@ -1,3 +1,4 @@
+import 'package:activator_app/src/profile/change_profile_view.dart';
 import 'package:flutter/material.dart';
 
 class ProfileWidget extends StatelessWidget {
@@ -20,7 +21,9 @@ class ProfileWidget extends StatelessWidget {
           Icons.arrow_forward_ios,
           color: Colors.black,
         ),
-        onTap: () => print('Profile tapped'),
+        // onTap navigation to ChangeProfileView
+        // onTap: () => Navigator.of(context).pushNamed('/change-profile'),
+        onTap: () => Navigator.of(context).restorablePushNamed(ChangeProfileView.routeName), 
       )
     );
   }
