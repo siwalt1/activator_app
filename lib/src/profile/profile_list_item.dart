@@ -6,7 +6,7 @@ class ProfileListItem extends StatelessWidget {
     required this.text,
     required this.onPressed,
     this.color,
-    this.marginBottom = 0,
+    this.marginBottom = 4,
   });
 
   final String text;

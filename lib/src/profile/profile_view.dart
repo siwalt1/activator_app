@@ -1,5 +1,6 @@
 import 'package:activator_app/src/profile/profile_list_item.dart';
 import 'package:activator_app/src/profile/profile_widget.dart';
+import 'package:activator_app/src/settings/settings_view.dart';
 import 'package:flutter/material.dart';
 
 /// Displays the user profile information.
@@ -24,20 +25,27 @@ class ProfileView extends StatelessWidget {
               const ProfileWidget(),
               const SizedBox(height: 40),
               ProfileListItem(
-                  text: "Change Password",
-                  onPressed: () => print('onPressed'),
-                  marginBottom: 4),
-              ProfileListItem(
-                text: "Logout",
+                text: "Privacy",
                 onPressed: () => print('onPressed'),
-                marginBottom: 4,
+              ),
+              ProfileListItem(
+                text: "Theme Mode",
+                onPressed: () => Navigator.of(context)
+                    .restorablePushNamed(SettingsView.routeName),
               ),
               const SizedBox(height: 20),
               ProfileListItem(
-                text: "Delete Account",
+                  text: "Share activator", onPressed: () => print('onPressed')),
+              ProfileListItem(
+                  text: "Contact us", onPressed: () => print('onPressed')),
+              ProfileListItem(
+                  text: "About", onPressed: () => print('onPressed')),
+              const SizedBox(height: 20),
+              ProfileListItem(
+                text: "Logout",
                 onPressed: () => print('onPressed'),
                 color: Colors.red,
-                marginBottom: 4,
+                marginBottom: 0,
               ),
             ],
           ),
