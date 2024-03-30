@@ -1,4 +1,5 @@
 import 'package:activator_app/src/profile/profile_list_item.dart';
+import 'package:activator_app/src/profile/profile_theme_view.dart';
 import 'package:activator_app/src/profile/profile_widget.dart';
 import 'package:activator_app/src/settings/settings_view.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +32,7 @@ class ProfileView extends StatelessWidget {
               ProfileListItem(
                 text: "Theme Mode",
                 onPressed: () => Navigator.of(context)
-                    .restorablePushNamed(SettingsView.routeName),
+                    .restorablePushNamed(ProfileThemeView.routeName),
               ),
               const SizedBox(height: 20),
               ProfileListItem(

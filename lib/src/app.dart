@@ -1,4 +1,5 @@
 import 'package:activator_app/src/profile/change_profile_view.dart';
+import 'package:activator_app/src/profile/profile_theme_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -76,6 +77,8 @@ class MyApp extends StatelessWidget {
                     return const SampleItemDetailsView();
                   case ChangeProfileView.routeName:
                     return const ChangeProfileView();
+                  case ProfileThemeView.routeName:
+                    return ProfileThemeView(controller: settingsController);
                   default:
                     return const HomePage();
                 }
