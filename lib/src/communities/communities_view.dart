@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../sample_feature/sample_item.dart';
@@ -22,21 +24,27 @@ class Communities extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Communities'),
         actions: [
-          IconButton(
-            icon: Icon(
-              Icons.add_circle,
-              size: 35,
-              color: Theme.of(context).colorScheme.primary,
+          if (Platform.isIOS)
+            IconButton(
+              icon: Icon(
+                Icons.add_circle,
+                size: 35,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              onPressed: () {
+                print('Add new community');
+              },
             ),
-            onPressed: () {
-              // Navigate to the settings page. If the user leaves and returns
-              // to the app after it has been killed while running in the
-              // background, the navigation stack is restored.
-              print('Add new community');
-            },
-          ),
         ],
       ),
+      floatingActionButton: Platform.isAndroid
+          ? FloatingActionButton(
+              onPressed: () {
+                print('Add new community');
+              },
+              child: const Icon(Icons.add),
+            )
+          : null,
       body: ListView.builder(
         // Providing a restorationId allows the ListView to restore the
         // scroll position when a user leaves and returns to the app after it
