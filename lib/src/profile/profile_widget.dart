@@ -5,26 +5,41 @@ class ProfileWidget extends StatelessWidget {
   const ProfileWidget({
     super.key,
   });
-  
+
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Ink(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainer,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).colorScheme.shadow, // Shadow color
+            spreadRadius: 0.1, // Spread radius
+            blurRadius: 0.2, // Blur radius
+          ),
+        ],
+      ),
       child: ListTile(
-        leading: const CircleAvatar(
+        tileColor: Theme.of(context).colorScheme.surfaceContainer,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
+        leading: CircleAvatar(
           radius: 50,
-          backgroundColor: Colors.white,
-          child: Icon(Icons.person, size: 50),
+          backgroundColor: Theme.of(context).colorScheme.onSurfaceVariant,
+          child: const Icon(
+            Icons.person,
+            size: 50,
+          ),
         ),
-        title: Text('John Doe', style: TextStyle(fontSize: 24)),
-        subtitle: Text('john.doe@example.com'),
-        trailing: Icon(
-          Icons.arrow_forward_ios,
-          color: Colors.black,
-        ),
+        title: const Text('John Doe', style: TextStyle(fontSize: 24)),
+        subtitle: const Text('john.doe@example.com'),
         // onTap navigation to ChangeProfileView
-        // onTap: () => Navigator.of(context).pushNamed('/change-profile'),
-        onTap: () => Navigator.of(context).restorablePushNamed(ChangeProfileView.routeName), 
-      )
+        onTap: () => Navigator.of(context)
+            .restorablePushNamed(ChangeProfileView.routeName),
+      ),
     );
   }
 }

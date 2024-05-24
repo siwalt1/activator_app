@@ -56,35 +56,44 @@ class _ProfileThemeViewState extends State<ProfileThemeView> {
   Widget _buildListItem(int index) {
     return Container(
       margin: const EdgeInsets.only(bottom: 4),
-      child: ListTile(
-        selected: _selectedIndex == index,
-        shape: RoundedRectangleBorder(
-          side: BorderSide(
-            color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
-            width: 0.75,
-          ),
+      child: Ink(
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surfaceContainer,
           borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Theme.of(context).colorScheme.shadow, // Shadow color
+              spreadRadius: 0.1, // Spread radius
+              blurRadius: 0.2, // Blur radius
+            ),
+          ],
         ),
-        visualDensity: const VisualDensity(vertical: -3),
-        title: Text(
-          items[index],
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.secondary,
+        child: ListTile(
+          tileColor: Theme.of(context).colorScheme.surfaceContainer,
+          selectedTileColor: Theme.of(context).colorScheme.surfaceContainer,
+          selectedColor: Theme.of(context).colorScheme.onSurface,
+          selected: _selectedIndex == index,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
           ),
-        ),
-        trailing: Visibility(
-          visible: _selectedIndex == index,
-          child: const Icon(
-            Icons.check,
-            color: Colors.blue,
+          visualDensity: const VisualDensity(vertical: -3),
+          title: Text(
+            items[index],
           ),
+          trailing: Visibility(
+            visible: _selectedIndex == index,
+            child: Icon(
+              Icons.check,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+          onTap: () {
+            setState(() {
+              _selectedIndex = index;
+              widget.controller.updateThemeMode(themeModes[index]);
+            });
+          },
         ),
-        onTap: () {
-          setState(() {
-            _selectedIndex = index;
-            widget.controller.updateThemeMode(themeModes[index]);
-          });
-        },
       ),
     );
   }

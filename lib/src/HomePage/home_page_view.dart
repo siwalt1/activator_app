@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage> {
           currentIndex: _selectedTab,
           onTap: (index) => _changeTab(index),
           selectedItemColor: Theme.of(context).colorScheme.primary,
-          unselectedItemColor: Colors.black38,
+          unselectedItemColor: Theme.of(context).colorScheme.onSurface,
           // elevation: 1,
           type: BottomNavigationBarType.fixed,
           selectedFontSize: 12,

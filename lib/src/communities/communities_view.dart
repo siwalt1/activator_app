@@ -23,9 +23,10 @@ class Communities extends StatelessWidget {
         title: const Text('Communities'),
         actions: [
           IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.add_circle,
               size: 35,
+              color: Theme.of(context).colorScheme.primary,
             ),
             onPressed: () {
               // Navigate to the settings page. If the user leaves and returns

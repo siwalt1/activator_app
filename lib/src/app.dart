@@ -9,6 +9,45 @@ import 'settings/settings_controller.dart';
 import 'settings/settings_view.dart';
 import 'HomePage/home_page_view.dart';
 
+const Color primaryRed = Color(0xFFC62828);
+const Color secondaryRed = Color(0xFFFFCDD2);
+const Color errorRed = Color(0xFFD32F2F);
+
+final ThemeData lightTheme = ThemeData(
+  primarySwatch: Colors.red,
+  colorScheme: ColorScheme(
+    primary: primaryRed,
+    secondary: secondaryRed,
+    surface: Colors.grey.shade100,
+    surfaceContainer: Colors.white,
+    error: errorRed,
+    onPrimary: Colors.white,
+    onSecondary: Colors.black,
+    onSurface: Colors.grey.shade900,
+    onError: Colors.white,
+    onSurfaceVariant: Colors.grey.shade600,
+    shadow: Colors.grey.withOpacity(0.3),
+    brightness: Brightness.light,
+  ),
+);
+final ThemeData darkTheme = ThemeData(
+  primarySwatch: Colors.red,
+  colorScheme: ColorScheme(
+    primary: primaryRed,
+    secondary: secondaryRed,
+    surface: Colors.grey.shade900,
+    surfaceContainer: Colors.grey.shade800,
+    error: errorRed,
+    onPrimary: Colors.white,
+    onSecondary: Colors.white,
+    onSurface: Colors.white,
+    onError: Colors.black,
+    onSurfaceVariant: Colors.grey.shade400,
+    shadow: Colors.black.withOpacity(0.3),
+    brightness: Brightness.dark,
+  ),
+);
+
 /// The Widget that configures your application.
 class MyApp extends StatelessWidget {
   const MyApp({
@@ -58,10 +97,8 @@ class MyApp extends StatelessWidget {
           // Define a light and dark color theme. Then, read the user's
           // preferred ThemeMode (light, dark, or system default) from the
           // SettingsController to display the correct theme.
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-          ),
-          darkTheme: ThemeData.dark(),
+          theme: lightTheme,
+          darkTheme: darkTheme,
           themeMode: settingsController.themeMode,
 
           // Define a function to handle named routes in order to support

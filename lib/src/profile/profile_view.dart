@@ -20,7 +20,7 @@ class ProfileView extends StatelessWidget {
       ),
       body: Center(
         child: Container(
-          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 0),
           child: ListView(
             children: <Widget>[
               const ProfileWidget(),
@@ -45,8 +45,10 @@ class ProfileView extends StatelessWidget {
               ProfileListItem(
                 text: "Logout",
                 onPressed: () => print('onPressed'),
-                color: Colors.red,
+                color: Theme.of(context).colorScheme.error,
                 marginBottom: 0,
+                showArrow: false,
+                textAlign: TextAlign.center,
               ),
             ],
           ),
