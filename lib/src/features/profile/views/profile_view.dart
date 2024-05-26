@@ -40,15 +40,6 @@ class ProfileView extends StatelessWidget {
                   text: "Contact us", onPressed: () => print('onPressed')),
               CustomListTile(
                   text: "About", onPressed: () => print('onPressed')),
-              const SizedBox(height: 20),
-              CustomListTile(
-                text: "Logout",
-                onPressed: () => print('onPressed'),
-                textColor: Theme.of(context).colorScheme.error,
-                marginBottom: 0,
-                showArrow: false,
-                textAlign: TextAlign.center,
-              ),
             ],
           ),
         ),

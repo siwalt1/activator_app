@@ -43,8 +43,17 @@ class ChangeProfileView extends StatelessWidget {
             onPressed: () => print('Change password'),
             showArrow: false,
             textAlign: TextAlign.center,
+            textColor: Theme.of(context).colorScheme.primary,
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: AppConstants.listTileSpacing),
+          CustomListTile(
+            text: 'Logout',
+            onPressed: () => print('Change profile picture'),
+            showArrow: false,
+            textAlign: TextAlign.center,
+            textColor: Theme.of(context).colorScheme.primary,
+          ),
+          const SizedBox(height: 20),
           CustomListTile(
             text: 'Delete Account',
             onPressed: () => print('Delete account'),
