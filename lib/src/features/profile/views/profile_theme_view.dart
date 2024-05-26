@@ -1,6 +1,7 @@
+import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:flutter/material.dart';
 
-import 'package:activator_app/src/settings/settings_controller.dart';
+import 'package:activator_app/src/core/controllers/settings_controller.dart';
 
 class ProfileThemeView extends StatefulWidget {
   const ProfileThemeView({super.key, required this.controller});
@@ -55,7 +56,7 @@ class _ProfileThemeViewState extends State<ProfileThemeView> {
 
   Widget _buildListItem(int index) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 4),
+      margin: const EdgeInsets.only(bottom: AppConstants.listTileSpacing),
       child: Ink(
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surfaceContainer,

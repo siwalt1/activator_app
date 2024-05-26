@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import '../sample_feature/sample_item.dart';
-import '../sample_feature/sample_item_details_view.dart';
+import '../../sample_feature/sample_item.dart';
+import '../../sample_feature/sample_item_details_view.dart';
 
 class Communities extends StatelessWidget {
   const Communities({

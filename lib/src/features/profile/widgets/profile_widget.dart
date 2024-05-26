@@ -1,4 +1,4 @@
-import 'package:activator_app/src/profile/change_profile_view.dart';
+import 'package:activator_app/src/features/profile/views/change_profile_view.dart';
 import 'package:flutter/material.dart';
 
 class ProfileWidget extends StatelessWidget {

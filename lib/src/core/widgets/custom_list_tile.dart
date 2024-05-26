@@ -1,22 +1,25 @@
+import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:flutter/material.dart';
 
-class ProfileListItem extends StatelessWidget {
-  const ProfileListItem({
+class CustomListTile extends StatelessWidget {
+  const CustomListTile({
     super.key,
     required this.text,
     required this.onPressed,
-    this.color,
-    this.marginBottom = 4,
+    this.textColor,
+    this.marginBottom = AppConstants.listTileSpacing,
     this.showArrow = true,
     this.textAlign = TextAlign.start,
+    this.backgroundColor,
   });
 
   final String text;
   final VoidCallback? onPressed;
-  final Color? color;
+  final Color? textColor;
   final double marginBottom;
   final bool showArrow;
   final TextAlign textAlign;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +38,7 @@ class ProfileListItem extends StatelessWidget {
           ],
         ),
         child: ListTile(
-          tileColor: Theme.of(context).colorScheme.surfaceContainer,
+          tileColor: backgroundColor ?? Theme.of(context).colorScheme.surfaceContainer,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -44,7 +47,7 @@ class ProfileListItem extends StatelessWidget {
             text,
             textAlign: textAlign,
             style: TextStyle(
-              color: color ?? Theme.of(context).colorScheme.onSurface,
+              color: textColor ?? Theme.of(context).colorScheme.onSurface,
               fontSize: 16,
             ),
           ),

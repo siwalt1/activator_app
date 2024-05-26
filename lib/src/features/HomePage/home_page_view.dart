@@ -1,5 +1,5 @@
-import 'package:activator_app/src/communities/communities_view.dart';
-import 'package:activator_app/src/profile/profile_view.dart';
+import 'package:activator_app/src/features/communities/communities_view.dart';
+import 'package:activator_app/src/features/profile/views/profile_view.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {

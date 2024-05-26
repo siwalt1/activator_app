@@ -1,13 +1,12 @@
-import 'package:activator_app/src/profile/change_profile_view.dart';
-import 'package:activator_app/src/profile/profile_theme_view.dart';
+import 'package:activator_app/src/features/profile/views/change_profile_view.dart';
+import 'package:activator_app/src/features/profile/views/profile_theme_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'sample_feature/sample_item_details_view.dart';
-import 'settings/settings_controller.dart';
-import 'settings/settings_view.dart';
-import 'HomePage/home_page_view.dart';
+import 'core/controllers/settings_controller.dart';
+import 'features/HomePage/home_page_view.dart';
 
 const Color primaryRed = Color(0xFFC62828);
 const Color secondaryRed = Color(0xFFFFCDD2);
@@ -108,8 +107,6 @@ class MyApp extends StatelessWidget {
               settings: routeSettings,
               builder: (BuildContext context) {
                 switch (routeSettings.name) {
-                  case SettingsView.routeName:
-                    return SettingsView(controller: settingsController);
                   case SampleItemDetailsView.routeName:
                     return const SampleItemDetailsView();
                   case ChangeProfileView.routeName:

@@ -1,7 +1,6 @@
-import 'package:activator_app/src/profile/profile_list_item.dart';
-import 'package:activator_app/src/profile/profile_theme_view.dart';
-import 'package:activator_app/src/profile/profile_widget.dart';
-import 'package:activator_app/src/settings/settings_view.dart';
+import 'package:activator_app/src/core/widgets/custom_list_tile.dart';
+import 'package:activator_app/src/features/profile/views/profile_theme_view.dart';
+import 'package:activator_app/src/features/profile/widgets/profile_widget.dart';
 import 'package:flutter/material.dart';
 
 /// Displays the user profile information.
@@ -25,27 +24,27 @@ class ProfileView extends StatelessWidget {
             children: <Widget>[
               const ProfileWidget(),
               const SizedBox(height: 40),
-              ProfileListItem(
+              CustomListTile(
                 text: "Privacy",
                 onPressed: () => print('onPressed'),
               ),
-              ProfileListItem(
+              CustomListTile(
                 text: "Theme Mode",
                 onPressed: () => Navigator.of(context)
                     .restorablePushNamed(ProfileThemeView.routeName),
               ),
               const SizedBox(height: 20),
-              ProfileListItem(
+              CustomListTile(
                   text: "Share activator", onPressed: () => print('onPressed')),
-              ProfileListItem(
+              CustomListTile(
                   text: "Contact us", onPressed: () => print('onPressed')),
-              ProfileListItem(
+              CustomListTile(
                   text: "About", onPressed: () => print('onPressed')),
               const SizedBox(height: 20),
-              ProfileListItem(
+              CustomListTile(
                 text: "Logout",
                 onPressed: () => print('onPressed'),
-                color: Theme.of(context).colorScheme.error,
+                textColor: Theme.of(context).colorScheme.error,
                 marginBottom: 0,
                 showArrow: false,
                 textAlign: TextAlign.center,
