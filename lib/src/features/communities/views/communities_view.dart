@@ -9,11 +9,11 @@ class CommunitiesView extends StatelessWidget {
   const CommunitiesView({
     super.key,
     this.items = const [
-      Community(id: 1, name: 'Gardening'),
-      Community(id: 2, name: 'Gym'),
-      Community(id: 3, name: 'Running'),
-      Community(id: 4, name: 'Cycling'),
-      Community(id: 5, name: 'Gaming'),
+      Community(id: 1, name: 'Gardening', icon: Icons.grass, description: 'Landscaping and gardening enthusiasts'),
+      Community(id: 2, name: 'Gym', icon: Icons.fitness_center, description: 'Worlds best gym community'),
+      Community(id: 3, name: 'Running', icon: Icons.directions_run, description: 'Lörracher Runners Club'),
+      Community(id: 4, name: 'Cycling', icon: Icons.directions_bike, description: 'Penzberger Radler Club'),
+      Community(id: 5, name: 'Gaming', icon: Icons.videogame_asset, description: 'Gamers unite!'),
     ],
   });
 
@@ -57,9 +57,8 @@ class CommunitiesView extends StatelessWidget {
 
           return ListTile(
               title: Text(item.name),
-              leading: const CircleAvatar(
-                // Display the Flutter Logo image asset.
-                foregroundImage: AssetImage('assets/images/flutter_logo.png'),
+              leading: CircleAvatar(
+                child: Icon(item.icon),
               ),
               onTap: () {
                 // Navigate to the details page. If the user leaves and returns to
