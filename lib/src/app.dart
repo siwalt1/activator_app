@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'sample_feature/sample_item_details_view.dart';
+import 'features/communities/views/community_details_view.dart';
 import 'core/controllers/settings_controller.dart';
 import 'features/HomePage/home_page_view.dart';
 
@@ -107,14 +107,14 @@ class MyApp extends StatelessWidget {
               settings: routeSettings,
               builder: (BuildContext context) {
                 switch (routeSettings.name) {
-                  case SampleItemDetailsView.routeName:
-                    return const SampleItemDetailsView();
+                  // case CommunityDetailsView.routeName:
+                  //   return const CommunityDetailsView();
                   case ChangeProfileView.routeName:
                     return const ChangeProfileView();
                   case ProfileThemeView.routeName:
                     return ProfileThemeView(controller: settingsController);
                   default:
-                    return const HomePage();
+                    return const HomePageView();
                 }
               },
             );

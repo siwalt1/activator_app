@@ -1,19 +1,19 @@
-import 'package:activator_app/src/features/communities/communities_view.dart';
+import 'package:activator_app/src/features/communities/views/communities_view.dart';
 import 'package:activator_app/src/features/profile/views/profile_view.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class HomePageView extends StatefulWidget {
+  const HomePageView({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<HomePageView> createState() => _HomePageViewState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageViewState extends State<HomePageView> {
   int _selectedTab = 0;
 
   final List _pages = const [
-    Communities(),
+    CommunitiesView(),
     ProfileView(),
   ];
 

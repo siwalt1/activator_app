@@ -2,21 +2,22 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import '../../sample_feature/sample_item.dart';
-import '../../sample_feature/sample_item_details_view.dart';
+import '../models/community.dart';
+import 'community_details_view.dart';
 
-class Communities extends StatelessWidget {
-  const Communities({
+class CommunitiesView extends StatelessWidget {
+  const CommunitiesView({
     super.key,
     this.items = const [
-      SampleItem(1),
-      SampleItem(2),
-      SampleItem(3),
-      SampleItem(4)
+      Community(id: 1, name: 'Gardening'),
+      Community(id: 2, name: 'Gym'),
+      Community(id: 3, name: 'Running'),
+      Community(id: 4, name: 'Cycling'),
+      Community(id: 5, name: 'Gaming'),
     ],
   });
 
-  final List<SampleItem> items;
+  final List<Community> items;
 
   @override
   Widget build(BuildContext context) {
@@ -49,13 +50,13 @@ class Communities extends StatelessWidget {
         // Providing a restorationId allows the ListView to restore the
         // scroll position when a user leaves and returns to the app after it
         // has been killed while running in the background.
-        restorationId: 'sampleItemListView',
+        restorationId: 'CommunityListView',
         itemCount: items.length,
         itemBuilder: (BuildContext context, int index) {
           final item = items[index];
 
           return ListTile(
-              title: Text('SampleItem ${item.id}'),
+              title: Text(item.name),
               leading: const CircleAvatar(
                 // Display the Flutter Logo image asset.
                 foregroundImage: AssetImage('assets/images/flutter_logo.png'),
@@ -64,9 +65,16 @@ class Communities extends StatelessWidget {
                 // Navigate to the details page. If the user leaves and returns to
                 // the app after it has been killed while running in the
                 // background, the navigation stack is restored.
-                Navigator.restorablePushNamed(
-                  context,
-                  SampleItemDetailsView.routeName,
+                // Navigator.restorablePushNamed(
+                //   context,
+                //   CommunityDetailsView.routeName,
+                // );
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => CommunityDetailsView(
+                      community: item,
+                    ),
+                  ),
                 );
               });
         },
