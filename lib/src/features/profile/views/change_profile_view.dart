@@ -19,50 +19,52 @@ class ChangeProfileView extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Change Profile'),
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: <Widget>[
-          const SizedBox(height: 20),
-          const _ProfileInputField(label: 'Full Name', initialValue: 'John Doe'),
-          const SizedBox(height: AppConstants.listTileSpacing),
-          const _ProfileInputField(
-            label: 'Email',
-            initialValue: 'john.doe@example.com',
-          ),
-          const SizedBox(height: 20),
-          CustomListTile(
-            text: 'Save Changes',
-            onPressed: () => print('Save changes'),
-            showArrow: false,
-            textAlign: TextAlign.center,
-            textColor: Theme.of(context).colorScheme.primary,
-          ),
-          const SizedBox(height: 40),
-          CustomListTile(
-            text: 'Change Password',
-            onPressed: () => print('Change password'),
-            showArrow: false,
-            textAlign: TextAlign.center,
-            textColor: Theme.of(context).colorScheme.primary,
-          ),
-          const SizedBox(height: AppConstants.listTileSpacing),
-          CustomListTile(
-            text: 'Logout',
-            onPressed: () => print('Change profile picture'),
-            showArrow: false,
-            textAlign: TextAlign.center,
-            textColor: Theme.of(context).colorScheme.primary,
-          ),
-          const SizedBox(height: 20),
-          CustomListTile(
-            text: 'Delete Account',
-            onPressed: () => print('Delete account'),
-            showArrow: false,
-            textAlign: TextAlign.center,
-            textColor: Theme.of(context).colorScheme.onError,
-            backgroundColor: Theme.of(context).colorScheme.error,
-          ),
-        ],
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.all(20),
+          children: <Widget>[
+            const SizedBox(height: 20),
+            const _ProfileInputField(label: 'Full Name', initialValue: 'John Doe'),
+            const SizedBox(height: AppConstants.listTileSpacing),
+            const _ProfileInputField(
+              label: 'Email',
+              initialValue: 'john.doe@example.com',
+            ),
+            const SizedBox(height: 20),
+            CustomListTile(
+              text: 'Save Changes',
+              onPressed: () => print('Save changes'),
+              showArrow: false,
+              textAlign: TextAlign.center,
+              textColor: Theme.of(context).colorScheme.primary,
+            ),
+            const SizedBox(height: 40),
+            CustomListTile(
+              text: 'Change Password',
+              onPressed: () => print('Change password'),
+              showArrow: false,
+              textAlign: TextAlign.center,
+              textColor: Theme.of(context).colorScheme.primary,
+            ),
+            const SizedBox(height: AppConstants.listTileSpacing),
+            CustomListTile(
+              text: 'Logout',
+              onPressed: () => print('Change profile picture'),
+              showArrow: false,
+              textAlign: TextAlign.center,
+              textColor: Theme.of(context).colorScheme.primary,
+            ),
+            const SizedBox(height: 20),
+            CustomListTile(
+              text: 'Delete Account',
+              onPressed: () => print('Delete account'),
+              showArrow: false,
+              textAlign: TextAlign.center,
+              textColor: Theme.of(context).colorScheme.onError,
+              backgroundColor: Theme.of(context).colorScheme.error,
+            ),
+          ],
+        ),
       ),
     );
   }

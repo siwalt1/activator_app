@@ -42,13 +42,15 @@ class _ProfileThemeViewState extends State<ProfileThemeView> {
       appBar: AppBar(
         title: const Text('Theme Mode'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: ListView.builder(
-          itemCount: items.length,
-          itemBuilder: (context, index) {
-            return _buildListItem(index);
-          },
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: ListView.builder(
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              return _buildListItem(index);
+            },
+          ),
         ),
       ),
     );

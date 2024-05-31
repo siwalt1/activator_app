@@ -129,6 +129,8 @@ class _CommunitiesViewState extends State<CommunitiesView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Communities'),
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        scrolledUnderElevation: 0,
         actions: [
           if (Platform.isIOS)
             IconButton(
@@ -151,81 +153,83 @@ class _CommunitiesViewState extends State<CommunitiesView> {
               child: const Icon(Icons.add),
             )
           : null,
-      body: ListView.builder(
-        // Providing a restorationId allows the ListView to restore the
-        // scroll position when a user leaves and returns to the app after it
-        // has been killed while running in the background.
-        restorationId: 'CommunityListView',
-        itemCount: _items.length,
-        itemBuilder: (BuildContext context, int index) {
-          final item = _items[index];
-
-          return InkWell(
-            onTap: () {
-              routeBuilder(context) => CommunityDetailsView(
-                    community: item,
-                  );
-
-              Navigator.of(context).push(
-                Platform.isIOS
-                    ? CupertinoPageRoute(
-                        builder: routeBuilder,
-                      )
-                    : MaterialPageRoute(
-                        builder: routeBuilder,
+      body: SafeArea(
+        child: ListView.builder(
+          // Providing a restorationId allows the ListView to restore the
+          // scroll position when a user leaves and returns to the app after it
+          // has been killed while running in the background.
+          restorationId: 'CommunityListView',
+          itemCount: _items.length,
+          itemBuilder: (BuildContext context, int index) {
+            final item = _items[index];
+        
+            return InkWell(
+              onTap: () {
+                routeBuilder(context) => CommunityDetailsView(
+                      community: item,
+                    );
+        
+                Navigator.of(context).push(
+                  Platform.isIOS
+                      ? CupertinoPageRoute(
+                          builder: routeBuilder,
+                        )
+                      : MaterialPageRoute(
+                          builder: routeBuilder,
+                        ),
+                );
+              },
+              child: Column(
+                children: [
+                  ListTile(
+                    leading: CircleAvatar(
+                      child: Icon(item.icon),
+                    ),
+                    title: Text(item.name),
+                    subtitle: Text(item.description),
+                    trailing: SizedBox(
+                      width: 100,
+                      child: Stack(
+                        children: [
+                          // last session date in relation to the current date using formatDate function
+                          Align(
+                            alignment: Alignment.topRight,
+                            child: Text(
+                              formatDate(item.sessions!.last.endTime),
+                              style: TextStyle(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant,
+                              ),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              overflow: TextOverflow.ellipsis,
+                              '${item.sessions?.length} session${item.sessions?.length == 1 ? '' : 's'}',
+                              style: TextStyle(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-              );
-            },
-            child: Column(
-              children: [
-                ListTile(
-                  leading: CircleAvatar(
-                    child: Icon(item.icon),
-                  ),
-                  title: Text(item.name),
-                  subtitle: Text(item.description),
-                  trailing: SizedBox(
-                    width: 100,
-                    child: Stack(
-                      children: [
-                        // last session date in relation to the current date using formatDate function
-                        Align(
-                          alignment: Alignment.topRight,
-                          child: Text(
-                            formatDate(item.sessions!.last.endTime),
-                            style: TextStyle(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurfaceVariant,
-                            ),
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            overflow: TextOverflow.ellipsis,
-                            '${item.sessions?.length} session${item.sessions?.length == 1 ? '' : 's'}',
-                            style: TextStyle(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurfaceVariant,
-                            ),
-                          ),
-                        ),
-                      ],
                     ),
                   ),
-                ),
-                Divider(
-                  color: Theme.of(context).dividerColor.withOpacity(0.4),
-                  thickness: 0.5,
-                  indent: 72,
-                  height: 0,
-                ),
-              ],
-            ),
-          );
-        },
+                  Divider(
+                    color: Theme.of(context).dividerColor.withOpacity(0.4),
+                    thickness: 0.5,
+                    indent: 72,
+                    height: 0,
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
