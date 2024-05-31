@@ -216,15 +216,11 @@ class _CommunitiesViewState extends State<CommunitiesView> {
                     ),
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.only(
-                    left: 72,
-                  ),
-                  child: Divider(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    thickness: 0.1,
-                    height: 0.1,
-                  ),
+                Divider(
+                  color: Theme.of(context).dividerColor.withOpacity(0.4),
+                  thickness: 0.5,
+                  indent: 72,
+                  height: 0,
                 ),
               ],
             ),

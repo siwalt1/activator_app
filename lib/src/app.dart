@@ -46,6 +46,7 @@ final ThemeData darkTheme = ThemeData(
     shadow: Colors.black.withOpacity(0.3),
     brightness: Brightness.dark,
   ),
+  dividerColor: Colors.grey.shade600,
 );
 
 /// The Widget that configures your application.
