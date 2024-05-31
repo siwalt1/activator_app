@@ -1,5 +1,6 @@
 import 'package:activator_app/src/features/profile/views/change_profile_view.dart';
 import 'package:activator_app/src/features/profile/views/profile_theme_view.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -103,21 +104,28 @@ class MyApp extends StatelessWidget {
           // Define a function to handle named routes in order to support
           // Flutter web url navigation and deep linking.
           onGenerateRoute: (RouteSettings routeSettings) {
-            return MaterialPageRoute<void>(
-              settings: routeSettings,
-              builder: (BuildContext context) {
-                switch (routeSettings.name) {
-                  // case CommunityDetailsView.routeName:
-                  //   return const CommunityDetailsView();
-                  case ChangeProfileView.routeName:
-                    return const ChangeProfileView();
-                  case ProfileThemeView.routeName:
-                    return ProfileThemeView(controller: settingsController);
-                  default:
-                    return const HomePageView();
-                }
-              },
-            );
+            routeBuilder(BuildContext context) {
+              switch (routeSettings.name) {
+                case ChangeProfileView.routeName:
+                  return const ChangeProfileView();
+                case ProfileThemeView.routeName:
+                  return ProfileThemeView(controller: settingsController);
+                default:
+                  return const HomePageView();
+              }
+            }
+
+            if (Theme.of(context).platform == TargetPlatform.iOS) {
+              return CupertinoPageRoute<void>(
+                settings: routeSettings,
+                builder: routeBuilder,
+              );
+            } else {
+              return MaterialPageRoute<void>(
+                settings: routeSettings,
+                builder: routeBuilder,
+              );
+            }
           },
         );
       },

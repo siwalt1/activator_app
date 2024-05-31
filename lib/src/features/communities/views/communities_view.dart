@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:activator_app/src/core/utils/format_date.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../models/community.dart';
@@ -161,12 +162,18 @@ class _CommunitiesViewState extends State<CommunitiesView> {
 
           return InkWell(
             onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => CommunityDetailsView(
+              routeBuilder(context) => CommunityDetailsView(
                     community: item,
-                  ),
-                ),
+                  );
+
+              Navigator.of(context).push(
+                Platform.isIOS
+                    ? CupertinoPageRoute(
+                        builder: routeBuilder,
+                      )
+                    : MaterialPageRoute(
+                        builder: routeBuilder,
+                      ),
               );
             },
             child: Column(
@@ -187,7 +194,9 @@ class _CommunitiesViewState extends State<CommunitiesView> {
                           child: Text(
                             formatDate(item.sessions!.last.endTime),
                             style: TextStyle(
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
                             ),
                           ),
                         ),
@@ -197,7 +206,9 @@ class _CommunitiesViewState extends State<CommunitiesView> {
                             overflow: TextOverflow.ellipsis,
                             '${item.sessions?.length} session${item.sessions?.length == 1 ? '' : 's'}',
                             style: TextStyle(
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
                             ),
                           ),
                         ),
