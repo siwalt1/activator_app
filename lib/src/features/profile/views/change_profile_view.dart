@@ -18,10 +18,12 @@ class ChangeProfileView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Change Profile'),
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        scrolledUnderElevation: 0,
       ),
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 0),
           children: <Widget>[
             const SizedBox(height: 20),
             const _ProfileInputField(label: 'Full Name', initialValue: 'John Doe'),
