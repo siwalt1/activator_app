@@ -129,8 +129,6 @@ class _CommunitiesViewState extends State<CommunitiesView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Communities'),
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        scrolledUnderElevation: 0,
         actions: [
           if (Platform.isIOS)
             IconButton(

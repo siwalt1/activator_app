@@ -29,6 +29,10 @@ final ThemeData lightTheme = ThemeData(
     shadow: Colors.grey.withOpacity(0.3),
     brightness: Brightness.light,
   ),
+  appBarTheme: AppBarTheme(
+    backgroundColor: Colors.grey.shade100,
+    scrolledUnderElevation: 0,
+  ),
 );
 final ThemeData darkTheme = ThemeData(
   primarySwatch: Colors.red,
@@ -47,6 +51,10 @@ final ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
   ),
   dividerColor: Colors.grey.shade600,
+  appBarTheme: AppBarTheme(
+    backgroundColor: Colors.grey.shade900,
+    scrolledUnderElevation: 0,
+  ),
 );
 
 /// The Widget that configures your application.

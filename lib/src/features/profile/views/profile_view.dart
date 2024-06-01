@@ -16,8 +16,6 @@ class ProfileView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        scrolledUnderElevation: 0,
       ),
       body: SafeArea(
         child: Center(

@@ -41,8 +41,6 @@ class _ProfileThemeViewState extends State<ProfileThemeView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Theme Mode'),
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        scrolledUnderElevation: 0,
       ),
       body: SafeArea(
         child: Padding(
