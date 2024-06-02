@@ -1,4 +1,6 @@
+import 'package:activator_app/src/core/utils/slide_direction.dart';
 import 'package:activator_app/src/core/widgets/custom_button.dart';
+import 'package:activator_app/src/core/widgets/slide_route.dart';
 import 'package:activator_app/src/features/onboarding/views/login_view.dart';
 import 'package:activator_app/src/features/onboarding/views/signup_view.dart';
 import 'package:flutter/material.dart';
@@ -63,14 +65,9 @@ class WelcomeView extends StatelessWidget {
                           onPressed: () {
                             Navigator.pushReplacement(
                               context,
-                              PageRouteBuilder(
-                                pageBuilder: (BuildContext context,
-                                    Animation<double> animation1,
-                                    Animation<double> animation2) {
-                                  return const LoginView();
-                                },
-                                transitionDuration: Duration.zero,
-                                reverseTransitionDuration: Duration.zero,
+                              SlideRoute(
+                                page: const LoginView(),
+                                direction: SlideDirection.bottomToTop,
                               ),
                             );
                           },
@@ -82,14 +79,9 @@ class WelcomeView extends StatelessWidget {
                           onPressed: () {
                             Navigator.pushReplacement(
                               context,
-                              PageRouteBuilder(
-                                pageBuilder: (BuildContext context,
-                                    Animation<double> animation1,
-                                    Animation<double> animation2) {
-                                  return const SignupView();
-                                },
-                                transitionDuration: Duration.zero,
-                                reverseTransitionDuration: Duration.zero,
+                              SlideRoute(
+                                page: const SignupView(),
+                                direction: SlideDirection.topToBottom,
                               ),
                             );
                           },

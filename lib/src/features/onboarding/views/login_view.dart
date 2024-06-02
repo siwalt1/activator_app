@@ -1,4 +1,6 @@
+import 'package:activator_app/src/core/utils/slide_direction.dart';
 import 'package:activator_app/src/core/widgets/custom_button.dart';
+import 'package:activator_app/src/core/widgets/slide_route.dart';
 import 'package:activator_app/src/features/onboarding/views/signup_view.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +19,6 @@ class _LoginViewState extends State<LoginView> {
 
   Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
-
       // Call the login API
       // await login(emailController.text, passwordController.text);
 
@@ -68,7 +69,6 @@ class _LoginViewState extends State<LoginView> {
                             ),
                           ),
                           const SizedBox(height: 10),
-
                           const SizedBox(
                             width: double.infinity,
                             child: Text(
@@ -137,7 +137,8 @@ class _LoginViewState extends State<LoginView> {
                               child: Text(
                                 'Forgot password?',
                                 style: TextStyle(
-                                  color: Theme.of(context).colorScheme.onSurface, 
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
                                 ),
                               ),
                             ),
@@ -180,17 +181,12 @@ class _LoginViewState extends State<LoginView> {
                           const SizedBox(height: 10),
                           CustomButton(
                             text: 'Sign up',
-                            onPressed: (){
+                            onPressed: () {
                               Navigator.pushReplacement(
                                 context,
-                                PageRouteBuilder(
-                                  pageBuilder: (BuildContext context,
-                                      Animation<double> animation1,
-                                      Animation<double> animation2) {
-                                    return const SignupView();
-                                  },
-                                  transitionDuration: Duration.zero,
-                                  reverseTransitionDuration: Duration.zero,
+                                SlideRoute(
+                                  page: const SignupView(),
+                                  direction: SlideDirection.leftToRight,
                                 ),
                               );
                             },
