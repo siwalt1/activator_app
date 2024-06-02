@@ -1,8 +1,10 @@
 import 'package:activator_app/src/core/widgets/custom_button.dart';
+import 'package:activator_app/src/features/onboarding/views/login_view.dart';
+import 'package:activator_app/src/features/onboarding/views/signup_view.dart';
 import 'package:flutter/material.dart';
 
 class WelcomeView extends StatelessWidget {
-  const WelcomeView({Key? key}) : super(key: key);
+  const WelcomeView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -57,13 +59,39 @@ class WelcomeView extends StatelessWidget {
                         const SizedBox(height: 30),
                         CustomButton(
                           text: 'Log in',
-                          onPressed: () => print('Log in'),
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder: (BuildContext context,
+                                    Animation<double> animation1,
+                                    Animation<double> animation2) {
+                                  return const LoginView();
+                                },
+                                transitionDuration: Duration.zero,
+                                reverseTransitionDuration: Duration.zero,
+                              ),
+                            );
+                          },
                           color: Theme.of(context).colorScheme.primary,
                         ),
                         const SizedBox(height: 10),
                         CustomButton(
                           text: 'Sign up',
-                          onPressed: () => print('Sign up'),
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder: (BuildContext context,
+                                    Animation<double> animation1,
+                                    Animation<double> animation2) {
+                                  return const SignupView();
+                                },
+                                transitionDuration: Duration.zero,
+                                reverseTransitionDuration: Duration.zero,
+                              ),
+                            );
+                          },
                         ),
                         const SizedBox(height: 40),
                       ],
