@@ -19,7 +19,7 @@ class CustomButton extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       child: MaterialButton(
-        onPressed: () => print('Sign up'),
+        onPressed: onPressed,
         color: color ?? Theme.of(context).colorScheme.surfaceContainer,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
