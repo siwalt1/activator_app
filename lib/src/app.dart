@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'features/communities/views/community_details_view.dart';
 import 'core/controllers/settings_controller.dart';
 import 'features/HomePage/home_page_view.dart';
 
