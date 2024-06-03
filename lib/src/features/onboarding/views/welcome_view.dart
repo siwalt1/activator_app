@@ -26,68 +26,71 @@ class WelcomeView extends StatelessWidget {
                 backgroundColor: Colors.transparent,
                 elevation: 0,
                 title: const Text('activator'),
+                centerTitle: false,
               ),
               Expanded(
                 child: Align(
                   alignment: FractionalOffset.bottomCenter,
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const SizedBox(
-                          width: double.infinity,
-                          child: Text(
-                            'Welcome to Activator',
-                            style: TextStyle(
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                            textAlign: TextAlign.left,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        const SizedBox(
-                          width: double.infinity,
-                          child: Text(
-                            'The best way to activate your life.',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
-                            ),
-                            textAlign: TextAlign.left,
-                          ),
-                        ),
-                        const SizedBox(height: 30),
-                        CustomButton(
-                          text: 'Log in',
-                          onPressed: () {
-                            Navigator.pushReplacement(
-                              context,
-                              SlideRoute(
-                                page: const LoginView(),
-                                direction: SlideDirection.bottomToTop,
+                  child: SafeArea(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const SizedBox(
+                            width: double.infinity,
+                            child: Text(
+                              'Welcome to Activator',
+                              style: TextStyle(
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
                               ),
-                            );
-                          },
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                        const SizedBox(height: 10),
-                        CustomButton(
-                          text: 'Sign up',
-                          onPressed: () {
-                            Navigator.pushReplacement(
-                              context,
-                              SlideRoute(
-                                page: const SignupView(),
-                                direction: SlideDirection.topToBottom,
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          const SizedBox(
+                            width: double.infinity,
+                            child: Text(
+                              'The best way to activate your life.',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
                               ),
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 40),
-                      ],
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                          const SizedBox(height: 30),
+                          CustomButton(
+                            text: 'Log in',
+                            onPressed: () {
+                              Navigator.pushReplacement(
+                                context,
+                                SlideRoute(
+                                  page: const LoginView(),
+                                  direction: SlideDirection.bottomToTop,
+                                ),
+                              );
+                            },
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          const SizedBox(height: 10),
+                          CustomButton(
+                            text: 'Sign up',
+                            onPressed: () {
+                              Navigator.pushReplacement(
+                                context,
+                                SlideRoute(
+                                  page: const SignupView(),
+                                  direction: SlideDirection.topToBottom,
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 40),
+                        ],
+                      ),
                     ),
                   ),
                 ),

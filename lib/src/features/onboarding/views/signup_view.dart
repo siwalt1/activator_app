@@ -48,163 +48,166 @@ class _SignupViewState extends State<SignupView> {
                 backgroundColor: Colors.transparent,
                 elevation: 0,
                 title: const Text('activator'),
+                centerTitle: false,
               ),
               Expanded(
                 child: Align(
                   alignment: FractionalOffset.bottomCenter,
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const SizedBox(
-                            width: double.infinity,
-                            child: Text(
-                              'Welcome!',
-                              style: TextStyle(
-                                fontSize: 32,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                              textAlign: TextAlign.left,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          const SizedBox(
-                            width: double.infinity,
-                            child: Text(
-                              'Sign up to get started.',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.white,
-                              ),
-                              textAlign: TextAlign.left,
-                            ),
-                          ),
-                          const SizedBox(height: 30),
-                          TextFormField(
-                            decoration: const InputDecoration(
-                              labelText: 'Full Name',
-                              labelStyle: TextStyle(color: Colors.white),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                              ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                              ),
-                            ),
-                            keyboardType: TextInputType.name,
-                            obscureText: false,
-                            controller: nameController,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter your full name';
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 20),
-                          TextFormField(
-                            decoration: const InputDecoration(
-                              labelText: 'Email',
-                              labelStyle: TextStyle(color: Colors.white),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                              ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                              ),
-                            ),
-                            keyboardType: TextInputType.emailAddress,
-                            obscureText: false,
-                            controller: emailController,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter your email';
-                              }
-                              if (!EmailValidator.validate(value)) {
-                                return 'Please enter a valid email';
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 20),
-                          TextFormField(
-                            decoration: const InputDecoration(
-                              labelText: 'Password',
-                              labelStyle: TextStyle(color: Colors.white),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                              ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                              ),
-                            ),
-                            keyboardType: TextInputType.visiblePassword,
-                            obscureText: true,
-                            controller: passwordController,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter your password';
-                              }
-                              if (value.length < 6) {
-                                return 'Password must be at least 6 characters';
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 70),
-                          CustomButton(
-                            text: 'Sign up',
-                            onPressed: _signup,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  height: 1,
-                                  color:
-                                      Theme.of(context).colorScheme.onSurface,
+                  child: SafeArea(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const SizedBox(
+                              width: double.infinity,
+                              child: Text(
+                                'Welcome!',
+                                style: TextStyle(
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
                                 ),
+                                textAlign: TextAlign.left,
                               ),
-                              const SizedBox(width: 10),
-                              Text(
-                                'or',
+                            ),
+                            const SizedBox(height: 10),
+                            const SizedBox(
+                              width: double.infinity,
+                              child: Text(
+                                'Sign up to get started.',
                                 style: TextStyle(
                                   fontSize: 16,
-                                  color:
-                                      Theme.of(context).colorScheme.onSurface,
+                                  color: Colors.white,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                            const SizedBox(height: 30),
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                labelText: 'Full Name',
+                                labelStyle: TextStyle(color: Colors.white),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
                                 ),
                               ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: Container(
-                                  height: 1,
-                                  color:
-                                      Theme.of(context).colorScheme.onSurface,
+                              keyboardType: TextInputType.name,
+                              obscureText: false,
+                              controller: nameController,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter your full name';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 20),
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                labelText: 'Email',
+                                labelStyle: TextStyle(color: Colors.white),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
                                 ),
                               ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          CustomButton(
-                            text: 'Log in',
-                            onPressed: () {
-                              Navigator.pushReplacement(
-                                context,
-                                SlideRoute(
-                                  page: const LoginView(),
-                                  direction: SlideDirection.rightToLeft,
+                              keyboardType: TextInputType.emailAddress,
+                              obscureText: false,
+                              controller: emailController,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter your email';
+                                }
+                                if (!EmailValidator.validate(value)) {
+                                  return 'Please enter a valid email';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 20),
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                labelText: 'Password',
+                                labelStyle: TextStyle(color: Colors.white),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
                                 ),
-                              );
-                            },
-                          ),
-                          const SizedBox(height: 40),
-                        ],
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                ),
+                              ),
+                              keyboardType: TextInputType.visiblePassword,
+                              obscureText: true,
+                              controller: passwordController,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter your password';
+                                }
+                                if (value.length < 6) {
+                                  return 'Password must be at least 6 characters';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 70),
+                            CustomButton(
+                              text: 'Sign up',
+                              onPressed: _signup,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                            const SizedBox(height: 10),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    height: 1,
+                                    color:
+                                        Theme.of(context).colorScheme.onSurface,
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Text(
+                                  'or',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color:
+                                        Theme.of(context).colorScheme.onSurface,
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Container(
+                                    height: 1,
+                                    color:
+                                        Theme.of(context).colorScheme.onSurface,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            CustomButton(
+                              text: 'Log in',
+                              onPressed: () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  SlideRoute(
+                                    page: const LoginView(),
+                                    direction: SlideDirection.rightToLeft,
+                                  ),
+                                );
+                              },
+                            ),
+                            const SizedBox(height: 40),
+                          ],
+                        ),
                       ),
                     ),
                   ),

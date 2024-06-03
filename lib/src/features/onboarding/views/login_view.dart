@@ -45,154 +45,157 @@ class _LoginViewState extends State<LoginView> {
                 backgroundColor: Colors.transparent,
                 elevation: 0,
                 title: const Text('activator'),
+                centerTitle: false,
               ),
               Expanded(
                 child: Align(
                   alignment: FractionalOffset.bottomCenter,
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const SizedBox(
-                            width: double.infinity,
-                            child: Text(
-                              'Welcome back!',
-                              style: TextStyle(
-                                fontSize: 32,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                              textAlign: TextAlign.left,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          const SizedBox(
-                            width: double.infinity,
-                            child: Text(
-                              'Log in to continue.',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.white,
-                              ),
-                              textAlign: TextAlign.left,
-                            ),
-                          ),
-                          const SizedBox(height: 30),
-                          TextFormField(
-                            decoration: const InputDecoration(
-                              labelText: 'Email',
-                              labelStyle: TextStyle(color: Colors.white),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                              ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                              ),
-                            ),
-                            keyboardType: TextInputType.emailAddress,
-                            obscureText: false,
-                            controller: emailController,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter your email';
-                              }
-                              if (!EmailValidator.validate(value)) {
-                                return 'Please enter a valid email';
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 20),
-                          TextFormField(
-                            decoration: const InputDecoration(
-                              labelText: 'Password',
-                              labelStyle: TextStyle(color: Colors.white),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                              ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                              ),
-                            ),
-                            keyboardType: TextInputType.visiblePassword,
-                            obscureText: true,
-                            controller: passwordController,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter your password';
-                              }
-                              if (value.length < 6) {
-                                return 'Password must be at least 6 characters';
-                              }
-                              return null;
-                            },
-                          ),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: TextButton(
-                              onPressed: () => print('Reset password'),
+                  child: SafeArea(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const SizedBox(
+                              width: double.infinity,
                               child: Text(
-                                'Forgot password?',
+                                'Welcome back!',
                                 style: TextStyle(
-                                  color:
-                                      Theme.of(context).colorScheme.onSurface,
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
                                 ),
+                                textAlign: TextAlign.left,
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 40),
-                          CustomButton(
-                            text: 'Log in',
-                            onPressed: _login,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  height: 1,
-                                  color:
-                                      Theme.of(context).colorScheme.onSurface,
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Text(
-                                'or',
+                            const SizedBox(height: 10),
+                            const SizedBox(
+                              width: double.infinity,
+                              child: Text(
+                                'Log in to continue.',
                                 style: TextStyle(
                                   fontSize: 16,
-                                  color:
-                                      Theme.of(context).colorScheme.onSurface,
+                                  color: Colors.white,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                            const SizedBox(height: 30),
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                labelText: 'Email',
+                                labelStyle: TextStyle(color: Colors.white),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
                                 ),
                               ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: Container(
-                                  height: 1,
-                                  color:
-                                      Theme.of(context).colorScheme.onSurface,
+                              keyboardType: TextInputType.emailAddress,
+                              obscureText: false,
+                              controller: emailController,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter your email';
+                                }
+                                if (!EmailValidator.validate(value)) {
+                                  return 'Please enter a valid email';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 20),
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                labelText: 'Password',
+                                labelStyle: TextStyle(color: Colors.white),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
                                 ),
                               ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          CustomButton(
-                            text: 'Sign up',
-                            onPressed: () {
-                              Navigator.pushReplacement(
-                                context,
-                                SlideRoute(
-                                  page: const SignupView(),
-                                  direction: SlideDirection.leftToRight,
+                              keyboardType: TextInputType.visiblePassword,
+                              obscureText: true,
+                              controller: passwordController,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter your password';
+                                }
+                                if (value.length < 6) {
+                                  return 'Password must be at least 6 characters';
+                                }
+                                return null;
+                              },
+                            ),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: TextButton(
+                                onPressed: () => print('Reset password'),
+                                child: Text(
+                                  'Forgot password?',
+                                  style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.onSurface,
+                                  ),
                                 ),
-                              );
-                            },
-                          ),
-                          const SizedBox(height: 40),
-                        ],
+                              ),
+                            ),
+                            const SizedBox(height: 40),
+                            CustomButton(
+                              text: 'Log in',
+                              onPressed: _login,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                            const SizedBox(height: 10),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    height: 1,
+                                    color:
+                                        Theme.of(context).colorScheme.onSurface,
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Text(
+                                  'or',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color:
+                                        Theme.of(context).colorScheme.onSurface,
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Container(
+                                    height: 1,
+                                    color:
+                                        Theme.of(context).colorScheme.onSurface,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            CustomButton(
+                              text: 'Sign up',
+                              onPressed: () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  SlideRoute(
+                                    page: const SignupView(),
+                                    direction: SlideDirection.leftToRight,
+                                  ),
+                                );
+                              },
+                            ),
+                            const SizedBox(height: 40),
+                          ],
+                        ),
                       ),
                     ),
                   ),
