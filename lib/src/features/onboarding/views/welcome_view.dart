@@ -1,3 +1,4 @@
+import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/utils/slide_direction.dart';
 import 'package:activator_app/src/core/widgets/custom_button.dart';
 import 'package:activator_app/src/core/widgets/slide_route.dart';
@@ -27,6 +28,7 @@ class WelcomeView extends StatelessWidget {
                 elevation: 0,
                 title: const Text('activator'),
                 centerTitle: false,
+                foregroundColor: AppConstants.darkTheme.colorScheme.onPrimary,
               ),
               Expanded(
                 child: Align(
@@ -37,26 +39,27 @@ class WelcomeView extends StatelessWidget {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const SizedBox(
+                          SizedBox(
                             width: double.infinity,
                             child: Text(
                               'Welcome to Activator',
                               style: TextStyle(
                                 fontSize: 32,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                                color: AppConstants
+                                    .darkTheme.colorScheme.onPrimary,
                               ),
                               textAlign: TextAlign.left,
                             ),
                           ),
                           const SizedBox(height: 10),
-                          const SizedBox(
+                          SizedBox(
                             width: double.infinity,
                             child: Text(
                               'The best way to activate your life.',
                               style: TextStyle(
                                 fontSize: 16,
-                                color: Colors.white,
+                                color: AppConstants.darkTheme.colorScheme.onPrimary,
                               ),
                               textAlign: TextAlign.left,
                             ),
@@ -73,7 +76,8 @@ class WelcomeView extends StatelessWidget {
                                 ),
                               );
                             },
-                            color: Theme.of(context).colorScheme.primary,
+                            color: AppConstants.darkTheme.colorScheme.primary,
+                            textColor: AppConstants.darkTheme.colorScheme.onPrimary,
                           ),
                           const SizedBox(height: 10),
                           CustomButton(
@@ -87,6 +91,8 @@ class WelcomeView extends StatelessWidget {
                                 ),
                               );
                             },
+                            color: AppConstants.darkTheme.colorScheme.surfaceContainer,
+                            textColor: AppConstants.darkTheme.colorScheme.onPrimary,
                           ),
                           const SizedBox(height: 40),
                         ],

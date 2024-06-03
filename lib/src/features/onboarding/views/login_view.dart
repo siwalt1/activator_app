@@ -1,3 +1,4 @@
+import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/utils/slide_direction.dart';
 import 'package:activator_app/src/core/widgets/custom_button.dart';
 import 'package:activator_app/src/core/widgets/slide_route.dart';
@@ -46,6 +47,7 @@ class _LoginViewState extends State<LoginView> {
                 elevation: 0,
                 title: const Text('activator'),
                 centerTitle: false,
+                foregroundColor: AppConstants.darkTheme.colorScheme.onSurface,
               ),
               Expanded(
                 child: Align(
@@ -58,40 +60,48 @@ class _LoginViewState extends State<LoginView> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const SizedBox(
+                            SizedBox(
                               width: double.infinity,
                               child: Text(
                                 'Welcome back!',
                                 style: TextStyle(
                                   fontSize: 32,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                                  color: AppConstants
+                                      .darkTheme.colorScheme.onPrimary,
                                 ),
                                 textAlign: TextAlign.left,
                               ),
                             ),
                             const SizedBox(height: 10),
-                            const SizedBox(
+                            SizedBox(
                               width: double.infinity,
                               child: Text(
                                 'Log in to continue.',
                                 style: TextStyle(
                                   fontSize: 16,
-                                  color: Colors.white,
+                                  color: AppConstants
+                                      .darkTheme.colorScheme.onPrimary,
                                 ),
                                 textAlign: TextAlign.left,
                               ),
                             ),
                             const SizedBox(height: 30),
                             TextFormField(
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 labelText: 'Email',
-                                labelStyle: TextStyle(color: Colors.white),
+                                labelStyle: TextStyle(
+                                    color: AppConstants
+                                        .darkTheme.colorScheme.onPrimary),
                                 enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.white),
+                                  borderSide: BorderSide(
+                                      color: AppConstants
+                                          .darkTheme.colorScheme.onPrimary),
                                 ),
                                 focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.white),
+                                  borderSide: BorderSide(
+                                      color: AppConstants
+                                          .darkTheme.colorScheme.onPrimary),
                                 ),
                               ),
                               keyboardType: TextInputType.emailAddress,
@@ -109,14 +119,20 @@ class _LoginViewState extends State<LoginView> {
                             ),
                             const SizedBox(height: 20),
                             TextFormField(
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 labelText: 'Password',
-                                labelStyle: TextStyle(color: Colors.white),
+                                labelStyle: TextStyle(
+                                    color: AppConstants
+                                        .darkTheme.colorScheme.onPrimary),
                                 enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.white),
+                                  borderSide: BorderSide(
+                                      color: AppConstants
+                                          .darkTheme.colorScheme.onPrimary),
                                 ),
                                 focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.white),
+                                  borderSide: BorderSide(
+                                      color: AppConstants
+                                          .darkTheme.colorScheme.onPrimary),
                                 ),
                               ),
                               keyboardType: TextInputType.visiblePassword,
@@ -139,8 +155,8 @@ class _LoginViewState extends State<LoginView> {
                                 child: Text(
                                   'Forgot password?',
                                   style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.onSurface,
+                                    color: AppConstants
+                                        .darkTheme.colorScheme.onPrimary,
                                   ),
                                 ),
                               ),
@@ -149,7 +165,9 @@ class _LoginViewState extends State<LoginView> {
                             CustomButton(
                               text: 'Log in',
                               onPressed: _login,
-                              color: Theme.of(context).colorScheme.primary,
+                              color: AppConstants.darkTheme.colorScheme.primary,
+                              textColor:
+                                  AppConstants.darkTheme.colorScheme.onPrimary,
                             ),
                             const SizedBox(height: 10),
                             Row(
@@ -157,8 +175,8 @@ class _LoginViewState extends State<LoginView> {
                                 Expanded(
                                   child: Container(
                                     height: 1,
-                                    color:
-                                        Theme.of(context).colorScheme.onSurface,
+                                    color: AppConstants
+                                        .darkTheme.colorScheme.onSurface,
                                   ),
                                 ),
                                 const SizedBox(width: 10),
@@ -166,16 +184,16 @@ class _LoginViewState extends State<LoginView> {
                                   'or',
                                   style: TextStyle(
                                     fontSize: 16,
-                                    color:
-                                        Theme.of(context).colorScheme.onSurface,
+                                    color: AppConstants
+                                        .darkTheme.colorScheme.onSurface,
                                   ),
                                 ),
                                 const SizedBox(width: 10),
                                 Expanded(
                                   child: Container(
                                     height: 1,
-                                    color:
-                                        Theme.of(context).colorScheme.onSurface,
+                                    color: AppConstants
+                                        .darkTheme.colorScheme.onSurface,
                                   ),
                                 ),
                               ],
@@ -192,6 +210,10 @@ class _LoginViewState extends State<LoginView> {
                                   ),
                                 );
                               },
+                              color: AppConstants
+                                  .darkTheme.colorScheme.surfaceContainer,
+                              textColor:
+                                  AppConstants.darkTheme.colorScheme.onPrimary,
                             ),
                             const SizedBox(height: 40),
                           ],

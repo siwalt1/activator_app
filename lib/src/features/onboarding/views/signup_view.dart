@@ -1,3 +1,4 @@
+import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/utils/slide_direction.dart';
 import 'package:activator_app/src/core/widgets/custom_button.dart';
 import 'package:activator_app/src/core/widgets/slide_route.dart';
@@ -49,6 +50,7 @@ class _SignupViewState extends State<SignupView> {
                 elevation: 0,
                 title: const Text('activator'),
                 centerTitle: false,
+                foregroundColor: AppConstants.darkTheme.colorScheme.onSurface,
               ),
               Expanded(
                 child: Align(
@@ -61,40 +63,48 @@ class _SignupViewState extends State<SignupView> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const SizedBox(
+                            SizedBox(
                               width: double.infinity,
                               child: Text(
                                 'Welcome!',
                                 style: TextStyle(
                                   fontSize: 32,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                                  color: AppConstants
+                                      .darkTheme.colorScheme.onPrimary,
                                 ),
                                 textAlign: TextAlign.left,
                               ),
                             ),
                             const SizedBox(height: 10),
-                            const SizedBox(
+                            SizedBox(
                               width: double.infinity,
                               child: Text(
                                 'Sign up to get started.',
                                 style: TextStyle(
                                   fontSize: 16,
-                                  color: Colors.white,
+                                  color: AppConstants
+                                      .darkTheme.colorScheme.onPrimary,
                                 ),
                                 textAlign: TextAlign.left,
                               ),
                             ),
                             const SizedBox(height: 30),
                             TextFormField(
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 labelText: 'Full Name',
-                                labelStyle: TextStyle(color: Colors.white),
+                                labelStyle: TextStyle(
+                                    color: AppConstants
+                                        .darkTheme.colorScheme.onPrimary),
                                 enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.white),
+                                  borderSide: BorderSide(
+                                      color: AppConstants
+                                          .darkTheme.colorScheme.onPrimary),
                                 ),
                                 focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.white),
+                                  borderSide: BorderSide(
+                                      color: AppConstants
+                                          .darkTheme.colorScheme.onPrimary),
                                 ),
                               ),
                               keyboardType: TextInputType.name,
@@ -109,14 +119,20 @@ class _SignupViewState extends State<SignupView> {
                             ),
                             const SizedBox(height: 20),
                             TextFormField(
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 labelText: 'Email',
-                                labelStyle: TextStyle(color: Colors.white),
+                                labelStyle: TextStyle(
+                                    color: AppConstants
+                                        .darkTheme.colorScheme.onPrimary),
                                 enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.white),
+                                  borderSide: BorderSide(
+                                      color: AppConstants
+                                          .darkTheme.colorScheme.onPrimary),
                                 ),
                                 focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.white),
+                                  borderSide: BorderSide(
+                                      color: AppConstants
+                                          .darkTheme.colorScheme.onPrimary),
                                 ),
                               ),
                               keyboardType: TextInputType.emailAddress,
@@ -134,14 +150,20 @@ class _SignupViewState extends State<SignupView> {
                             ),
                             const SizedBox(height: 20),
                             TextFormField(
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 labelText: 'Password',
-                                labelStyle: TextStyle(color: Colors.white),
+                                labelStyle: TextStyle(
+                                    color: AppConstants
+                                        .darkTheme.colorScheme.onPrimary),
                                 enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.white),
+                                  borderSide: BorderSide(
+                                      color: AppConstants
+                                          .darkTheme.colorScheme.onPrimary),
                                 ),
                                 focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.white),
+                                  borderSide: BorderSide(
+                                      color: AppConstants
+                                          .darkTheme.colorScheme.onPrimary),
                                 ),
                               ),
                               keyboardType: TextInputType.visiblePassword,
@@ -161,7 +183,9 @@ class _SignupViewState extends State<SignupView> {
                             CustomButton(
                               text: 'Sign up',
                               onPressed: _signup,
-                              color: Theme.of(context).colorScheme.primary,
+                              color: AppConstants.darkTheme.colorScheme.primary,
+                              textColor:
+                                  AppConstants.darkTheme.colorScheme.onPrimary,
                             ),
                             const SizedBox(height: 10),
                             Row(
@@ -169,8 +193,8 @@ class _SignupViewState extends State<SignupView> {
                                 Expanded(
                                   child: Container(
                                     height: 1,
-                                    color:
-                                        Theme.of(context).colorScheme.onSurface,
+                                    color: AppConstants
+                                        .darkTheme.colorScheme.onSurface,
                                   ),
                                 ),
                                 const SizedBox(width: 10),
@@ -178,16 +202,16 @@ class _SignupViewState extends State<SignupView> {
                                   'or',
                                   style: TextStyle(
                                     fontSize: 16,
-                                    color:
-                                        Theme.of(context).colorScheme.onSurface,
+                                    color: AppConstants
+                                        .darkTheme.colorScheme.onSurface,
                                   ),
                                 ),
                                 const SizedBox(width: 10),
                                 Expanded(
                                   child: Container(
                                     height: 1,
-                                    color:
-                                        Theme.of(context).colorScheme.onSurface,
+                                    color: AppConstants
+                                        .darkTheme.colorScheme.onSurface,
                                   ),
                                 ),
                               ],
@@ -204,6 +228,10 @@ class _SignupViewState extends State<SignupView> {
                                   ),
                                 );
                               },
+                              color: AppConstants
+                                  .darkTheme.colorScheme.surfaceContainer,
+                              textColor:
+                                  AppConstants.darkTheme.colorScheme.onPrimary,
                             ),
                             const SizedBox(height: 40),
                           ],

@@ -7,12 +7,14 @@ class CustomButton extends StatelessWidget {
     required this.onPressed,
     this.alignment = Alignment.center,
     this.color,
+    this.textColor,
   });
 
   final String text;
   final VoidCallback onPressed;
   final Alignment alignment;
   final Color? color;
+  final Color? textColor;
 
   @override
   Widget build(BuildContext context) {
@@ -31,8 +33,9 @@ class CustomButton extends StatelessWidget {
           alignment: alignment,
           child: Text(
             text,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
+              color: textColor,
             ),
           ),
         ),
