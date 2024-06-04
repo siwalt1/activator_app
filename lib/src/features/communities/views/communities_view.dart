@@ -154,6 +154,7 @@ class _CommunitiesViewState extends State<CommunitiesView> {
                 size: 35,
                 color: Theme.of(context).colorScheme.primary,
               ),
+              highlightColor: Colors.transparent,
               onPressed: () => _openMaterialModal(context),
             ),
         ],
