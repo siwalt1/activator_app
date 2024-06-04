@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:activator_app/src/core/utils/format_date.dart';
+import 'package:activator_app/src/features/communities/views/new_community_modal.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -24,6 +25,22 @@ class _CommunitiesViewState extends State<CommunitiesView> {
   void initState() {
     super.initState();
     _loadData();
+  }
+
+  void _openMaterialModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(12.0),
+        ),
+      ),
+      elevation: 10,
+      builder: (BuildContext context) {
+        return const NewCommunityModal();
+      },
+    );
   }
 
   Future<void> _loadData() async {
@@ -137,17 +154,13 @@ class _CommunitiesViewState extends State<CommunitiesView> {
                 size: 35,
                 color: Theme.of(context).colorScheme.primary,
               ),
-              onPressed: () {
-                print('Add new community');
-              },
+              onPressed: () => _openMaterialModal(context),
             ),
         ],
       ),
       floatingActionButton: Platform.isAndroid
           ? FloatingActionButton(
-              onPressed: () {
-                print('Add new community');
-              },
+              onPressed: () => _openMaterialModal(context),
               child: const Icon(Icons.add),
             )
           : null,
@@ -160,13 +173,13 @@ class _CommunitiesViewState extends State<CommunitiesView> {
           itemCount: _items.length,
           itemBuilder: (BuildContext context, int index) {
             final item = _items[index];
-        
+
             return InkWell(
               onTap: () {
                 routeBuilder(context) => CommunityDetailsView(
                       community: item,
                     );
-        
+
                 Navigator.of(context).push(
                   Platform.isIOS
                       ? CupertinoPageRoute(
