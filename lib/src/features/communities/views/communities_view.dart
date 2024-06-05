@@ -4,6 +4,7 @@ import 'package:activator_app/src/core/utils/format_date.dart';
 import 'package:activator_app/src/features/communities/views/new_community_modal.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../models/community.dart';
 import 'community_details_view.dart';
@@ -20,11 +21,33 @@ class CommunitiesView extends StatefulWidget {
 class _CommunitiesViewState extends State<CommunitiesView> {
   // final DatabaseService _databaseService = DatabaseService();
   late List<Community> _items;
+  late MediaQueryData _mediaQueryData;
 
   @override
   void initState() {
     super.initState();
     _loadData();
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      _updateMediaQueryData();
+      _listenForOrientationChanges();
+    });
+  }
+
+  void _updateMediaQueryData() {
+    setState(() {
+      _mediaQueryData = MediaQuery.of(context);
+    });
+  }
+
+  void _listenForOrientationChanges() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]).then((_) {
+      _updateMediaQueryData();
+    });
   }
 
   void _openMaterialModal(BuildContext context) {
@@ -37,11 +60,12 @@ class _CommunitiesViewState extends State<CommunitiesView> {
         ),
       ),
       elevation: 10,
-      builder: (BuildContext context) {
-        return const NewCommunityModal();
+      builder: (BuildContext bottomSheetContext) {
+        return NewCommunityModal(mediaQueryData: _mediaQueryData);
       },
     );
   }
+
 
   Future<void> _loadData() async {
     // final communities = await _databaseService.getCommunities();

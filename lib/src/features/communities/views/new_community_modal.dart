@@ -3,13 +3,16 @@ import 'package:flutter/material.dart';
 class NewCommunityModal extends StatelessWidget {
   const NewCommunityModal({
     super.key,
+    required this.mediaQueryData,
   });
+
+  final MediaQueryData mediaQueryData;
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.9,
+        height: mediaQueryData.size.height - mediaQueryData.padding.top,
         width: double.infinity,
         child: Stack(
           children: [
