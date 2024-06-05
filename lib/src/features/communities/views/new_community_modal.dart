@@ -45,16 +45,16 @@ class NewCommunityModal extends StatelessWidget {
               ),
             ),
             Positioned(
-              top: 0,
+              top: 8,
               left: 0,
               right: 0,
-              child: Center(
+              child: Align(
+                alignment: Alignment.topCenter,
                 child: Container(
                   width: 40,
                   height: 4,
-                  margin: const EdgeInsets.only(top: 8),
                   decoration: BoxDecoration(
-                    color: Colors.grey[300],
+                    color: Theme.of(context).dividerColor,
                     borderRadius: BorderRadius.circular(5),
                   ),
                 ),
