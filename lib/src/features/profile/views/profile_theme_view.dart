@@ -44,13 +44,17 @@ class _ProfileThemeViewState extends State<ProfileThemeView> {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.only(left: 16, right: 16),
+          padding: const EdgeInsets.only(
+              left: AppConstants.paddingSpacing,
+              right: AppConstants.paddingSpacing,
+              bottom: AppConstants.paddingSpacing,
+              top: 0),
           child: ListView(
-      children: <Widget>[
-        const SizedBox(height: 20), 
-        ...List.generate(items.length, (index) => _buildListItem(index)),
-      ],
-    ),
+            children: <Widget>[
+              const SizedBox(height: AppConstants.paddingSpacing),
+              ...List.generate(items.length, (index) => _buildListItem(index)),
+            ],
+          ),
         ),
       ),
     );
@@ -58,7 +62,9 @@ class _ProfileThemeViewState extends State<ProfileThemeView> {
 
   Widget _buildListItem(int index) {
     return Container(
-      margin: const EdgeInsets.only(bottom: AppConstants.listTileSpacing),
+      margin: EdgeInsets.only(
+        bottom: index != items.length - 1 ? AppConstants.listTileSpacing : 0,
+      ),
       child: Ink(
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surfaceContainer,
@@ -77,7 +83,7 @@ class _ProfileThemeViewState extends State<ProfileThemeView> {
           selectedColor: Theme.of(context).colorScheme.onSurface,
           selected: _selectedIndex == index,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(AppConstants.borderRadius),
           ),
           visualDensity: const VisualDensity(vertical: -3),
           title: Text(

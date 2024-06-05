@@ -1,3 +1,6 @@
+import 'package:activator_app/src/core/utils/constants.dart';
+import 'package:activator_app/src/core/widgets/custom_button.dart';
+import 'package:activator_app/src/core/widgets/custom_input_field.dart';
 import 'package:flutter/material.dart';
 
 class NewCommunityModal extends StatelessWidget {
@@ -17,35 +20,51 @@ class NewCommunityModal extends StatelessWidget {
         child: Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(AppConstants.paddingSpacing),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   const Text(
-                    'Material Modal Bottom Sheet',
+                    'Create a new community',
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'This is a Material-style modal bottom sheet.',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text('Close'),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          const SizedBox(height: AppConstants.separatorSpacing),
+                          const CustomInputField(
+                            label: 'Community name',
+                            initialValue: '',
+                          ),
+                          const SizedBox(height: AppConstants.separatorSpacing),
+                          const CustomInputField(
+                            label: 'Community description',
+                            initialValue: '',
+                            maxLines: 3,
+                            keyboardType: TextInputType.multiline,
+                          ),
+                          const SizedBox(height: AppConstants.separatorSpacing),
+                          CustomButton(
+                            text: 'Create community',
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
             Positioned(
-              top: 8,
+              top: AppConstants.paddingSpacing / 2,
               left: 0,
               right: 0,
               child: Align(

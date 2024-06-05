@@ -1,3 +1,4 @@
+import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
@@ -24,7 +25,7 @@ class CustomButton extends StatelessWidget {
         onPressed: onPressed,
         color: color ?? Theme.of(context).colorScheme.surfaceContainer,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(AppConstants.borderRadius),
         ),
         elevation: 0,
         highlightElevation: 0,

@@ -1,3 +1,4 @@
+import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/widgets/custom_list_tile.dart';
 import 'package:activator_app/src/features/profile/views/profile_theme_view.dart';
 import 'package:activator_app/src/features/profile/widgets/profile_widget.dart';
@@ -20,29 +21,43 @@ class ProfileView extends StatelessWidget {
       body: SafeArea(
         child: Center(
           child: Container(
-            padding:
-                const EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 0),
+            padding: const EdgeInsets.only(
+                left: AppConstants.paddingSpacing,
+                right: AppConstants.paddingSpacing,
+                bottom: AppConstants.paddingSpacing,
+                top: 0),
             child: ListView(
               children: <Widget>[
-                const SizedBox(height: 20),
+                const SizedBox(height: AppConstants.paddingSpacing),
                 const ProfileWidget(),
-                const SizedBox(height: 40),
+                const SizedBox(height: AppConstants.separatorSpacing * 2),
                 CustomListTile(
                   text: "Privacy",
                   onPressed: () => print('onPressed'),
+                  marginBottom: AppConstants.listTileSpacing,
                 ),
                 CustomListTile(
                   text: "Theme Mode",
                   onPressed: () => Navigator.of(context)
                       .restorablePushNamed(ProfileThemeView.routeName),
+                  marginBottom: AppConstants.listTileSpacing,
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: AppConstants.separatorSpacing),
                 CustomListTile(
-                    text: "Share activator", onPressed: () => print('onPressed')),
+                  text: "Share activator",
+                  onPressed: () => print('onPressed'),
+                  marginBottom: AppConstants.listTileSpacing,
+                ),
                 CustomListTile(
-                    text: "Contact us", onPressed: () => print('onPressed')),
+                  text: "Contact us",
+                  onPressed: () => print('onPressed'),
+                  marginBottom: AppConstants.listTileSpacing,
+                ),
                 CustomListTile(
-                    text: "About", onPressed: () => print('onPressed')),
+                  text: "About",
+                  onPressed: () => print('onPressed'),
+                  marginBottom: AppConstants.listTileSpacing,
+                ),
               ],
             ),
           ),

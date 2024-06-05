@@ -3,6 +3,11 @@ import 'package:flutter/material.dart';
 class AppConstants {
   // Spacing constants
   static const double listTileSpacing = 4;
+  static const double separatorSpacing = 16;
+  static const double paddingSpacing = 16;
+
+  static const double borderRadius = 10;
+  
 
   // Theme constants
   static Color primaryRed = const Color(0xFFC62828);

@@ -7,7 +7,7 @@ class CustomListTile extends StatelessWidget {
     required this.text,
     required this.onPressed,
     this.textColor,
-    this.marginBottom = AppConstants.listTileSpacing,
+    this.marginBottom = 0,
     this.showArrow = true,
     this.textAlign = TextAlign.start,
     this.backgroundColor,
@@ -28,7 +28,7 @@ class CustomListTile extends StatelessWidget {
       child: Ink(
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surfaceContainer,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(AppConstants.borderRadius),
           boxShadow: [
             BoxShadow(
               color: Theme.of(context).colorScheme.shadow, // Shadow color
@@ -40,7 +40,7 @@ class CustomListTile extends StatelessWidget {
         child: ListTile(
           tileColor: backgroundColor ?? Theme.of(context).colorScheme.surfaceContainer,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(AppConstants.borderRadius),
           ),
           visualDensity: const VisualDensity(vertical: -3),
           title: Text(
