@@ -2,12 +2,14 @@ import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/utils/slide_direction.dart';
 import 'package:activator_app/src/core/widgets/custom_button.dart';
 import 'package:activator_app/src/core/widgets/slide_route.dart';
-import 'package:activator_app/src/features/onboarding/views/login_view.dart';
-import 'package:activator_app/src/features/onboarding/views/signup_view.dart';
+import 'package:activator_app/src/features/auth/views/login_view.dart';
+import 'package:activator_app/src/features/auth/views/signup_view.dart';
 import 'package:flutter/material.dart';
 
 class WelcomeView extends StatelessWidget {
   const WelcomeView({super.key});
+
+  static const routeName = '/welcome';
 
   @override
   Widget build(BuildContext context) {

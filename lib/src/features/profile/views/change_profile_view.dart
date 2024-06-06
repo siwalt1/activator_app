@@ -1,7 +1,10 @@
+import 'package:activator_app/src/core/provider/appwrite_provider.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/widgets/custom_input_field.dart';
 import 'package:activator_app/src/core/widgets/custom_list_tile.dart';
+import 'package:activator_app/src/features/auth/views/welcome_view.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 /// Displays input fields to change the user profile.
 /// name and email fields are pre-filled with the current user's information.
@@ -16,14 +19,19 @@ class ChangeProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Change Profile'),
       ),
       body: SafeArea(
         child: ListView(
-          padding:
-              const EdgeInsets.only(left: AppConstants.paddingSpacing, right: AppConstants.paddingSpacing, bottom: AppConstants.paddingSpacing, top: 0),
+          padding: const EdgeInsets.only(
+              left: AppConstants.paddingSpacing,
+              right: AppConstants.paddingSpacing,
+              bottom: AppConstants.paddingSpacing,
+              top: 0),
           children: <Widget>[
             const SizedBox(height: AppConstants.paddingSpacing),
             const CustomInputField(
@@ -54,7 +62,13 @@ class ChangeProfileView extends StatelessWidget {
             const SizedBox(height: AppConstants.listTileSpacing),
             CustomListTile(
               text: 'Logout',
-              onPressed: () => print('Change profile picture'),
+              onPressed: () => {
+                authProvider.logoutUser(),
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  WelcomeView.routeName,
+                  (route) => false,
+                ),
+              },
               showArrow: false,
               textAlign: TextAlign.center,
               textColor: Theme.of(context).colorScheme.primary,

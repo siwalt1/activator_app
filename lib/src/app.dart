@@ -1,14 +1,18 @@
+import 'package:activator_app/src/core/provider/appwrite_provider.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
+import 'package:activator_app/src/core/widgets/custom_progress_indicator.dart';
 import 'package:activator_app/src/features/HomePage/home_page_view.dart';
+import 'package:activator_app/src/features/auth/views/welcome_view.dart';
+import 'package:activator_app/src/features/not_found/views/not_found_view.dart';
 import 'package:activator_app/src/features/profile/views/change_profile_view.dart';
 import 'package:activator_app/src/features/profile/views/profile_theme_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
 
 import 'core/controllers/settings_controller.dart';
-
 
 /// The Widget that configures your application.
 class MyApp extends StatelessWidget {
@@ -68,12 +72,16 @@ class MyApp extends StatelessWidget {
           onGenerateRoute: (RouteSettings routeSettings) {
             routeBuilder(BuildContext context) {
               switch (routeSettings.name) {
+                case WelcomeView.routeName:
+                  return const WelcomeView();
                 case ChangeProfileView.routeName:
                   return const ChangeProfileView();
                 case ProfileThemeView.routeName:
                   return ProfileThemeView(controller: settingsController);
-                default:
+                case HomePageView.routeName:
                   return const HomePageView();
+                default:
+                  return const NotFoundView();
               }
             }
 
@@ -89,6 +97,15 @@ class MyApp extends StatelessWidget {
               );
             }
           },
+          home: Consumer<AuthProvider>(
+            builder: (context, authProvider, child) {
+              if (authProvider.isAuthenticated) {
+                return const HomePageView();
+              } else {
+                return const WelcomeView();
+              }
+            },
+          ),
         );
       },
     );

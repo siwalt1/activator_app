@@ -1,4 +1,4 @@
-import 'package:activator_app/src/features/communities/models/community.dart';
+import 'package:activator_app/src/core/models/community.dart';
 import 'package:flutter/material.dart';
 
 /// Displays detailed information about a Community.

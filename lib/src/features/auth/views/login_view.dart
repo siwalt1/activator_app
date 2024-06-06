@@ -1,10 +1,13 @@
+import 'package:activator_app/src/core/provider/appwrite_provider.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/utils/slide_direction.dart';
 import 'package:activator_app/src/core/widgets/custom_button.dart';
 import 'package:activator_app/src/core/widgets/slide_route.dart';
-import 'package:activator_app/src/features/onboarding/views/signup_view.dart';
+import 'package:activator_app/src/features/HomePage/home_page_view.dart';
+import 'package:activator_app/src/features/auth/views/signup_view.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -18,13 +21,21 @@ class _LoginViewState extends State<LoginView> {
   final passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  Future<void> _login() async {
+ Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
-      // Call the login API
-      // await login(emailController.text, passwordController.text);
-
-      // Navigate to the home screen
-      // Navigator.pushNamed(context, HomeView.routeName);
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      try {
+        await authProvider.loginUser(
+          emailController.text,
+          passwordController.text,
+        );
+        Navigator.pushReplacementNamed(context, HomePageView.routeName);
+      } catch (e) {
+        // Handle login failure
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Login failed: $e')),
+        );
+      }
     }
   }
 
@@ -142,8 +153,8 @@ class _LoginViewState extends State<LoginView> {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter your password';
                                 }
-                                if (value.length < 6) {
-                                  return 'Password must be at least 6 characters';
+                                if (value.length < 8) {
+                                  return 'Password must be at least 8 characters';
                                 }
                                 return null;
                               },

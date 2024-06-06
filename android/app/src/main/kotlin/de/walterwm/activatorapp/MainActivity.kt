@@ -1,4 +1,4 @@
-package com.example.activator_app
+package de.walterwm.activatorapp
 
 import io.flutter.embedding.android.FlutterActivity
 

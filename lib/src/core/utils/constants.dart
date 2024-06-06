@@ -5,9 +5,16 @@ class AppConstants {
   static const double listTileSpacing = 4;
   static const double separatorSpacing = 16;
   static const double paddingSpacing = 16;
-
   static const double borderRadius = 10;
-  
+
+  // Appwrite constants
+  static const String APPWRITE_PROJECT_ID = '6578c59fdf2ca76934dd';
+  static const String APPWRITE_API_ENDPOINT = 'https://appwrite.walter-wm.de/v1';
+  static const String APPWRITE_DATABASE_ID = '6660884169dce3a05e38';
+  static const String APPWRITE_COMMUNITIES_COLLECTION_ID = '666088a92a47959a2ff4';
+  static const String APPWRITE_ACTIVITIES_COLLECTION_ID = '666089e1604ff3e68f0c';
+  static const String APPWRITE_COMMUNITY_MEMBERSHIPS_COLLECTION_ID = '6660cf0cb1b829e63b84';
+  static const String APPWRITE_ACTIVITY_ATTENDANCE_COLLECTION_ID = '6660cf253e1219a8f2b5';
 
   // Theme constants
   static Color primaryRed = const Color(0xFFC62828);

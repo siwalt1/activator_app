@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 class HomePageView extends StatefulWidget {
   const HomePageView({super.key});
 
+  static const routeName = '/home';
+
   @override
   State<HomePageView> createState() => _HomePageViewState();
 }
