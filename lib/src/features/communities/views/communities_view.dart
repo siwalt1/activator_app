@@ -59,13 +59,18 @@ class _CommunitiesViewState extends State<CommunitiesView> {
           top: Radius.circular(12.0),
         ),
       ),
+      useSafeArea: true,
       elevation: 10,
       builder: (BuildContext bottomSheetContext) {
-        return NewCommunityModal(mediaQueryData: _mediaQueryData);
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(bottomSheetContext).viewInsets.bottom,
+          ),
+          child: const NewCommunityModal(),
+        );
       },
     );
   }
-
 
   Future<void> _loadData() async {
     // final communities = await _databaseService.getCommunities();
