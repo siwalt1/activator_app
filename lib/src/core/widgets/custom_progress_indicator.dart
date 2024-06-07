@@ -5,8 +5,13 @@ class CustomProgressIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: CircularProgressIndicator(),
+    return Container(
+      height: double.infinity,
+      width: double.infinity,
+      color: Theme.of(context).colorScheme.surface.withOpacity(0.5),
+      child: const Center(
+        child: CircularProgressIndicator(),
+      ),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:activator_app/src/core/provider/appwrite_provider.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/utils/slide_direction.dart';
 import 'package:activator_app/src/core/widgets/custom_button.dart';
+import 'package:activator_app/src/core/widgets/custom_progress_indicator.dart';
 import 'package:activator_app/src/core/widgets/slide_route.dart';
 import 'package:activator_app/src/features/HomePage/home_page_view.dart';
 import 'package:activator_app/src/features/auth/views/signup_view.dart';
@@ -20,21 +21,32 @@ class _LoginViewState extends State<LoginView> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
 
- Future<void> _login() async {
+  Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
+      setState(() => _isLoading = true);
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       try {
         await authProvider.loginUser(
           emailController.text,
           passwordController.text,
         );
-        Navigator.pushReplacementNamed(context, HomePageView.routeName);
+        if (!mounted) return; // Check if the widget is still mounted
+        Navigator.pushReplacement(
+          context,
+          SlideRoute(
+            page: const HomePageView(),
+            direction: SlideDirection.rightToLeft,
+          ),
+        );
       } catch (e) {
         // Handle login failure
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Login failed: $e')),
         );
+      } finally {
+        setState(() => _isLoading = false);
       }
     }
   }
@@ -236,6 +248,7 @@ class _LoginViewState extends State<LoginView> {
               ),
             ],
           ),
+          if (_isLoading) const CustomProgressIndicator(),
         ],
       ),
     );

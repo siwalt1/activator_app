@@ -13,6 +13,10 @@ class AuthProvider with ChangeNotifier {
   Future<void> registerUser(String email, String password, String name) async {
     try {
       await _appwriteService.register(email, password, name);
+      await loginUser(email, password);
+      _user = (await _appwriteService.getCurrentUser()) as User?;
+      _isAuthenticated = true;
+      notifyListeners();
     } catch (e) {
       throw e;
     }

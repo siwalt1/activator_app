@@ -1,16 +1,14 @@
-import 'package:activator_app/src/core/provider/appwrite_provider.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
-import 'package:activator_app/src/core/widgets/custom_progress_indicator.dart';
 import 'package:activator_app/src/features/HomePage/home_page_view.dart';
 import 'package:activator_app/src/features/auth/views/welcome_view.dart';
-import 'package:activator_app/src/features/not_found/views/not_found_view.dart';
+import 'package:activator_app/src/features/initial/views/not_found_view.dart';
+import 'package:activator_app/src/features/initial/views/splash_view.dart';
 import 'package:activator_app/src/features/profile/views/change_profile_view.dart';
 import 'package:activator_app/src/features/profile/views/profile_theme_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:provider/provider.dart';
 
 import 'core/controllers/settings_controller.dart';
 
@@ -97,15 +95,7 @@ class MyApp extends StatelessWidget {
               );
             }
           },
-          home: Consumer<AuthProvider>(
-            builder: (context, authProvider, child) {
-              if (authProvider.isAuthenticated) {
-                return const HomePageView();
-              } else {
-                return const WelcomeView();
-              }
-            },
-          ),
+          home: const SplashView(),
         );
       },
     );
