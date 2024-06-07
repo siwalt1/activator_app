@@ -5,7 +5,6 @@ import 'package:activator_app/src/core/utils/format_date.dart';
 import 'package:activator_app/src/features/communities/views/new_community_modal.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'community_details_view.dart';
 
