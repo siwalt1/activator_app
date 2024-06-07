@@ -77,7 +77,12 @@ class _LoginViewState extends State<LoginView> {
                   alignment: FractionalOffset.bottomCenter,
                   child: SafeArea(
                     child: SingleChildScrollView(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      padding: EdgeInsets.only(
+                        left: AppConstants.paddingSpacing,
+                        right: AppConstants.paddingSpacing,
+                        bottom: MediaQuery.of(context).viewInsets.bottom,
+                        top: 0,
+                      ),
                       child: Form(
                         key: _formKey,
                         child: Column(
