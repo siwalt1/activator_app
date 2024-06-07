@@ -21,33 +21,11 @@ class CommunitiesView extends StatefulWidget {
 class _CommunitiesViewState extends State<CommunitiesView> {
   // final DatabaseService _databaseService = DatabaseService();
   late List<Community> _items;
-  late MediaQueryData _mediaQueryData;
 
   @override
   void initState() {
     super.initState();
     _loadData();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      _updateMediaQueryData();
-      _listenForOrientationChanges();
-    });
-  }
-
-  void _updateMediaQueryData() {
-    setState(() {
-      _mediaQueryData = MediaQuery.of(context);
-    });
-  }
-
-  void _listenForOrientationChanges() {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]).then((_) {
-      _updateMediaQueryData();
-    });
   }
 
   void _openMaterialModal(BuildContext context) {
