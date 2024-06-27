@@ -149,6 +149,10 @@ class _SignupViewState extends State<SignupView> {
                                 }
                                 return null;
                               },
+                              style: TextStyle(
+                                color: AppConstants
+                                    .darkTheme.colorScheme.onPrimary,
+                              ),
                             ),
                             const SizedBox(height: 20),
                             TextFormField(
@@ -180,6 +184,10 @@ class _SignupViewState extends State<SignupView> {
                                 }
                                 return null;
                               },
+                              style: TextStyle(
+                                color: AppConstants
+                                    .darkTheme.colorScheme.onPrimary,
+                              ),
                             ),
                             const SizedBox(height: 20),
                             TextFormField(
@@ -211,6 +219,10 @@ class _SignupViewState extends State<SignupView> {
                                 }
                                 return null;
                               },
+                              style: TextStyle(
+                                color: AppConstants
+                                    .darkTheme.colorScheme.onPrimary,
+                              ),
                             ),
                             const SizedBox(height: 70),
                             CustomButton(
