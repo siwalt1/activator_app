@@ -144,6 +144,9 @@ class _SignupViewState extends State<SignupView> {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter your full name';
                                 }
+                                if (value != value.trimRight()) {
+                                  return 'Name should not end with spaces';
+                                }
                                 return null;
                               },
                             ),
