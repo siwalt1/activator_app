@@ -22,7 +22,6 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
   final newPwdController = TextEditingController();
   final newPwdCheckController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  final FocusNode _focusNode = FocusNode();
   bool _isLoading = false;
   late MultipleTextEditingControllerListener _listener;
 
@@ -32,14 +31,10 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
     _listener = MultipleTextEditingControllerListener(
       controllers: [oldPwdController, newPwdController, newPwdCheckController],
     );
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _focusNode.requestFocus();
-    });
   }
 
   @override
   void dispose() {
-    _focusNode.dispose();
     _listener.dispose();
     super.dispose();
   }
