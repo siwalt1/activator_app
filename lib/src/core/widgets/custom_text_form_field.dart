@@ -1,0 +1,92 @@
+import 'package:activator_app/src/core/utils/constants.dart';
+import 'package:flutter/material.dart';
+
+class CustomTextFormField extends StatelessWidget {
+  const CustomTextFormField({
+    super.key,
+    required this.label,
+    this.initialValue = '',
+    this.maxLines = 1,
+    this.keyboardType = TextInputType.text,
+    this.obscureText = false,
+    this.controller,
+    this.validator,
+    this.focusNode,
+  });
+
+  final String label;
+  final String initialValue;
+  final int maxLines;
+  final TextInputType keyboardType;
+  final bool obscureText;
+  final TextEditingController? controller;
+  final String? Function(String?)? validator;
+  final FocusNode? focusNode;
+
+  @override
+  Widget build(BuildContext context) {
+    return FormField<String>(
+      validator: validator,
+      builder: (FormFieldState<String> state) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceContainer,
+                borderRadius: BorderRadius.circular(AppConstants.borderRadius),
+                boxShadow: [
+                  BoxShadow(
+                    color: Theme.of(context).colorScheme.shadow,
+                    spreadRadius: 0.1,
+                    blurRadius: 0.2,
+                  ),
+                ],
+              ),
+              child: TextFormField(
+                decoration: InputDecoration(
+                  labelText: label,
+                  labelStyle: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  ),
+                  border: InputBorder.none,
+                ),
+                controller:
+                    controller ?? TextEditingController(text: initialValue),
+                maxLines: maxLines,
+                keyboardType: keyboardType,
+                obscureText: obscureText,
+                focusNode: focusNode,
+                onChanged: (value) {
+                  state.didChange(value);
+                },
+              ),
+            ),
+            if (state.hasError)
+              Padding(
+                padding: const EdgeInsets.only(top: 5.0, left: 10.0),
+                child: Text(
+                  state.errorText ?? '',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.error,
+                    fontSize: 12.0,
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
+}

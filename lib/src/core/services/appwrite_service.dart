@@ -37,4 +37,14 @@ class AppwriteService {
       name: name,
     );
   }
+
+  // update name
+  Future<User> updateName(String name) {
+    return account.updateName(name: name);
+  }
+
+  // update email
+  Future<User> updateEmail(String email, String password) {
+    return account.updateEmail(email: email, password: password);
+  }
 }

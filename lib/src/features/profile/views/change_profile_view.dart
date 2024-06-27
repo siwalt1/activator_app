@@ -1,11 +1,18 @@
+import 'dart:io';
+
 import 'package:activator_app/src/core/provider/appwrite_provider.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/utils/slide_direction.dart';
-import 'package:activator_app/src/core/widgets/custom_input_field.dart';
+import 'package:activator_app/src/features/profile/views/change_email_view.dart';
+import 'package:activator_app/src/features/profile/views/change_name_view.dart';
+import 'package:activator_app/src/core/widgets/custom_text_form_field.dart';
 import 'package:activator_app/src/core/widgets/custom_list_tile.dart';
 import 'package:activator_app/src/core/widgets/custom_progress_indicator.dart';
 import 'package:activator_app/src/core/widgets/slide_route.dart';
 import 'package:activator_app/src/features/auth/views/welcome_view.dart';
+import 'package:appwrite/models.dart';
+import 'package:email_validator/email_validator.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -25,23 +32,25 @@ class ChangeProfileView extends StatefulWidget {
 }
 
 class _ChangeProfileViewState extends State<ChangeProfileView> {
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
 
-  Future<void> _logoutAndNavigate() async {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-
+  Future<void> _logoutAndNavigate(AuthProvider authProvider) async {
     try {
       setState(() {
         _isLoading = true;
       });
       await authProvider.logoutUser();
       if (!mounted) return; // Check if the widget is still mounted
-      Navigator.pushReplacement(
+      Navigator.pushAndRemoveUntil(
         context,
         SlideRoute(
           page: const WelcomeView(),
           direction: SlideDirection.leftToRight,
         ),
+        (Route<dynamic> route) => false, // Remove all previous routes
       );
     } catch (e) {
       if (!mounted) return; // Check if the widget is still mounted
@@ -61,6 +70,11 @@ class _ChangeProfileViewState extends State<ChangeProfileView> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: true);
+    final User? user = authProvider.user;
+
+    if (user == null) return Container();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Change Profile'),
@@ -74,53 +88,76 @@ class _ChangeProfileViewState extends State<ChangeProfileView> {
                   right: AppConstants.paddingSpacing,
                   bottom: AppConstants.paddingSpacing,
                   top: 0),
-              children: <Widget>[
-                const SizedBox(height: AppConstants.paddingSpacing),
-                const CustomInputField(
-                  label: 'Full Name',
-                  initialValue: 'John Doe',
-                ),
-                const SizedBox(height: AppConstants.listTileSpacing),
-                const CustomInputField(
-                  label: 'Email',
-                  initialValue: 'john.doe@example.com',
-                ),
-                const SizedBox(height: AppConstants.separatorSpacing),
-                CustomListTile(
-                  text: 'Save Changes',
-                  onPressed: () => print('Save changes'),
-                  showArrow: false,
-                  textAlign: TextAlign.center,
-                  textColor: Theme.of(context).colorScheme.primary,
-                ),
-                const SizedBox(height: AppConstants.separatorSpacing * 2),
-                CustomListTile(
-                  text: 'Change Password',
-                  onPressed: () => print('Change password'),
-                  showArrow: false,
-                  textAlign: TextAlign.center,
-                  textColor: Theme.of(context).colorScheme.primary,
-                ),
-                const SizedBox(height: AppConstants.listTileSpacing),
-                CustomListTile(
-                  text: 'Logout',
-                  onPressed: _logoutAndNavigate,
-                  showArrow: false,
-                  textAlign: TextAlign.center,
-                  textColor: Theme.of(context).colorScheme.primary,
-                ),
-                const SizedBox(height: AppConstants.separatorSpacing),
-                CustomListTile(
-                  text: 'Delete Account',
-                  onPressed: () => print('Delete account'),
-                  showArrow: false,
-                  textAlign: TextAlign.center,
-                  textColor: Theme.of(context).colorScheme.onPrimary,
-                  backgroundColor: Theme.of(context).colorScheme.error,
+              children: [
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: <Widget>[
+                      const SizedBox(height: AppConstants.paddingSpacing),
+                      CustomListTile(
+                        text: user.name,
+                        showArrow: true,
+                        onPressed: () {
+                          Widget changeNameView = const ChangeNameView();
+                          Navigator.of(context).push(
+                            Platform.isIOS
+                                ? CupertinoPageRoute(
+                                    builder: (context) => changeNameView,
+                                  )
+                                : MaterialPageRoute(
+                                    builder: (context) => changeNameView,
+                                  ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: AppConstants.listTileSpacing),
+                      CustomListTile(
+                        text: user.email,
+                        showArrow: true,
+                        onPressed: () {
+                          Widget changeNameView = const ChangeEmailView();
+                          Navigator.of(context).push(
+                            Platform.isIOS
+                                ? CupertinoPageRoute(
+                                    builder: (context) => changeNameView,
+                                  )
+                                : MaterialPageRoute(
+                                    builder: (context) => changeNameView,
+                                  ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: AppConstants.separatorSpacing),
+                      CustomListTile(
+                        text: 'Change Password',
+                        onPressed: () => print('Change password'),
+                        showArrow: false,
+                        textAlign: TextAlign.center,
+                        textColor: Theme.of(context).colorScheme.primary,
+                      ),
+                      const SizedBox(height: AppConstants.listTileSpacing),
+                      CustomListTile(
+                        text: 'Logout',
+                        onPressed: () => _logoutAndNavigate(authProvider),
+                        showArrow: false,
+                        textAlign: TextAlign.center,
+                        textColor: Theme.of(context).colorScheme.primary,
+                      ),
+                      const SizedBox(height: AppConstants.separatorSpacing),
+                      CustomListTile(
+                        text: 'Delete Account',
+                        onPressed: () => print('Delete account'),
+                        showArrow: false,
+                        textAlign: TextAlign.center,
+                        textColor: Theme.of(context).colorScheme.onPrimary,
+                        backgroundColor: Theme.of(context).colorScheme.error,
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
-            if(_isLoading) const CustomProgressIndicator(),
+            if (_isLoading) const CustomProgressIndicator(),
           ],
         ),
       ),

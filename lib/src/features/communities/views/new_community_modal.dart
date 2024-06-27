@@ -1,6 +1,6 @@
 import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/widgets/custom_button.dart';
-import 'package:activator_app/src/core/widgets/custom_input_field.dart';
+import 'package:activator_app/src/core/widgets/custom_text_form_field.dart';
 import 'package:flutter/material.dart';
 
 class NewCommunityModal extends StatelessWidget {
@@ -31,12 +31,12 @@ class NewCommunityModal extends StatelessWidget {
                   child: Column(
                     children: [
                       const SizedBox(height: AppConstants.separatorSpacing),
-                      const CustomInputField(
+                      const CustomTextFormField(
                         label: 'Community name',
                         initialValue: '',
                       ),
                       const SizedBox(height: AppConstants.separatorSpacing),
-                      const CustomInputField(
+                      const CustomTextFormField(
                         label: 'Community description',
                         initialValue: '',
                         maxLines: 3,

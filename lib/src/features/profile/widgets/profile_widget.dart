@@ -1,5 +1,8 @@
+import 'package:activator_app/src/core/provider/appwrite_provider.dart';
 import 'package:activator_app/src/features/profile/views/change_profile_view.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:appwrite/models.dart';
 
 class ProfileWidget extends StatelessWidget {
   const ProfileWidget({
@@ -8,6 +11,11 @@ class ProfileWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
+    final User? user = authProvider.user;
+
+    if (user == null) return Container();
+
     return Ink(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surfaceContainer,
@@ -34,8 +42,8 @@ class ProfileWidget extends StatelessWidget {
             size: 50,
           ),
         ),
-        title: const Text('John Doe', style: TextStyle(fontSize: 24)),
-        subtitle: const Text('john.doe@example.com'),
+        title: Text(user.name, style: const TextStyle(fontSize: 24)),
+        subtitle: Text(user.email),
         // onTap navigation to ChangeProfileView
         onTap: () => Navigator.of(context)
             .restorablePushNamed(ChangeProfileView.routeName),
