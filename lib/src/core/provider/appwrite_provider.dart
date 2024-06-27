@@ -75,4 +75,14 @@ class AuthProvider with ChangeNotifier {
       throw e;
     }
   }
+
+  Future<void> updatePassword(String password, String oldPassword) async {
+    try {
+      await _appwriteService.updatePassword(password, oldPassword);
+      _user = (await _appwriteService.getCurrentUser()) as User?;
+      notifyListeners();
+    } catch (e) {
+      throw e;
+    }
+  }
 }

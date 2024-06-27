@@ -47,4 +47,9 @@ class AppwriteService {
   Future<User> updateEmail(String email, String password) {
     return account.updateEmail(email: email, password: password);
   }
+
+  // update password
+  Future<User> updatePassword(String password, String oldPassword) {
+    return account.updatePassword(password: password, oldPassword: oldPassword);
+  }
 }

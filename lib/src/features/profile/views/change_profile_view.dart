@@ -10,6 +10,7 @@ import 'package:activator_app/src/core/widgets/custom_list_tile.dart';
 import 'package:activator_app/src/core/widgets/custom_progress_indicator.dart';
 import 'package:activator_app/src/core/widgets/slide_route.dart';
 import 'package:activator_app/src/features/auth/views/welcome_view.dart';
+import 'package:activator_app/src/features/profile/views/change_password_view.dart';
 import 'package:appwrite/models.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
@@ -130,10 +131,21 @@ class _ChangeProfileViewState extends State<ChangeProfileView> {
                       const SizedBox(height: AppConstants.separatorSpacing),
                       CustomListTile(
                         text: 'Change Password',
-                        onPressed: () => print('Change password'),
                         showArrow: false,
                         textAlign: TextAlign.center,
                         textColor: Theme.of(context).colorScheme.primary,
+                        onPressed: () {
+                          Widget changeNameView = const ChangePasswordView();
+                          Navigator.of(context).push(
+                            Platform.isIOS
+                                ? CupertinoPageRoute(
+                                    builder: (context) => changeNameView,
+                                  )
+                                : MaterialPageRoute(
+                                    builder: (context) => changeNameView,
+                                  ),
+                          );
+                        },
                       ),
                       const SizedBox(height: AppConstants.listTileSpacing),
                       CustomListTile(
