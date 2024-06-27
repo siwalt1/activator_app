@@ -119,7 +119,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                         },
                         obscureText: true,
                       ),
-                      const SizedBox(height: AppConstants.separatorSpacing),
+                      const SizedBox(height: AppConstants.listTileSpacing),
                       CustomTextFormField(
                         label: 'New Password',
                         controller: newPwdController,
@@ -134,7 +134,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                         },
                         obscureText: true,
                       ),
-                      const SizedBox(height: AppConstants.separatorSpacing),
+                      const SizedBox(height: AppConstants.listTileSpacing),
                       CustomTextFormField(
                         label: 'Confirm Password',
                         controller: newPwdCheckController,

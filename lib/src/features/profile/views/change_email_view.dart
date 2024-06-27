@@ -130,7 +130,7 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
                         },
                         focusNode: _focusNode,
                       ),
-                      const SizedBox(height: AppConstants.separatorSpacing),
+                      const SizedBox(height: AppConstants.listTileSpacing),
                       CustomTextFormField(
                         label: 'Password',
                         controller: passwordController,

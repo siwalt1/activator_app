@@ -75,7 +75,7 @@ class CustomTextFormField extends StatelessWidget {
             ),
             if (state.hasError)
               Padding(
-                padding: const EdgeInsets.only(top: 5.0, left: 10.0),
+                padding: const EdgeInsets.only(top: 2.5, left: 10.0, bottom: 4),
                 child: Text(
                   state.errorText ?? '',
                   style: TextStyle(
