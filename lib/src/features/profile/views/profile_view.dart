@@ -32,14 +32,14 @@ class ProfileView extends StatelessWidget {
                 const ProfileWidget(),
                 const SizedBox(height: AppConstants.separatorSpacing * 2),
                 CustomListTile(
-                  text: "Privacy",
-                  onPressed: () => print('onPressed'),
-                  marginBottom: AppConstants.listTileSpacing,
-                ),
-                CustomListTile(
                   text: "Theme Mode",
                   onPressed: () => Navigator.of(context)
                       .restorablePushNamed(ProfileThemeView.routeName),
+                  marginBottom: AppConstants.listTileSpacing,
+                ),
+                CustomListTile(
+                  text: 'Notifications',
+                  onPressed: () => print('onPressed'),
                   marginBottom: AppConstants.listTileSpacing,
                 ),
                 const SizedBox(height: AppConstants.separatorSpacing),
@@ -50,6 +50,11 @@ class ProfileView extends StatelessWidget {
                 ),
                 CustomListTile(
                   text: "Contact us",
+                  onPressed: () => print('onPressed'),
+                  marginBottom: AppConstants.listTileSpacing,
+                ),
+                CustomListTile(
+                  text: "Privacy",
                   onPressed: () => print('onPressed'),
                   marginBottom: AppConstants.listTileSpacing,
                 ),
