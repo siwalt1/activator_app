@@ -64,3 +64,10 @@ class AppConstants {
     ),
   );
 }
+
+
+// Activity types constants
+enum ActivityType {
+  solo,
+  multi,
+}

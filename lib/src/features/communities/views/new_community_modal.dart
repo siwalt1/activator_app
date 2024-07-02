@@ -1,12 +1,36 @@
 import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/widgets/custom_button.dart';
 import 'package:activator_app/src/core/widgets/custom_text_form_field.dart';
+import 'package:activator_app/src/features/communities/widgets/activity_type_selector.dart';
 import 'package:flutter/material.dart';
 
-class NewCommunityModal extends StatelessWidget {
+class NewCommunityModal extends StatefulWidget {
   const NewCommunityModal({
     super.key,
   });
+
+  @override
+  State<NewCommunityModal> createState() => _NewCommunityModalState();
+}
+
+class _NewCommunityModalState extends State<NewCommunityModal> {
+  final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _descriptionController = TextEditingController();
+  ActivityType _selectedActivityType = ActivityType.solo;
+
+  void _submit() {
+    if (_formKey.currentState!.validate()) {
+      // submit form
+    }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,30 +52,72 @@ class NewCommunityModal extends StatelessWidget {
               const SizedBox(height: AppConstants.separatorSpacing),
               Flexible(
                 child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      const SizedBox(height: AppConstants.separatorSpacing),
-                      const CustomTextFormField(
-                        label: 'Community name',
-                        initialValue: '',
-                      ),
-                      const SizedBox(height: AppConstants.separatorSpacing),
-                      const CustomTextFormField(
-                        label: 'Community description',
-                        initialValue: '',
-                        maxLines: 3,
-                        keyboardType: TextInputType.multiline,
-                      ),
-                      const SizedBox(height: AppConstants.separatorSpacing),
-                      CustomButton(
-                        text: 'Create community',
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      const SizedBox(height: AppConstants.separatorSpacing),
-                    ],
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        const SizedBox(height: AppConstants.separatorSpacing),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Type of activities',
+                              style: TextStyle(
+                                fontSize: 14,
+                              ),
+                            ),
+                            const SizedBox(
+                                height: AppConstants.separatorSpacing / 2),
+                            Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.all(
+                                  AppConstants.paddingSpacing),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                    AppConstants.borderRadius),
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .surfaceContainer,
+                              ),
+                              child: ActivityTypeSelector(
+                                selectedActivityType: _selectedActivityType,
+                                onActivityTypeSelected: (type) {
+                                  setState(() {
+                                    _selectedActivityType = type;
+                                  });
+                                },
+                              ),
+                            ),
+                            const SizedBox(
+                                height: AppConstants.separatorSpacing),
+                            CustomTextFormField(
+                              label: 'Community name',
+                              initialValue: '',
+                              controller: _nameController,
+                            ),
+                            const SizedBox(
+                                height: AppConstants.separatorSpacing),
+                            CustomTextFormField(
+                              label: 'Community description',
+                              initialValue: '',
+                              maxLines: 2,
+                              keyboardType: TextInputType.multiline,
+                              controller: _descriptionController,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: AppConstants.separatorSpacing),
+                        CustomButton(
+                          text: 'Create community',
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          color: Theme.of(context).colorScheme.primary,
+                          textColor: Theme.of(context).colorScheme.onPrimary,
+                        ),
+                        const SizedBox(height: AppConstants.separatorSpacing),
+                      ],
+                    ),
                   ),
                 ),
               ),
