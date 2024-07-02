@@ -104,12 +104,71 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
                             ),
                             const SizedBox(
                                 height: AppConstants.separatorSpacing),
-                            const Text(
-                              'Type of activities',
-                              style: TextStyle(
-                                fontSize: 14,
-                              ),
+                            // add a small button for a question mark icon
+                            Row(
+                              children: [
+                                const Text(
+                                  'Type of activities',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                const SizedBox(
+                                    width: AppConstants.listTileSpacing),
+                                InkWell(
+                                  onTap: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) =>
+                                          AlertDialog(
+                                        title: const Text('Activity types'),
+                                        content: RichText(
+                                          text: const TextSpan(
+                                            text: '',
+                                            children: <TextSpan>[
+                                              TextSpan(
+                                                text: 'Solo',
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              TextSpan(
+                                                text:
+                                                    ': Activities that can be done alone, such as reading a book or going for a jog.\n\n',
+                                              ),
+                                              TextSpan(
+                                                text: 'Multi',
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              TextSpan(
+                                                text:
+                                                    ': Activities that require more than one person, like playing a board game or participating in team sports.',
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: const Text('Close'),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                  borderRadius: BorderRadius.circular(100),
+                                  child: const Icon(
+                                    Icons.help_outline,
+                                    size: 20,
+                                  ),
+                                ),
+                              ],
                             ),
+
                             const SizedBox(
                                 height: AppConstants.separatorSpacing / 2),
                             Container(
