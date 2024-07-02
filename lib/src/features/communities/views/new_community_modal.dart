@@ -70,15 +70,6 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
                                 height: AppConstants.separatorSpacing / 2),
                             Container(
                               width: double.infinity,
-                              padding: const EdgeInsets.all(
-                                  AppConstants.paddingSpacing),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(
-                                    AppConstants.borderRadius),
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .surfaceContainer,
-                              ),
                               child: ActivityTypeSelector(
                                 selectedActivityType: _selectedActivityType,
                                 onActivityTypeSelected: (type) {
