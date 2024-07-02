@@ -3,6 +3,7 @@ import 'package:activator_app/src/core/widgets/custom_button.dart';
 import 'package:activator_app/src/core/widgets/custom_text_form_field.dart';
 import 'package:activator_app/src/features/communities/widgets/activity_type_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 
 class NewCommunityModal extends StatefulWidget {
   const NewCommunityModal({
@@ -18,10 +19,21 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
   ActivityType _selectedActivityType = ActivityType.solo;
+  IconData? _selectedIcon;
+
+  _pickIcon() async {
+    IconData? icon = await showIconPicker(
+      context,
+      iconPackModes: [IconPack.roundedMaterial],
+    );
+
+    if (icon != null) _selectedIcon = icon;
+    setState(() {});
+  }
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
-      // submit form
+      // submit formpers
     }
   }
 
@@ -56,10 +68,42 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
                     key: _formKey,
                     child: Column(
                       children: [
-                        const SizedBox(height: AppConstants.separatorSpacing),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            Center(
+                              child: Material(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .surfaceContainer,
+                                borderRadius: BorderRadius.circular(100),
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(100),
+                                  onTap: _pickIcon,
+                                  child: Container(
+                                      width: 80,
+                                      height: 80,
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 12.5, horizontal: 8),
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(100),
+                                        border: Border.all(
+                                          color: Theme.of(context)
+                                              .dividerColor
+                                              .withOpacity(0.05),
+                                          width: 2,
+                                        ),
+                                      ),
+                                      child: Icon(
+                                        _selectedIcon ?? Icons.add,
+                                        size: 40,
+                                      )),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                                height: AppConstants.separatorSpacing),
                             const Text(
                               'Type of activities',
                               style: TextStyle(
