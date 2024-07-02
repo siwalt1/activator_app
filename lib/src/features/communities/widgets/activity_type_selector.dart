@@ -60,7 +60,7 @@ class ActivityTypeItem extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(AppConstants.borderRadius),
           child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 12.5, horizontal: 8),
+            padding: const EdgeInsets.all(12.5),
             decoration: BoxDecoration(
               border: Border.all(
                 color: isSelected
