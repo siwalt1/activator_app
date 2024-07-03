@@ -35,23 +35,29 @@ class _HomePageViewState extends State<HomePageView> {
           highlightColor: Colors.transparent,
           splashColor: Colors.transparent,
         ),
-        child: BottomNavigationBar(
-          currentIndex: _selectedTab,
-          onTap: (index) => _changeTab(index),
-          selectedItemColor: Theme.of(context).colorScheme.primary,
-          unselectedItemColor: Theme.of(context).colorScheme.onSurface,
-          // elevation: 1,
-          type: BottomNavigationBarType.fixed,
-          selectedFontSize: 12,
-          unselectedFontSize: 12,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.groups),
-              label: 'Communities',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: 'Profile',
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Divider(height: 0.2, thickness: 0.2),
+            BottomNavigationBar(
+              currentIndex: _selectedTab,
+              onTap: (index) => _changeTab(index),
+              selectedItemColor: Theme.of(context).colorScheme.primary,
+              unselectedItemColor: Theme.of(context).colorScheme.onSurface,
+              elevation: 10,
+              type: BottomNavigationBarType.fixed,
+              selectedFontSize: 12,
+              unselectedFontSize: 12,
+              items: const [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.groups),
+                  label: 'Communities',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.person),
+                  label: 'Profile',
+                ),
+              ],
             ),
           ],
         ),
