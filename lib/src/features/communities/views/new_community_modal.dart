@@ -236,7 +236,7 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
                             if (_isSubmitted && _selectedActivityType == null)
                               Padding(
                                 padding:
-                                    const EdgeInsets.only(top: 4.0, left: 8.0),
+                                    const EdgeInsets.only(top: 4.0, left: 10.0),
                                 child: Text(
                                   'Please select an activity type',
                                   style: TextStyle(
