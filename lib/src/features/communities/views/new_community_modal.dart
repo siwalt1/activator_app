@@ -225,6 +225,12 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter a name';
                                 }
+                                if (value.length > 30) {
+                                  return 'Name must be less than 30 characters';
+                                }
+                                if (value.endsWith(' ')) {
+                                  return 'Name should not end with spaces';
+                                }
                                 return null;
                               },
                             ),
@@ -239,6 +245,9 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter a description';
+                                }
+                                if (value.length > 500) {
+                                  return 'Description must be less than 500 characters';
                                 }
                                 return null;
                               },

@@ -7,6 +7,7 @@ class CustomTextFormField extends StatelessWidget {
     required this.label,
     this.initialValue = '',
     this.maxLines = 1,
+    this.maxLength,
     this.keyboardType = TextInputType.text,
     this.obscureText = false,
     this.controller,
@@ -17,6 +18,7 @@ class CustomTextFormField extends StatelessWidget {
   final String label;
   final String initialValue;
   final int maxLines;
+  final int? maxLength;
   final TextInputType keyboardType;
   final bool obscureText;
   final TextEditingController? controller;
@@ -57,6 +59,7 @@ class CustomTextFormField extends StatelessWidget {
                 controller:
                     controller ?? TextEditingController(text: initialValue),
                 maxLines: maxLines,
+                maxLength: maxLength,
                 keyboardType: keyboardType,
                 obscureText: obscureText,
                 focusNode: focusNode,
