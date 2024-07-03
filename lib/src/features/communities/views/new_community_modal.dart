@@ -2,6 +2,7 @@ import 'package:activator_app/src/core/provider/db_provider.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/utils/enum_converter.dart';
 import 'package:activator_app/src/core/widgets/custom_button.dart';
+import 'package:activator_app/src/core/widgets/custom_progress_indicator.dart';
 import 'package:activator_app/src/core/widgets/custom_text_form_field.dart';
 import 'package:activator_app/src/features/communities/widgets/activity_type_selector.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,7 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
+  bool _isLoading = false;
   ActivityType? _selectedActivityType;
   IconData? _selectedIcon;
   bool _isSubmitted = false;
@@ -45,6 +47,9 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
     if (_formKey.currentState!.validate() &&
         _selectedIcon != null &&
         _selectedActivityType != null) {
+      setState(() {
+        _isLoading = true;
+      });
       final dbProvider = Provider.of<DatabaseProvider>(context, listen: false);
       try {
         await dbProvider.createDocument(
@@ -72,6 +77,9 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
         );
       }
       if (!mounted) return;
+      setState(() {
+        _isLoading = false;
+      });
       Navigator.of(context).pop();
     }
   }
@@ -316,6 +324,7 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
             ),
           ),
         ),
+        if (_isLoading) const CustomProgressIndicator()
       ],
     );
   }

@@ -69,4 +69,13 @@ class AppwriteService {
       ],
     );
   }
+
+  // get all documents
+  Future<DocumentList> getDocuments(
+      String databaseId, String collectionId) {
+    return databases.listDocuments(
+      databaseId: databaseId,
+      collectionId: collectionId,
+    );
+  }
 }

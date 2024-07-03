@@ -1,19 +1,27 @@
-import 'package:flutter/material.dart';
-
 class Community {
   const Community({
     required this.id,
     required this.name,
-    required this.icon,
+    required this.iconCode,
     required this.description,
-    this.sessions = const [],
+    required this.type,
   });
 
-  final int id;
+  final String id;
   final String name;
-  final IconData icon;
+  final int iconCode;
   final String description;
-  final List<CommunitySession>? sessions;
+  final String type;
+
+  factory Community.fromMap(Map<String, dynamic> map) {
+    return Community(
+      id: map['\$id'],
+      name: map['name'],
+      iconCode: map['iconCode'],
+      description: map['description'],
+      type: map['type'],
+    );
+  }
 }
 
 class CommunitySession {
@@ -25,7 +33,7 @@ class CommunitySession {
     required this.attendees,
   });
 
-  final int id;
+  final String id;
   final DateTime startTime;
   final DateTime endTime;
   final int community;
