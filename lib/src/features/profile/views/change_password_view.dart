@@ -1,4 +1,4 @@
-import 'package:activator_app/src/core/provider/appwrite_provider.dart';
+import 'package:activator_app/src/core/provider/auth_provider.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/widgets/custom_progress_indicator.dart';
 import 'package:activator_app/src/core/widgets/custom_text_form_field.dart';

@@ -1,4 +1,4 @@
-import 'package:activator_app/src/core/provider/appwrite_provider.dart';
+import 'package:activator_app/src/core/provider/auth_provider.dart';
 import 'package:activator_app/src/features/HomePage/home_page_view.dart';
 import 'package:activator_app/src/features/auth/views/welcome_view.dart';
 import 'package:flutter/material.dart';

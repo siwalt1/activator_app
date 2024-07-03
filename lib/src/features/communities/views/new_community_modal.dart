@@ -1,9 +1,12 @@
+import 'package:activator_app/src/core/provider/db_provider.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
+import 'package:activator_app/src/core/utils/enum_converter.dart';
 import 'package:activator_app/src/core/widgets/custom_button.dart';
 import 'package:activator_app/src/core/widgets/custom_text_form_field.dart';
 import 'package:activator_app/src/features/communities/widgets/activity_type_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
+import 'package:provider/provider.dart';
 
 class NewCommunityModal extends StatefulWidget {
   const NewCommunityModal({
@@ -35,13 +38,40 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
     }
   }
 
-  void _submit() {
+  Future<void> _submit() async {
     setState(() {
       _isSubmitted = true;
     });
     if (_formKey.currentState!.validate() &&
         _selectedIcon != null &&
         _selectedActivityType != null) {
+      final dbProvider = Provider.of<DatabaseProvider>(context, listen: false);
+      try {
+        await dbProvider.createDocument(
+          AppConstants.APPWRITE_DATABASE_ID,
+          AppConstants.APPWRITE_COMMUNITIES_COLLECTION_ID,
+          {
+            'name': _nameController.text,
+            'description': _descriptionController.text,
+            'iconCode': _selectedIcon!.codePoint,
+            'type': EnumConverter.enumToString(_selectedActivityType!),
+          },
+        );
+      } on Exception catch (e) {
+        AlertDialog(
+          title: const Text('Error'),
+          content: const Text('Try again later.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      }
+      if (!mounted) return;
       Navigator.of(context).pop();
     }
   }

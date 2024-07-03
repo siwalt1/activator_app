@@ -5,6 +5,7 @@ import 'package:appwrite/models.dart';
 class AppwriteService {
   final Client client = Client();
   late final Account account = Account(client);
+  late final Databases databases = Databases(client);
 
   AppwriteService() {
     client
@@ -51,5 +52,21 @@ class AppwriteService {
   // update password
   Future<User> updatePassword(String password, String oldPassword) {
     return account.updatePassword(password: password, oldPassword: oldPassword);
+  }
+
+  // create a new document
+  Future<Document> createDocument(
+      String databaseId, String collectionId, Map<String, dynamic> data) async {
+    String userId = await getCurrentUser().then((user) => user.$id);
+    return databases.createDocument(
+      databaseId: databaseId,
+      collectionId: collectionId,
+      documentId: ID.unique(),
+      data: data,
+      permissions: [
+        Permission.read(Role.user(userId)),
+        Permission.write(Role.user(userId)),
+      ],
+    );
   }
 }

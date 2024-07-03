@@ -1,4 +1,5 @@
-import 'package:activator_app/src/core/provider/appwrite_provider.dart';
+import 'package:activator_app/src/core/provider/auth_provider.dart';
+import 'package:activator_app/src/core/provider/db_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -9,7 +10,7 @@ import 'src/core/services/settings_service.dart';
 void main() async {
   // Ensure Flutter binding is initialized
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Set up the SettingsController, which will glue user settings to multiple
   // Flutter Widgets.
   final settingsController = SettingsController(SettingsService());
@@ -21,12 +22,11 @@ void main() async {
   // Run the app and pass in the SettingsController. The app listens to the
   // SettingsController for changes, then passes it further down to the
   // SettingsViews.
-   runApp(
+  runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (_) => AuthProvider()..checkSession(),
-        ),
+        ChangeNotifierProvider(create: (_) => AuthProvider()..checkSession()),
+        ChangeNotifierProvider(create: (_) => DatabaseProvider())
       ],
       child: MyApp(settingsController: settingsController),
     ),

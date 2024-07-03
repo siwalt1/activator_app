@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:activator_app/src/core/provider/appwrite_provider.dart';
+import 'package:activator_app/src/core/provider/auth_provider.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/utils/slide_direction.dart';
 import 'package:activator_app/src/features/profile/views/change_email_view.dart';
