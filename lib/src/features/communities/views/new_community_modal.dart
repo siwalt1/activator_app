@@ -111,7 +111,7 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
                             if (_isSubmitted && _selectedIcon == null)
                               Center(
                                 child: Padding(
-                                  padding: const EdgeInsets.only(top: 8.0),
+                                  padding: const EdgeInsets.only(top: 4.0),
                                   child: Text(
                                     'Please select an icon',
                                     style: TextStyle(
