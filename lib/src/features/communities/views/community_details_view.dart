@@ -31,16 +31,22 @@ class CommunityDetailsView extends StatelessWidget {
             ),
             const SizedBox(width: 10),
             // display the name and description of the community
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(community.name),
-                Text(community.description,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(community.name),
+                  Text(
+                    community.description,
                     style: TextStyle(
                       fontSize: 12,
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    )),
-              ],
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                ],
+              ),
             ),
           ],
         ),
