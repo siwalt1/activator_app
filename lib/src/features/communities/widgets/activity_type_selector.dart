@@ -1,6 +1,5 @@
 import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class ActivityTypeSelector extends StatelessWidget {
   const ActivityTypeSelector({
@@ -9,7 +8,7 @@ class ActivityTypeSelector extends StatelessWidget {
     required this.onActivityTypeSelected,
   });
 
-  final ActivityType selectedActivityType;
+  final ActivityType? selectedActivityType;
   final ValueChanged<ActivityType> onActivityTypeSelected;
 
   @override

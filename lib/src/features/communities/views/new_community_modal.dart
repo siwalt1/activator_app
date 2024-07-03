@@ -18,8 +18,9 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
-  ActivityType _selectedActivityType = ActivityType.solo;
+  ActivityType? _selectedActivityType;
   IconData? _selectedIcon;
+  bool _isSubmitted = false;
 
   _pickIcon() async {
     IconData? icon = await showIconPicker(
@@ -32,8 +33,13 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
   }
 
   void _submit() {
-    if (_formKey.currentState!.validate()) {
-      // submit formpers
+    setState(() {
+      _isSubmitted = true;
+    });
+    if (_formKey.currentState!.validate() &&
+        _selectedIcon != null &&
+        _selectedActivityType != null) {
+      Navigator.of(context).pop();
     }
   }
 
@@ -81,30 +87,43 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
                                   borderRadius: BorderRadius.circular(100),
                                   onTap: _pickIcon,
                                   child: Container(
-                                      width: 80,
-                                      height: 80,
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 12.5, horizontal: 8),
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(100),
-                                        border: Border.all(
-                                          color: Theme.of(context)
-                                              .dividerColor
-                                              .withOpacity(0.05),
-                                          width: 2,
-                                        ),
+                                    width: 80,
+                                    height: 80,
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 12.5, horizontal: 8),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(100),
+                                      border: Border.all(
+                                        color: Theme.of(context)
+                                            .dividerColor
+                                            .withOpacity(0.05),
+                                        width: 2,
                                       ),
-                                      child: Icon(
-                                        _selectedIcon ?? Icons.add,
-                                        size: 40,
-                                      )),
+                                    ),
+                                    child: Icon(
+                                      _selectedIcon ?? Icons.add,
+                                      size: 40,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
+                            if (_isSubmitted && _selectedIcon == null)
+                              Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: Text(
+                                    'Please select an icon',
+                                    style: TextStyle(
+                                      color:
+                                          Theme.of(context).colorScheme.error,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ),
+                              ),
                             const SizedBox(
                                 height: AppConstants.separatorSpacing),
-                            // add a small button for a question mark icon
                             Row(
                               children: [
                                 const Text(
@@ -168,10 +187,9 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
                                 ),
                               ],
                             ),
-
                             const SizedBox(
                                 height: AppConstants.separatorSpacing / 2),
-                            Container(
+                            SizedBox(
                               width: double.infinity,
                               child: ActivityTypeSelector(
                                 selectedActivityType: _selectedActivityType,
@@ -182,12 +200,30 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
                                 },
                               ),
                             ),
+                            if (_isSubmitted && _selectedIcon == null)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 4.0, left: 8.0),
+                                child: Text(
+                                  'Please select an activity type',
+                                  style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.error,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
                             const SizedBox(
                                 height: AppConstants.separatorSpacing),
                             CustomTextFormField(
                               label: 'Community name',
                               initialValue: '',
                               controller: _nameController,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter a name';
+                                }
+                                return null;
+                              },
                             ),
                             const SizedBox(
                                 height: AppConstants.separatorSpacing),
@@ -197,15 +233,19 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
                               maxLines: 2,
                               keyboardType: TextInputType.multiline,
                               controller: _descriptionController,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter a description';
+                                }
+                                return null;
+                              },
                             ),
                           ],
                         ),
                         const SizedBox(height: AppConstants.separatorSpacing),
                         CustomButton(
                           text: 'Create community',
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
+                          onPressed: _submit,
                           color: Theme.of(context).colorScheme.primary,
                           textColor: Theme.of(context).colorScheme.onPrimary,
                         ),
