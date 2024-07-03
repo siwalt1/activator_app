@@ -28,8 +28,11 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
       iconPackModes: [IconPack.roundedMaterial],
     );
 
-    if (icon != null) _selectedIcon = icon;
-    setState(() {});
+    if (icon != null) {
+      setState(() {
+        _selectedIcon = icon;
+      });
+    }
   }
 
   void _submit() {
@@ -200,14 +203,14 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
                                 },
                               ),
                             ),
-                            if (_isSubmitted && _selectedIcon == null)
+                            if (_isSubmitted && _selectedActivityType == null)
                               Padding(
-                                padding: const EdgeInsets.only(top: 4.0, left: 8.0),
+                                padding:
+                                    const EdgeInsets.only(top: 4.0, left: 8.0),
                                 child: Text(
                                   'Please select an activity type',
                                   style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.error,
+                                    color: Theme.of(context).colorScheme.error,
                                     fontSize: 12,
                                   ),
                                 ),
