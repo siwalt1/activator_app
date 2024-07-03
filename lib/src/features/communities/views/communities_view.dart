@@ -1,8 +1,6 @@
 import 'dart:io';
 
-import 'package:activator_app/src/core/models/community.dart';
 import 'package:activator_app/src/core/provider/db_provider.dart';
-import 'package:activator_app/src/core/utils/format_date.dart';
 import 'package:activator_app/src/features/communities/views/new_community_modal.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
