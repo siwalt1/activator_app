@@ -42,10 +42,23 @@ class SplashWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.transparent,
-      width: double.infinity,
-      height: double.infinity,
+    return Stack(
+      children: [
+        Container(
+          color: Colors.transparent,
+          width: double.infinity,
+          height: double.infinity,
+        ),
+        const Center(
+          child: Image(
+            image: AssetImage(
+              'assets/images/rocket.png',
+            ),
+            width: 150,
+            height: 150,
+          ),
+        )
+      ],
     );
   }
 }
