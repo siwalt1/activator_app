@@ -9,8 +9,10 @@ class DatabaseProvider with ChangeNotifier {
   final AppwriteService _appwriteService = AppwriteService();
   RealtimeSubscription? _realtimeSubscription;
   final List<Community> _communities = [];
+  bool _isInitialized = false;
 
   List<Community> get communities => _communities;
+  bool get isInitialized => _isInitialized;
 
   DatabaseProvider() {
     _initializeRealTimeSubscription();
@@ -80,6 +82,9 @@ class DatabaseProvider with ChangeNotifier {
       }
       print(event.events);
     });
+
+    _isInitialized = true;
+    notifyListeners();
   }
 
   @override
