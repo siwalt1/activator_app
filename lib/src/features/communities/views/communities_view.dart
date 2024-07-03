@@ -39,11 +39,14 @@ class _CommunitiesViewState extends State<CommunitiesView> {
       useSafeArea: true,
       elevation: 10,
       builder: (BuildContext bottomSheetContext) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(bottomSheetContext).viewInsets.bottom,
+        return FractionallySizedBox(
+          heightFactor: 1,
+          child: Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(bottomSheetContext).viewInsets.bottom,
+            ),
+            child: const NewCommunityModal(),
           ),
-          child: const NewCommunityModal(),
         );
       },
     );
