@@ -8,7 +8,7 @@ import 'package:appwrite/models.dart';
 class DatabaseProvider with ChangeNotifier {
   final AppwriteService _appwriteService = AppwriteService();
   RealtimeSubscription? _realtimeSubscription;
-  List<Community> _communities = [];
+  final List<Community> _communities = [];
 
   List<Community> get communities => _communities;
 
