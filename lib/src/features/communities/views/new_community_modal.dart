@@ -62,7 +62,7 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
             'type': EnumConverter.enumToString(_selectedActivityType!),
           },
         );
-      } on Exception catch (e) {
+      } on Exception {
         AlertDialog(
           title: const Text('Error'),
           content: const Text('Try again later.'),
