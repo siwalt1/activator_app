@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:activator_app/src/core/provider/db_provider.dart';
 import 'package:activator_app/src/core/widgets/custom_progress_indicator.dart';
+import 'package:activator_app/src/features/communities/views/community_settings_view.dart';
 import 'package:appwrite/models.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -23,10 +27,10 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView> {
   Team? team;
   List<Membership>? teamMembers;
   bool isNavigated = false; // Track if navigation has already happened
+  bool isTitleTapped = false;
 
   @override
   Widget build(BuildContext context) {
-    print('Building CommunityDetailsView');
     final dbProvider = Provider.of<DatabaseProvider>(context, listen: true);
     try {
       team = dbProvider.teams.firstWhere(
@@ -56,59 +60,82 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView> {
     return Scaffold(
       appBar: AppBar(
         title: (team != null && teamMembers != null)
-            ? Row(
-                children: [
-                  CircleAvatar(
-                    child: Icon(IconData(team!.prefs.data['iconCode'],
-                        fontFamily: 'MaterialIcons')),
-                  ),
-                  const SizedBox(width: 10),
-                  // display the name and description of the community
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(team!.name),
-                        Text(
-                          team!.prefs.data['description'],
-                          style: TextStyle(
-                            fontSize: 12,
-                            color:
-                                Theme.of(context).colorScheme.onSurfaceVariant,
+            ? GestureDetector(
+                onTap: () {
+                  Platform.isIOS
+                      ? Navigator.of(context).push(
+                          CupertinoPageRoute(
+                            builder: (context) => CommunitySettingsView(
+                              teamId: team!.$id,
+                            ),
                           ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
+                        )
+                      : Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => CommunitySettingsView(
+                              teamId: team!.$id,
+                            ),
+                          ),
+                        );
+                },
+                onTapDown: (_) => setState(() => isTitleTapped = true),
+                onTapUp: (_) => setState(() => isTitleTapped = false),
+                onTapCancel: () => setState(() => isTitleTapped = false),
+                child: Container(
+                  color: Colors.transparent,
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        child: Icon(
+                          IconData(team!.prefs.data['iconCode'],
+                              fontFamily: 'MaterialIcons'),
                         ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(width: 10),
+                      // display the name and number of members in the community
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              team!.name,
+                              style: TextStyle(
+                                color: isTitleTapped
+                                    ? Theme.of(context)
+                                        .colorScheme
+                                        .onSurface
+                                        .withOpacity(0.75)
+                                    : Theme.of(context).colorScheme.onSurface,
+                              ),
+                            ),
+                            Text(
+                              '${teamMembers!.length} member${teamMembers!.length > 1 ? 's' : ''}',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: isTitleTapped
+                                    ? Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant
+                                        .withOpacity(0.75)
+                                    : Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               )
             : null,
       ),
       body: (team != null && teamMembers != null)
           ? SafeArea(
-              child: Column(
-                children: [
-                  Text(team!.prefs.data['description']),
-                  // display a list of members in the community
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: teamMembers!.length,
-                      itemBuilder: (context, index) {
-                        final Membership member = teamMembers![index];
-                        return ListTile(
-                          leading: CircleAvatar(
-                            child: Text(member.userName[0]),
-                          ),
-                          title: Text(member.userName),
-                          subtitle: Text(member.userEmail),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
+              child: Container(),
             )
           : const CustomProgressIndicator(),
     );

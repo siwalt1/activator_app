@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:activator_app/src/core/provider/db_provider.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
+import 'package:activator_app/src/core/widgets/custom_list_tile_divider.dart';
 import 'package:activator_app/src/core/widgets/custom_progress_indicator.dart';
 import 'package:activator_app/src/features/communities/views/new_community_modal.dart';
 import 'package:flutter/cupertino.dart';
@@ -137,8 +138,14 @@ class _CommunitiesViewState extends State<CommunitiesView> {
                             child: Icon(IconData(team.prefs.data['iconCode'],
                                 fontFamily: 'MaterialIcons')),
                           ),
-                          title: Text(team.name),
-                          subtitle: Text(team.prefs.data['description']),
+                          title: Text(
+                            team.name,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          subtitle: Text(
+                            team.prefs.data['description'],
+                            overflow: TextOverflow.ellipsis,
+                          ),
                           trailing: SizedBox(
                             width: 100,
                             child: Stack(
@@ -173,13 +180,7 @@ class _CommunitiesViewState extends State<CommunitiesView> {
                             ),
                           ),
                         ),
-                        Divider(
-                          color:
-                              Theme.of(context).dividerColor.withOpacity(0.4),
-                          thickness: 0.5,
-                          indent: 72,
-                          height: 0,
-                        ),
+                        const CustomListTileDivider(),
                       ],
                     ),
                   );
