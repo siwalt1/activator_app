@@ -18,7 +18,7 @@ class AuthProvider with ChangeNotifier {
       _isAuthenticated = true;
       notifyListeners();
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -29,7 +29,7 @@ class AuthProvider with ChangeNotifier {
       _isAuthenticated = true;
       notifyListeners();
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -40,7 +40,7 @@ class AuthProvider with ChangeNotifier {
       _user = null;
       notifyListeners();
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -62,7 +62,7 @@ class AuthProvider with ChangeNotifier {
       _user = (await _appwriteService.getCurrentUser()) as User?;
       notifyListeners();
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -72,7 +72,7 @@ class AuthProvider with ChangeNotifier {
       _user = (await _appwriteService.getCurrentUser()) as User?;
       notifyListeners();
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -82,7 +82,7 @@ class AuthProvider with ChangeNotifier {
       _user = (await _appwriteService.getCurrentUser()) as User?;
       notifyListeners();
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 }

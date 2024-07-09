@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart';
@@ -6,12 +8,14 @@ class AppwriteService {
   final Client client = Client();
   late final Account account = Account(client);
   late final Databases databases = Databases(client);
+  late final Functions functions = Functions(client);
+  late final Realtime realtime = Realtime(client);
+  late final Teams teams = Teams(client);
 
   AppwriteService() {
     client
         .setEndpoint(AppConstants.APPWRITE_API_ENDPOINT)
-        .setProject(AppConstants.APPWRITE_PROJECT_ID)
-        .setSelfSigned(); // Remove in production
+        .setProject(AppConstants.APPWRITE_PROJECT_ID);
   }
 
   // login
@@ -27,6 +31,10 @@ class AppwriteService {
   Future<User> getCurrentUser() async {
     final response = await account.get();
     return response;
+  }
+
+  Future<Jwt> getJWT() async {
+    return await account.createJWT();
   }
 
   // register user
@@ -71,11 +79,50 @@ class AppwriteService {
   }
 
   // get all documents
-  Future<DocumentList> getDocuments(
-      String databaseId, String collectionId) {
+  Future<DocumentList> getDocuments(String databaseId, String collectionId) {
     return databases.listDocuments(
       databaseId: databaseId,
       collectionId: collectionId,
     );
+  }
+
+  // create community
+  Future<void> createCommunity(
+      String name, String description, int iconCode, String type) async {
+    try {
+      final jwt = await getJWT().then((jwt) => jwt.jwt);
+      print('JWT: $jwt');
+
+      final response = await functions.createExecution(
+        functionId: AppConstants.APPWRITE_CREATE_COMMUNITY_FUNCTION_ID,
+        body: jsonEncode({
+          'name': name,
+          'description': description,
+          'iconCode': iconCode,
+          'type': type,
+        }),
+        headers: {
+          'authorization': 'Bearer $jwt',
+        },
+      );
+
+      if (response.responseStatusCode == 200) {
+        print('Community created successfully');
+      } else {
+        print('Error creating community');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  // list teams
+  Future<TeamList> listTeams() {
+    return teams.list();
+  }
+
+  // list team members
+  Future<MembershipList> listTeamMemberships(String teamId) {
+    return teams.listMemberships(teamId: teamId);
   }
 }

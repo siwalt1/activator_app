@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:flutter/material.dart';
 
 class AppConstants {
@@ -11,10 +13,10 @@ class AppConstants {
   static const String APPWRITE_PROJECT_ID = '6578c59fdf2ca76934dd';
   static const String APPWRITE_API_ENDPOINT = 'https://appwrite.walter-wm.de/v1';
   static const String APPWRITE_DATABASE_ID = '6660884169dce3a05e38';
-  static const String APPWRITE_COMMUNITIES_COLLECTION_ID = '666088a92a47959a2ff4';
   static const String APPWRITE_ACTIVITIES_COLLECTION_ID = '666089e1604ff3e68f0c';
   static const String APPWRITE_COMMUNITY_MEMBERSHIPS_COLLECTION_ID = '6660cf0cb1b829e63b84';
   static const String APPWRITE_ACTIVITY_ATTENDANCE_COLLECTION_ID = '6660cf253e1219a8f2b5';
+  static const String APPWRITE_CREATE_COMMUNITY_FUNCTION_ID = '6686fcee001e66841fe0';
 
   // Theme constants
   static Color primaryRed = const Color(0xFFC62828);

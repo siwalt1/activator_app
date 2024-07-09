@@ -52,15 +52,11 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
       });
       final dbProvider = Provider.of<DatabaseProvider>(context, listen: false);
       try {
-        await dbProvider.createDocument(
-          AppConstants.APPWRITE_DATABASE_ID,
-          AppConstants.APPWRITE_COMMUNITIES_COLLECTION_ID,
-          {
-            'name': _nameController.text,
-            'description': _descriptionController.text,
-            'iconCode': _selectedIcon!.codePoint,
-            'type': EnumConverter.enumToString(_selectedActivityType!),
-          },
+        await dbProvider.createCommunity(
+          _nameController.text,
+          _descriptionController.text,
+          _selectedIcon!.codePoint,
+          EnumConverter.enumToString(_selectedActivityType!),
         );
       } on Exception {
         AlertDialog(

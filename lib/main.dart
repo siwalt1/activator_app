@@ -25,8 +25,14 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider()..checkSession()),
-        ChangeNotifierProvider(create: (_) => DatabaseProvider())
+        ChangeNotifierProvider(
+          create: (_) => AuthProvider()..checkSession(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => DatabaseProvider(
+            Provider.of<AuthProvider>(context, listen: false),
+          ),
+        ),
       ],
       child: MyApp(settingsController: settingsController),
     ),
