@@ -4,6 +4,7 @@ import 'package:activator_app/src/features/profile/views/profile_theme_view.dart
 import 'package:activator_app/src/features/profile/widgets/profile_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// Displays the user profile information.
 class ProfileView extends StatelessWidget {
@@ -46,15 +47,18 @@ class ProfileView extends StatelessWidget {
                 const SizedBox(height: AppConstants.separatorSpacing),
                 CustomListTile(
                   text: "Share activator",
-                  onPressed: () => {
-                    Share.share(
-                        'Check out the activator app at https://open.activator-app.walter-wm.de/'),
-                  },
+                  onPressed: () => Share.share(
+                      'Check out the activator app at https://open.activator-app.walter-wm.de/'),
                   marginBottom: AppConstants.listTileSpacing,
                 ),
                 CustomListTile(
                   text: "Contact us",
-                  onPressed: () => print('onPressed'),
+                  onPressed: () => launchUrl(
+                    Uri(
+                      scheme: 'mailto',
+                      path: 'activator-app@walter-wm.de',
+                    ),
+                  ),
                   marginBottom: AppConstants.listTileSpacing,
                 ),
                 CustomListTile(
