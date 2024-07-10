@@ -57,8 +57,11 @@ class _LoginViewState extends State<LoginView> {
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
-          const Image(
-            image: AssetImage('assets/images/welcome.png'),
+          Image(
+            image: AssetImage(
+                MediaQuery.of(context).platformBrightness == Brightness.light
+                    ? 'assets/images/space_bg_light.jpg'
+                    : 'assets/images/space_bg.jpg'),
             fit: BoxFit.cover,
             height: double.infinity,
             width: double.infinity,
@@ -68,7 +71,19 @@ class _LoginViewState extends State<LoginView> {
               AppBar(
                 backgroundColor: Colors.transparent,
                 elevation: 0,
-                title: const Text('activator'),
+                title: Row(
+                  children: [
+                    Image.asset(
+                      'assets/images/rocket.png',
+                      height: 30,
+                    ),
+                    const SizedBox(width: 10),
+                    const Text(
+                      'activator',
+                      style: TextStyle(),
+                    ),
+                  ],
+                ),
                 centerTitle: false,
                 foregroundColor: AppConstants.darkTheme.colorScheme.onSurface,
               ),

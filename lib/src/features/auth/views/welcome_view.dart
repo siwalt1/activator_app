@@ -17,8 +17,11 @@ class WelcomeView extends StatelessWidget {
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
-          const Image(
-            image: AssetImage('assets/images/welcome.png'),
+          Image(
+            image: AssetImage(
+                MediaQuery.of(context).platformBrightness == Brightness.light
+                    ? 'assets/images/space_bg_light.jpg'
+                    : 'assets/images/space_bg.jpg'),
             fit: BoxFit.cover,
             height: double.infinity,
             width: double.infinity,
@@ -28,7 +31,19 @@ class WelcomeView extends StatelessWidget {
               AppBar(
                 backgroundColor: Colors.transparent,
                 elevation: 0,
-                title: const Text('activator'),
+                title: Row(
+                  children: [
+                    Image.asset(
+                      'assets/images/rocket.png',
+                      height: 30,
+                    ),
+                    const SizedBox(width: 10),
+                    const Text(
+                      'activator',
+                      style: TextStyle(),
+                    ),
+                  ],
+                ),
                 centerTitle: false,
                 foregroundColor: AppConstants.darkTheme.colorScheme.onPrimary,
               ),
@@ -61,7 +76,8 @@ class WelcomeView extends StatelessWidget {
                               'The best way to activate your life.',
                               style: TextStyle(
                                 fontSize: 16,
-                                color: AppConstants.darkTheme.colorScheme.onPrimary,
+                                color: AppConstants
+                                    .darkTheme.colorScheme.onPrimary,
                               ),
                               textAlign: TextAlign.left,
                             ),
@@ -79,7 +95,8 @@ class WelcomeView extends StatelessWidget {
                               );
                             },
                             color: AppConstants.darkTheme.colorScheme.primary,
-                            textColor: AppConstants.darkTheme.colorScheme.onPrimary,
+                            textColor:
+                                AppConstants.darkTheme.colorScheme.onPrimary,
                           ),
                           const SizedBox(height: 10),
                           CustomButton(
@@ -93,8 +110,10 @@ class WelcomeView extends StatelessWidget {
                                 ),
                               );
                             },
-                            color: AppConstants.darkTheme.colorScheme.surfaceContainer,
-                            textColor: AppConstants.darkTheme.colorScheme.onPrimary,
+                            color: AppConstants
+                                .darkTheme.colorScheme.surfaceContainer,
+                            textColor:
+                                AppConstants.darkTheme.colorScheme.onPrimary,
                           ),
                           const SizedBox(height: 40),
                         ],
