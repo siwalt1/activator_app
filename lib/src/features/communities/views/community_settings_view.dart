@@ -117,12 +117,15 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
                         borderRadius:
                             BorderRadius.circular(AppConstants.borderRadius),
                         onTap: () => print('Add Members tapped'),
-                        child: const ListTile(
+                        child: ListTile(
                           leading: CircleAvatar(
                             backgroundColor: Colors.transparent,
-                            child: Icon(Icons.add_link_outlined),
+                            child: Icon(
+                              Icons.add_link_outlined,
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
                           ),
-                          title: Text('Invite to community via link'),
+                          title: const Text('Invite to community via link'),
                         ),
                       ),
                       const CustomListTileDivider(),
