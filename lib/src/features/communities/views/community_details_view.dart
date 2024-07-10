@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:activator_app/src/core/controllers/settings_controller.dart';
 import 'package:activator_app/src/core/provider/db_provider.dart';
 import 'package:activator_app/src/core/widgets/custom_progress_indicator.dart';
 import 'package:activator_app/src/features/communities/views/community_settings_view.dart';
@@ -23,15 +24,45 @@ class CommunityDetailsView extends StatefulWidget {
   State<CommunityDetailsView> createState() => _CommunityDetailsViewState();
 }
 
-class _CommunityDetailsViewState extends State<CommunityDetailsView> {
+class _CommunityDetailsViewState extends State<CommunityDetailsView>
+    with SingleTickerProviderStateMixin {
   Team? team;
   List<Membership>? teamMembers;
   bool isNavigated = false; // Track if navigation has already happened
   bool isTitleTapped = false;
+  late bool _isRocketClicked = false;
+
+  late AnimationController _rocketController;
+  late Animation<double> _rocketAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _rocketController = AnimationController(
+      duration: const Duration(seconds: 2, milliseconds: 30),
+      vsync: this,
+    );
+
+    _rocketAnimation = CurvedAnimation(
+      parent: _rocketController,
+      curve: Curves.easeInOutCubic,
+    );
+
+    _rocketController.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _rocketController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final dbProvider = Provider.of<DatabaseProvider>(context, listen: true);
+    final dbProvider = Provider.of<DatabaseProvider>(context);
+
     try {
       team = dbProvider.teams.firstWhere(
         (team) => team.$id == widget.teamId,
@@ -40,6 +71,14 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView> {
     } catch (e) {
       team = null;
       teamMembers = null;
+    }
+
+    double rocketWidth;
+    if (MediaQuery.of(context).size.width * 2 / 3 >
+        MediaQuery.of(context).size.height / 2) {
+      rocketWidth = MediaQuery.of(context).size.height / 2;
+    } else {
+      rocketWidth = MediaQuery.of(context).size.width * 2 / 3;
     }
 
     if ((team == null || teamMembers == null) && !isNavigated) {
@@ -92,7 +131,6 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView> {
                         ),
                       ),
                       const SizedBox(width: 10),
-                      // display the name and number of members in the community
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -135,7 +173,63 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView> {
       ),
       body: (team != null && teamMembers != null)
           ? SafeArea(
-              child: Container(),
+              child: Stack(
+                children: [
+                  Positioned(
+                    child: Consumer<SettingsController>(
+                      builder: (BuildContext context, SettingsController value,
+                          Widget? child) {
+                        return Image.asset(
+                          value.themeMode == ThemeMode.light ||
+                                  value.themeMode == ThemeMode.system &&
+                                      MediaQuery.of(context)
+                                              .platformBrightness ==
+                                          Brightness.light
+                              ? 'assets/images/space_bg_light.jpg'
+                              : 'assets/images/space_bg.jpg',
+                          fit: BoxFit.fill,
+                          height: MediaQuery.of(context).size.height,
+                          width: MediaQuery.of(context).size.width,
+                        );
+                      },
+                    ),
+                  ),
+                  Positioned(
+                    bottom: _rocketAnimation.value *
+                            (MediaQuery.of(context).size.height -
+                                // rocket smoke height
+                                MediaQuery.of(context).size.width *
+                                    2 /
+                                    3 *
+                                    1.5 -
+                                MediaQuery.of(context).padding.bottom -
+                                MediaQuery.of(context).padding.top) -
+                        35,
+                    left: 0,
+                    right: 0,
+                    child: GestureDetector(
+                      onTap: () => setState(() {
+                        _isRocketClicked = !_isRocketClicked;
+                        if (_isRocketClicked) {
+                          _rocketController.forward();
+                        } else {
+                          _rocketController.reverse();
+                        }
+                      }),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/images/starting_rocket.png',
+                            width: rocketWidth,
+                            height: rocketWidth,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             )
           : const CustomProgressIndicator(),
     );

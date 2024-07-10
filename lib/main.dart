@@ -33,8 +33,11 @@ void main() async {
             Provider.of<AuthProvider>(context, listen: false),
           ),
         ),
+        ChangeNotifierProvider(
+          create: (_) => settingsController,
+        )
       ],
-      child: MyApp(settingsController: settingsController),
+      child: const MyApp(),
     ),
   );
 }

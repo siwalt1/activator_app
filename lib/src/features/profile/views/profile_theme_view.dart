@@ -2,13 +2,12 @@ import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 import 'package:activator_app/src/core/controllers/settings_controller.dart';
+import 'package:provider/provider.dart';
 
 class ProfileThemeView extends StatefulWidget {
-  const ProfileThemeView({super.key, required this.controller});
+  const ProfileThemeView({super.key});
 
   static const routeName = '/profile-theme';
-
-  final SettingsController controller;
 
   @override
   State<ProfileThemeView> createState() => _ProfileThemeViewState();
@@ -30,14 +29,10 @@ class _ProfileThemeViewState extends State<ProfileThemeView> {
       _selectedIndex; // Variable to store the index of the selected theme mode
 
   @override
-  void initState() {
-    super.initState();
-    _selectedIndex = themeModes.indexOf(
-        widget.controller.themeMode); // Get the index of the current theme mode
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final settingsController = Provider.of<SettingsController>(context);
+    _selectedIndex = themeModes.indexOf(settingsController.themeMode);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Theme Mode'),
@@ -52,7 +47,8 @@ class _ProfileThemeViewState extends State<ProfileThemeView> {
           child: ListView(
             children: <Widget>[
               const SizedBox(height: AppConstants.paddingSpacing),
-              ...List.generate(items.length, (index) => _buildListItem(index)),
+              ...List.generate(items.length,
+                  (index) => _buildListItem(index, settingsController)),
             ],
           ),
         ),
@@ -60,7 +56,7 @@ class _ProfileThemeViewState extends State<ProfileThemeView> {
     );
   }
 
-  Widget _buildListItem(int index) {
+  Widget _buildListItem(int index, SettingsController settingsController) {
     return Container(
       margin: EdgeInsets.only(
         bottom: index != items.length - 1 ? AppConstants.listTileSpacing : 0,
@@ -99,7 +95,7 @@ class _ProfileThemeViewState extends State<ProfileThemeView> {
           onTap: () {
             setState(() {
               _selectedIndex = index;
-              widget.controller.updateThemeMode(themeModes[index]);
+              settingsController.updateThemeMode(themeModes[index]);
             });
           },
         ),
