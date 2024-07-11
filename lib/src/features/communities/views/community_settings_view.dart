@@ -1,9 +1,7 @@
 import 'package:activator_app/src/core/provider/db_provider.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
-import 'package:activator_app/src/core/widgets/custom_list_tile.dart';
 import 'package:activator_app/src/core/widgets/custom_list_tile_divider.dart';
 import 'package:activator_app/src/core/widgets/custom_text_form_field.dart';
-import 'package:activator_app/src/features/HomePage/home_page_view.dart';
 import 'package:appwrite/models.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
