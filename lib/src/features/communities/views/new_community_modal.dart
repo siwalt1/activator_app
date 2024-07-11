@@ -277,7 +277,9 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
                               keyboardType: TextInputType.multiline,
                               controller: _descriptionController,
                               validator: (value) {
-                                if (value!.length > 500) {
+                                if (value != null &&
+                                    value.isNotEmpty &&
+                                    value.length > 500) {
                                   return 'Description must be less than 500 characters';
                                 }
                                 return null;
