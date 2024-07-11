@@ -9,6 +9,7 @@ class CustomButton extends StatelessWidget {
     this.alignment = Alignment.center,
     this.color,
     this.textColor,
+    this.fitTextWidth = false,
   });
 
   final String text;
@@ -16,27 +17,32 @@ class CustomButton extends StatelessWidget {
   final Alignment alignment;
   final Color? color;
   final Color? textColor;
+  final bool fitTextWidth;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: MaterialButton(
-        onPressed: onPressed,
-        color: color ?? Theme.of(context).colorScheme.surfaceContainer,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppConstants.borderRadius),
-        ),
-        elevation: 0,
-        highlightElevation: 0,
-        height: 42.0,
-        child: Align(
-          alignment: alignment,
-          child: Text(
-            text,
-            style: TextStyle(
-              fontSize: 16,
-              color: textColor,
+    return IntrinsicWidth(
+      child: SizedBox(
+        width: fitTextWidth ? null : double.infinity,
+        child: MaterialButton(
+          minWidth: 0,
+          
+          onPressed: onPressed,
+          color: color ?? Theme.of(context).colorScheme.surfaceContainer,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppConstants.borderRadius),
+          ),
+          elevation: 0,
+          highlightElevation: 0,
+          height: 42.0,
+          child: Align(
+            alignment: alignment,
+            child: Text(
+              text,
+              style: TextStyle(
+                fontSize: 16,
+                color: textColor,
+              ),
             ),
           ),
         ),

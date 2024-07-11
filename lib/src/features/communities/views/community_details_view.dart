@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:activator_app/src/core/controllers/settings_controller.dart';
 import 'package:activator_app/src/core/provider/db_provider.dart';
+import 'package:activator_app/src/core/utils/constants.dart';
+import 'package:activator_app/src/core/widgets/custom_button.dart';
 import 'package:activator_app/src/core/widgets/custom_progress_indicator.dart';
 import 'package:activator_app/src/features/communities/views/community_settings_view.dart';
 import 'package:appwrite/models.dart';
@@ -228,6 +230,117 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
                       ),
                     ),
                   ),
+                  if (_rocketAnimation.value == 0.0)
+                    Positioned(
+                      top: MediaQuery.of(context).size.height / 4,
+                      left: 20,
+                      right: 20,
+                      child: Column(
+                        children: [
+                          Text(
+                            'Start a session',
+                            style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.onPrimary,
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
+                        ],
+                      ),
+                    ),
+                  if (_rocketAnimation.value == 1.0)
+                    Positioned(
+                      top: MediaQuery.of(context).size.height / 2,
+                      left: 20,
+                      right: 20,
+                      child: Column(
+                        children: [
+                          Text(
+                            'Session started',
+                            style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.onPrimary,
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
+                          Text(
+                            'by Max Mustermann',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Theme.of(context).colorScheme.onPrimary,
+                            ),
+                          ),
+                          const SizedBox(
+                              height: AppConstants.separatorSpacing * 2),
+                          Text(
+                            '${teamMembers!.length} attendee${teamMembers!.length > 1 ? 's' : ''}:',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Theme.of(context).colorScheme.onPrimary,
+                            ),
+                          ),
+                          const SizedBox(
+                              height: AppConstants.separatorSpacing / 2),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width -
+                                AppConstants.paddingSpacing * 2,
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  minWidth: MediaQuery.of(context).size.width -
+                                      AppConstants.paddingSpacing * 2,
+                                ),
+                                child: IntrinsicWidth(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: teamMembers!
+                                        .map(
+                                          (member) => Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 10),
+                                            child: Container(
+                                              padding: const EdgeInsets.all(10),
+                                              decoration: BoxDecoration(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary,
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        AppConstants
+                                                            .borderRadius),
+                                              ),
+                                              child: Text(
+                                                member.userName,
+                                                style: TextStyle(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .onPrimary,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                        .toList(),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                              height: AppConstants.separatorSpacing * 2),
+                          CustomButton(
+                            onPressed: () {
+                              // Navigate to the session view
+                            },
+                            text: 'Join session',
+                            fitTextWidth: true,
+                          ),
+                        ],
+                      ),
+                    ),
                 ],
               ),
             )
