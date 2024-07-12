@@ -21,32 +21,34 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IntrinsicWidth(
-      child: SizedBox(
-        width: fitTextWidth ? null : double.infinity,
-        child: MaterialButton(
-          minWidth: 0,
-          
-          onPressed: onPressed,
-          color: color ?? Theme.of(context).colorScheme.surfaceContainer,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppConstants.borderRadius),
-          ),
-          elevation: 0,
-          highlightElevation: 0,
-          height: 42.0,
-          child: Align(
-            alignment: alignment,
-            child: Text(
-              text,
-              style: TextStyle(
-                fontSize: 16,
-                color: textColor,
-              ),
-            ),
+    Widget mainBtn = MaterialButton(
+      onPressed: onPressed,
+      color: color ?? Theme.of(context).colorScheme.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppConstants.borderRadius),
+      ),
+      elevation: 0,
+      highlightElevation: 0,
+      height: 42.0,
+      child: Align(
+        alignment: alignment,
+        child: Text(
+          text,
+          style: TextStyle(
+            fontSize: 16,
+            color: textColor,
           ),
         ),
       ),
     );
+
+    return fitTextWidth
+        ? IntrinsicWidth(
+            child: mainBtn,
+          )
+        : SizedBox(
+            width: double.infinity,
+            child: mainBtn,
+          );
   }
 }
