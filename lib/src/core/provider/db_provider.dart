@@ -1,4 +1,10 @@
+import 'package:activator_app/src/core/models/activity.dart';
+import 'package:activator_app/src/core/models/activity_attendance.dart';
+import 'package:activator_app/src/core/models/community.dart';
+import 'package:activator_app/src/core/models/community_membership.dart';
+import 'package:activator_app/src/core/models/user_profile.dart';
 import 'package:activator_app/src/core/provider/auth_provider.dart';
+import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:appwrite/appwrite.dart';
 import 'package:flutter/material.dart';
 import 'package:activator_app/src/core/services/appwrite_service.dart';
@@ -8,12 +14,22 @@ class DatabaseProvider with ChangeNotifier {
   final AppwriteService _appwriteService = AppwriteService();
   final AuthProvider _authProvider;
   RealtimeSubscription? _realtimeSubscription;
-  final List<Team> _teams = [];
-  final _teamMembers = <String, List<Membership>>{};
+
+  final List<Community> _communities = [];
+  final _communityMemberships = <String, List<CommunityMembership>>{};
+  final _activities = <String, List<Activity>>{};
+  final _activityAttendances = <String, List<ActivityAttendance>>{};
+  final _userProfiles = <String, UserProfile>{};
+
   bool _isInitialized = false;
 
-  List<Team> get teams => _teams;
-  Map<String, List<Membership>> get teamMembers => _teamMembers;
+  List<Community> get communities => _communities;
+  Map<String, List<CommunityMembership>> get communityMemberships =>
+      _communityMemberships;
+  Map<String, List<Activity>> get activities => _activities;
+  Map<String, List<ActivityAttendance>> get activityAttendances =>
+      _activityAttendances;
+  Map<String, UserProfile> get userProfiles => _userProfiles;
   bool get isInitialized => _isInitialized;
 
   DatabaseProvider(this._authProvider) {
@@ -26,119 +42,98 @@ class DatabaseProvider with ChangeNotifier {
         databaseId, collectionId, data);
   }
 
-  Future<void> getTeams() async {
+  Future<void> getCommunities() async {
     try {
-      // get all teams
-      final TeamList teamsList = await _appwriteService.listTeams();
-      _teams.clear();
-      _teams.addAll(teamsList.teams);
-      notifyListeners();
+      final DocumentList documentList = await _appwriteService.getDocuments(
+        AppConstants.APPWRITE_DATABASE_ID,
+        AppConstants.APPWRITE_COMMUNITIES_COLLECTION_ID,
+      );
+      _communities.clear();
+      _communities.addAll(
+          documentList.documents.map((doc) => Community.fromMap(doc.data)));
 
-      // get all team members
-      for (final team in _teams) {
-        final MembershipList membershipList =
-            await _appwriteService.listTeamMemberships(team.$id);
-        // sort the members by name
-        membershipList.memberships
-            .sort((a, b) => a.userName.compareTo(b.userName));
-        _teamMembers[team.$id] = membershipList.memberships;
+      final List<Future<void>> fetchTasks = [];
+
+      for (final community in _communities) {
+        fetchTasks.add(Future.wait([
+          _fetchCommunityMemberships(community),
+          _fetchActivities(community),
+          _fetchActivityAttendances(community),
+          _fetchUserProfiles(),
+        ]));
       }
+
+      await Future.wait(fetchTasks);
+
       notifyListeners();
     } catch (e) {
       print(e);
     }
   }
 
+  Future<void> _fetchCommunityMemberships(Community community) async {
+    final DocumentList membershipList = await _appwriteService.getDocuments(
+      AppConstants.APPWRITE_DATABASE_ID,
+      community.communityMembershipCollectionId,
+    );
+    _communityMemberships[community.$id] = membershipList.documents
+        .map((doc) => CommunityMembership.fromMap(doc.data))
+        .toList();
+  }
+
+  Future<void> _fetchActivities(Community community) async {
+    final DocumentList activityList = await _appwriteService.getDocuments(
+      AppConstants.APPWRITE_DATABASE_ID,
+      community.activityCollectionId,
+    );
+    _activities[community.$id] = activityList.documents
+        .map((doc) => Activity.fromMap(doc.data))
+        .toList();
+  }
+
+  Future<void> _fetchActivityAttendances(Community community) async {
+    final DocumentList attendanceList = await _appwriteService.getDocuments(
+      AppConstants.APPWRITE_DATABASE_ID,
+      community.activityAttendanceCollectionId,
+    );
+    _activityAttendances[community.$id] = attendanceList.documents
+        .map((doc) => ActivityAttendance.fromMap(doc.data))
+        .toList();
+  }
+
+  // fetch userProfiles
+  Future<void> _fetchUserProfiles() async {
+    final DocumentList documentList = await _appwriteService.getDocuments(
+      AppConstants.APPWRITE_DATABASE_ID,
+      AppConstants.APPWRITE_USER_PROFILES_COLLECTION_ID,
+    );
+
+    _userProfiles.clear();
+    for (final doc in documentList.documents) {
+      final userProfile = UserProfile.fromMap(doc.data);
+      _userProfiles[userProfile.userId] = userProfile;
+    }
+
+    notifyListeners();
+  }
+
   _initializeRealTimeSubscription() async {
     final realtime = _appwriteService.realtime;
-    final teams = _appwriteService.teams;
 
-    await getTeams();
+    await getCommunities();
 
     _realtimeSubscription = realtime.subscribe(
       [
-        'teams',
-        'memberships',
         'account',
+        'documents',
       ],
     );
 
     _realtimeSubscription?.stream.listen((event) {
-      // user gets added to a team
-      if (event.events.contains('teams.*.memberships.*.create')) {
-        final membership = Membership.fromMap(event.payload);
-        final teamId = membership.teamId;
-        final index = _teamMembers[teamId]?.indexWhere(
-          (mem) => mem.userId == membership.userId,
-        );
-        if (index == -1) {
-          _teamMembers[teamId]?.add(membership);
-          _teamMembers[teamId]
-              ?.sort((a, b) => a.userName.compareTo(b.userName));
-          notifyListeners();
-        } else {
-          _reinitializeRealTimeSubscription();
-        }
-      }
-      // user gets removed from a team
-      else if (event.events.contains('teams.*.memberships.*.delete')) {
-        // if own membership is deleted, reinitialize the subscription
-        print(event.payload['userId']);
-        print(_authProvider.user?.$id);
-        if (event.payload['userId'] == _authProvider.user?.$id) {
-          _reinitializeRealTimeSubscription();
-        } else {
-          final membership = Membership.fromMap(event.payload);
-          final teamId = membership.teamId;
-          if (_teamMembers[teamId] != null) {
-            _teamMembers[teamId]
-                ?.removeWhere((mem) => mem.userId == membership.userId);
-            notifyListeners();
-          } else {
-            _reinitializeRealTimeSubscription();
-          }
-        }
-      }
-      // team preferences get updated
-      else if (event.events.contains('teams.*.update.prefs')) {
-        final prefs = Preferences.fromMap(event.payload);
-        RegExp regExp = RegExp(r"teams.([a-zA-Z0-9]+).update");
-        String? teamId = event.events
-            .map((event) => regExp.firstMatch(event))
-            .firstWhere((match) => match != null, orElse: () => null)
-            ?.group(1);
-
-        final index = _teams.indexWhere((t) => t.$id == teamId);
-        if (index != -1) {
-          _teams[index] = Team(
-            $id: _teams[index].$id,
-            $createdAt: _teams[index].$createdAt,
-            $updatedAt: _teams[index].$updatedAt,
-            name: _teams[index].name,
-            total: _teams[index].total,
-            prefs: prefs,
-          );
-          notifyListeners();
-        } else {
-          _reinitializeRealTimeSubscription();
-        }
-      }
-
-      // team name or general team data get updated
-      else if (event.events.contains('teams.*.update') &&
-          !event.events.contains('teams.*.update.prefs')) {
-        final team = Team.fromMap(event.payload);
-        final index = _teams.indexWhere((t) => t.$id == team.$id);
-        if (index != -1) {
-          _teams[index] = team;
-          notifyListeners();
-        } else {
-          _reinitializeRealTimeSubscription();
-        }
-      }
-
-      print('Event received: ${event.events}');
-      print('Payload: ${event.payload}');
+      // Handle the event
+      
+      print('Event: received: ${event.events}');
+      print('Event: Payload: ${event.payload}');
     });
 
     _isInitialized = true;

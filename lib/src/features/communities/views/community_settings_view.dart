@@ -1,44 +1,51 @@
+import 'package:activator_app/src/core/models/activity.dart';
+import 'package:activator_app/src/core/models/activity_attendance.dart';
+import 'package:activator_app/src/core/models/community.dart';
+import 'package:activator_app/src/core/models/community_membership.dart';
 import 'package:activator_app/src/core/provider/db_provider.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/widgets/custom_list_tile_divider.dart';
 import 'package:activator_app/src/core/widgets/custom_text_form_field.dart';
-import 'package:appwrite/models.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CommunitySettingsView extends StatefulWidget {
   const CommunitySettingsView({
-    Key? key,
-    required this.teamId,
-  }) : super(key: key);
+    super.key,
+    required this.communityId,
+  });
 
   static const routeName = '/community_settings';
 
-  final String teamId;
+  final String communityId;
 
   @override
   State<CommunitySettingsView> createState() => _CommunitySettingsViewState();
 }
 
 class _CommunitySettingsViewState extends State<CommunitySettingsView> {
-  Team? team;
-  List<Membership>? teamMembers;
+  Community? community;
+  List<CommunityMembership>? communityMemberships;
+  List<Activity>? activities;
+  List<ActivityAttendance>? activityAttendances;
   bool isNavigated = false; // Track if navigation has already happened
 
   @override
   Widget build(BuildContext context) {
     final dbProvider = Provider.of<DatabaseProvider>(context, listen: true);
     try {
-      team = dbProvider.teams.firstWhere(
-        (team) => team.$id == widget.teamId,
+      community = dbProvider.communities.firstWhere(
+        (com) => com.$id == widget.communityId,
       );
-      teamMembers = dbProvider.teamMembers[widget.teamId];
+      communityMemberships =
+          dbProvider.communityMemberships[widget.communityId];
+      activities = dbProvider.activities[widget.communityId];
+      activityAttendances = dbProvider.activityAttendances[widget.communityId];
     } catch (e) {
-      team = null;
-      teamMembers = null;
+      community = null;
     }
 
-    if ((team == null || teamMembers == null) && !isNavigated) {
+    if ((community == null) && !isNavigated) {
       Future.microtask(() {
         if (!isNavigated) {
           isNavigated =
@@ -69,8 +76,7 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
                 child: CircleAvatar(
                   radius: 50,
                   child: Icon(
-                    IconData(team!.prefs.data['iconCode'],
-                        fontFamily: 'MaterialIcons'),
+                    IconData(community!.iconCode, fontFamily: 'MaterialIcons'),
                     size: 75,
                   ),
                 ),
@@ -78,7 +84,7 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
               const SizedBox(height: AppConstants.separatorSpacing / 2),
               Center(
                 child: Text(
-                  team?.name ?? 'Loading...',
+                  community?.name ?? 'Loading...',
                   style: const TextStyle(
                     fontSize: 20,
                   ),
@@ -86,7 +92,7 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
               ),
               Center(
                 child: Text(
-                  '${teamMembers?.length ?? 0} ${teamMembers?.length == 1 ? 'Member' : 'Members'}',
+                  '${communityMemberships?.length ?? 0} ${communityMemberships?.length == 1 ? 'Member' : 'Members'}',
                   style: TextStyle(
                     fontSize: 12,
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -95,7 +101,7 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
               ),
               const SizedBox(height: AppConstants.separatorSpacing),
               CustomTextFormField(
-                initialValue: team?.prefs.data['description'],
+                initialValue: community!.description,
                 label: 'Description',
                 maxLines: null,
                 readOnly: true,
@@ -128,24 +134,29 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
                       ),
                       const CustomListTileDivider(),
                       ...List.generate(
-                        teamMembers!.length,
+                        communityMemberships!.length,
                         (index) {
-                          final Membership member = teamMembers![index];
+                          final CommunityMembership membership =
+                              communityMemberships![index];
                           return Column(
                             children: [
                               InkWell(
                                 borderRadius: BorderRadius.circular(
                                     AppConstants.borderRadius),
-                                onTap: () => print('${member.userName} tapped'),
+                                onTap: () =>
+                                    print('${membership.userId} tapped'),
                                 child: ListTile(
                                   leading: CircleAvatar(
-                                    child: Text(member.userName[0]),
+                                    child: Text(dbProvider
+                                        .userProfiles[membership.userId]!
+                                        .name[0]),
                                   ),
-                                  title: Text(member.userName),
-                                  subtitle: Text(member.userEmail),
+                                  title: Text(dbProvider
+                                      .userProfiles[membership.userId]!.name),
+                                  // subtitle: Text(member.$id),
                                 ),
                               ),
-                              index != teamMembers!.length - 1
+                              index != communityMemberships!.length - 1
                                   ? const CustomListTileDivider()
                                   : const SizedBox(),
                             ],

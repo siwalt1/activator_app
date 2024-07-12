@@ -76,7 +76,7 @@ class _CommunitiesViewState extends State<CommunitiesView> {
               (BuildContext context, DatabaseProvider value, Widget? child) {
             if (!value.isInitialized) {
               return const CustomProgressIndicator();
-            } else if (value.teams.isEmpty && value.isInitialized) {
+            } else if (value.communities.isEmpty && value.isInitialized) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -111,14 +111,14 @@ class _CommunitiesViewState extends State<CommunitiesView> {
                 // scroll position when a user leaves and returns to the app after it
                 // has been killed while running in the background.
                 restorationId: 'CommunityListView',
-                itemCount: value.teams.length,
+                itemCount: value.communities.length,
                 itemBuilder: (BuildContext context, int index) {
-                  final team = value.teams[index];
+                  final community = value.communities[index];
 
                   return InkWell(
                     onTap: () {
                       routeBuilder(context) => CommunityDetailsView(
-                            teamId: team.$id,
+                            communityId: community.$id,
                           );
 
                       Navigator.of(context).push(
@@ -135,15 +135,15 @@ class _CommunitiesViewState extends State<CommunitiesView> {
                       children: [
                         ListTile(
                           leading: CircleAvatar(
-                            child: Icon(IconData(team.prefs.data['iconCode'],
+                            child: Icon(IconData(community.iconCode,
                                 fontFamily: 'MaterialIcons')),
                           ),
                           title: Text(
-                            team.name,
+                            community.name,
                             overflow: TextOverflow.ellipsis,
                           ),
                           subtitle: Text(
-                            team.prefs.data['description'],
+                            community.description,
                             overflow: TextOverflow.ellipsis,
                           ),
                           trailing: SizedBox(

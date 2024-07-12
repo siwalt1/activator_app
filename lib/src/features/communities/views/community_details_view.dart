@@ -1,6 +1,10 @@
 import 'dart:io';
 
 import 'package:activator_app/src/core/controllers/settings_controller.dart';
+import 'package:activator_app/src/core/models/activity.dart';
+import 'package:activator_app/src/core/models/activity_attendance.dart';
+import 'package:activator_app/src/core/models/community.dart';
+import 'package:activator_app/src/core/models/community_membership.dart';
 import 'package:activator_app/src/core/provider/db_provider.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/widgets/custom_button.dart';
@@ -15,12 +19,12 @@ import 'package:provider/provider.dart';
 class CommunityDetailsView extends StatefulWidget {
   const CommunityDetailsView({
     super.key,
-    required this.teamId,
+    required this.communityId,
   });
 
   static const routeName = '/sample_item';
 
-  final String teamId;
+  final String communityId;
 
   @override
   State<CommunityDetailsView> createState() => _CommunityDetailsViewState();
@@ -28,8 +32,10 @@ class CommunityDetailsView extends StatefulWidget {
 
 class _CommunityDetailsViewState extends State<CommunityDetailsView>
     with SingleTickerProviderStateMixin {
-  Team? team;
-  List<Membership>? teamMembers;
+  Community? community;
+  List<CommunityMembership>? communityMemberships;
+  List<Activity>? activities;
+  List<ActivityAttendance>? activityAttendances;
   bool isNavigated = false; // Track if navigation has already happened
   bool isTitleTapped = false;
   late bool _isRocketClicked = false;
@@ -66,13 +72,15 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
     final dbProvider = Provider.of<DatabaseProvider>(context);
 
     try {
-      team = dbProvider.teams.firstWhere(
-        (team) => team.$id == widget.teamId,
+      community = dbProvider.communities.firstWhere(
+        (com) => com.$id == widget.communityId,
       );
-      teamMembers = dbProvider.teamMembers[widget.teamId];
+      communityMemberships =
+          dbProvider.communityMemberships[widget.communityId];
+      activities = dbProvider.activities[widget.communityId];
+      activityAttendances = dbProvider.activityAttendances[widget.communityId];
     } catch (e) {
-      team = null;
-      teamMembers = null;
+      community = null;
     }
 
     double rocketWidth;
@@ -83,7 +91,7 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
       rocketWidth = MediaQuery.of(context).size.width * 2 / 3;
     }
 
-    if ((team == null || teamMembers == null) && !isNavigated) {
+    if ((community == null) && !isNavigated) {
       Future.microtask(() {
         if (!isNavigated) {
           isNavigated =
@@ -100,21 +108,21 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
 
     return Scaffold(
       appBar: AppBar(
-        title: (team != null && teamMembers != null)
+        title: (community != null)
             ? GestureDetector(
                 onTap: () {
                   Platform.isIOS
                       ? Navigator.of(context).push(
                           CupertinoPageRoute(
                             builder: (context) => CommunitySettingsView(
-                              teamId: team!.$id,
+                              communityId: community!.$id,
                             ),
                           ),
                         )
                       : Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => CommunitySettingsView(
-                              teamId: team!.$id,
+                              communityId: community!.$id,
                             ),
                           ),
                         );
@@ -128,7 +136,7 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
                     children: [
                       CircleAvatar(
                         child: Icon(
-                          IconData(team!.prefs.data['iconCode'],
+                          IconData(community!.iconCode,
                               fontFamily: 'MaterialIcons'),
                         ),
                       ),
@@ -138,7 +146,7 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              team!.name,
+                              community!.name,
                               style: TextStyle(
                                 color: isTitleTapped
                                     ? Theme.of(context)
@@ -149,7 +157,7 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
                               ),
                             ),
                             Text(
-                              '${teamMembers!.length} member${teamMembers!.length > 1 ? 's' : ''}',
+                              '${communityMemberships!.length} member${communityMemberships!.length > 1 ? 's' : ''}',
                               style: TextStyle(
                                 fontSize: 12,
                                 color: isTitleTapped
@@ -173,7 +181,7 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
               )
             : null,
       ),
-      body: (team != null && teamMembers != null)
+      body: (community != null)
           ? SafeArea(
               child: Stack(
                 children: [
@@ -275,7 +283,7 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
                           const SizedBox(
                               height: AppConstants.separatorSpacing * 2),
                           Text(
-                            '${teamMembers!.length} attendee${teamMembers!.length > 1 ? 's' : ''}:',
+                            '${communityMemberships!.length} attendee${communityMemberships!.length > 1 ? 's' : ''}:',
                             style: TextStyle(
                               fontSize: 16,
                               color: Theme.of(context).colorScheme.onPrimary,
@@ -296,9 +304,9 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
                                 child: IntrinsicWidth(
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    children: teamMembers!
+                                    children: communityMemberships!
                                         .map(
-                                          (member) => Padding(
+                                          (membership) => Padding(
                                             padding: const EdgeInsets.only(
                                                 right: 10),
                                             child: Container(
@@ -313,7 +321,10 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
                                                             .borderRadius),
                                               ),
                                               child: Text(
-                                                member.userName,
+                                                dbProvider
+                                                    .userProfiles[
+                                                        membership.userId]!
+                                                    .name,
                                                 style: TextStyle(
                                                   color: Theme.of(context)
                                                       .colorScheme
