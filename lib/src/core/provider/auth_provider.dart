@@ -58,18 +58,22 @@ class AuthProvider with ChangeNotifier {
 
   Future<void> updateName(String name) async {
     try {
-      await _appwriteService.updateName(name);
-      _user = (await _appwriteService.getCurrentUser()) as User?;
+      _user = await _appwriteService.updateName(name);
       notifyListeners();
     } catch (e) {
       rethrow;
     }
   }
 
+  Future<void> updateUser() async {
+    User current = await _appwriteService.getCurrentUser();
+    _user = current as User?;
+    notifyListeners();
+  }
+
   Future<void> updateEmail(String email, String password) async {
     try {
-      await _appwriteService.updateEmail(email, password);
-      _user = (await _appwriteService.getCurrentUser()) as User?;
+      _user = await _appwriteService.updateEmail(email, password);
       notifyListeners();
     } catch (e) {
       rethrow;

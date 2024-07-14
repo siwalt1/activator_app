@@ -59,9 +59,10 @@ class DatabaseProvider with ChangeNotifier {
           _fetchCommunityMemberships(community),
           _fetchActivities(community),
           _fetchActivityAttendances(community),
-          _fetchUserProfiles(),
         ]));
       }
+
+      fetchTasks.add(Future.wait([_fetchUserProfiles()]));
 
       await Future.wait(fetchTasks);
 
@@ -101,7 +102,6 @@ class DatabaseProvider with ChangeNotifier {
         .toList();
   }
 
-  // fetch userProfiles
   Future<void> _fetchUserProfiles() async {
     final DocumentList documentList = await _appwriteService.getDocuments(
       AppConstants.APPWRITE_DATABASE_ID,
@@ -130,13 +130,121 @@ class DatabaseProvider with ChangeNotifier {
     );
 
     _realtimeSubscription?.stream.listen((event) {
-      // Handle the event
-      
-      print('Event: received: ${event.events}');
-      print('Event: Payload: ${event.payload}');
+      print('Events: ${event.events}');
+      print('Realtime event: ${event.payload}');
+
+      final Map<String, dynamic> payload = event.payload;
+      final List<String> events = event.events; // List of events
+      final String? collectionId = payload['\$collectionId'];
+
+      // Handle user update event
+      if (events.contains('users.*.update')) {
+        _authProvider.updateUser();
+      }
+      // Handle community events
+      else if (collectionId ==
+          AppConstants.APPWRITE_COMMUNITIES_COLLECTION_ID) {
+        final community = Community.fromMap(payload);
+        if (events.contains('databases.*.collections.*.documents.*.create')) {
+          _communities.add(community);
+        } else if (events
+            .contains('databases.*.collections.*.documents.*.update')) {
+          _communities[_communities.indexWhere((c) => c.$id == community.$id)] =
+              community;
+        } else if (events
+            .contains('databases.*.collections.*.documents.*.delete')) {
+          _communities.removeWhere((c) => c.$id == community.$id);
+        }
+        notifyListeners();
+      }
+      // Handle userProfile events
+      else if (collectionId ==
+          AppConstants.APPWRITE_USER_PROFILES_COLLECTION_ID) {
+        final userProfile = UserProfile.fromMap(payload);
+        if (events.contains('databases.*.collections.*.documents.*.create') ||
+            events.contains('databases.*.collections.*.documents.*.update')) {
+          _userProfiles[userProfile.userId] = userProfile;
+        } else if (events
+            .contains('databases.*.collections.*.documents.*.delete')) {
+          _userProfiles.remove(userProfile.userId);
+        }
+        notifyListeners();
+      }
+      // Handle community membership, activity, and attendance events
+      else if (collectionId != null) {
+        for (final community in _communities) {
+          if (community.communityMembershipCollectionId == collectionId) {
+            _updateMemberships(community, payload, events);
+            break;
+          } else if (community.activityCollectionId == collectionId) {
+            _updateActivities(community, payload, events);
+            break;
+          } else if (community.activityAttendanceCollectionId == collectionId) {
+            _updateAttendances(community, payload, events);
+            break;
+          }
+        }
+      }
     });
 
     _isInitialized = true;
+    notifyListeners();
+  }
+
+  void _updateMemberships(
+      Community community, Map<String, dynamic> payload, List<String> events) {
+    print('Updating memberships');
+    final membership = CommunityMembership.fromMap(payload);
+    if (events.contains('databases.*.collections.*.documents.*.create')) {
+      _communityMemberships[community.$id]?.add(membership);
+    } else if (events
+        .contains('databases.*.collections.*.documents.*.update')) {
+      final memberships = _communityMemberships[community.$id];
+      memberships?[memberships.indexWhere((m) => m.$id == membership.$id)] =
+          membership;
+    } else if (events
+        .contains('databases.*.collections.*.documents.*.delete')) {
+      _communityMemberships[community.$id]
+          ?.removeWhere((m) => m.$id == membership.$id);
+    }
+
+    notifyListeners();
+  }
+
+  void _updateActivities(
+      Community community, Map<String, dynamic> payload, List<String> events) {
+    final activity = Activity.fromMap(payload);
+    if (events.contains('databases.*.collections.*.documents.*.create')) {
+      _activities[community.$id]?.add(activity);
+    } else if (events
+        .contains('databases.*.collections.*.documents.*.update')) {
+      final activities = _activities[community.$id];
+      activities?[activities.indexWhere((a) => a.$id == activity.$id)] =
+          activity;
+    } else if (events
+        .contains('databases.*.collections.*.documents.*.delete')) {
+      _activities[community.$id]?.removeWhere((a) => a.$id == activity.$id);
+    }
+
+    notifyListeners();
+  }
+
+  void _updateAttendances(
+      Community community, Map<String, dynamic> payload, List<String> events) {
+    final attendance = ActivityAttendance.fromMap(payload);
+    if (events.contains('databases.*.collections.*.documents.*.create')) {
+      _activityAttendances[community.$id]?.add(attendance);
+    } else if (events
+        .contains('databases.*.collections.*.documents.*.update')) {
+      final attendances = _activityAttendances[community.$id];
+      attendances?[attendances.indexWhere((a) => a.$id == attendance.$id)] =
+          attendance;
+    } else if (events
+        .contains('databases.*.collections.*.documents.*.delete')) {
+      _activityAttendances[community.$id]
+          ?.removeWhere((a) => a.$id == attendance.$id);
+    }
+
     notifyListeners();
   }
 
