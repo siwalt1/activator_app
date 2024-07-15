@@ -11,7 +11,7 @@ import 'package:activator_app/src/core/services/appwrite_service.dart';
 import 'package:appwrite/models.dart';
 
 class DatabaseProvider with ChangeNotifier {
-  final AppwriteService _appwriteService = AppwriteService();
+  final AppwriteService _appwriteService;
   final AuthProvider _authProvider;
   RealtimeSubscription? _realtimeSubscription;
 
@@ -32,8 +32,29 @@ class DatabaseProvider with ChangeNotifier {
   Map<String, UserProfile> get userProfiles => _userProfiles;
   bool get isInitialized => _isInitialized;
 
-  DatabaseProvider(this._authProvider) {
-    _initializeRealTimeSubscription();
+  DatabaseProvider(this._appwriteService, this._authProvider) {
+    if (_authProvider.user != null) {
+      print('#init_0: Reinitializing realtime subscription');
+      _initializeRealTimeSubscription();
+    }
+    _authProvider.addListener(() {
+      if (_authProvider.user != null) {
+        print('#init_1: Reinitializing realtime subscription');
+        _initializeRealTimeSubscription();
+      } else {
+        print('#init_2: Closing realtime subscription');
+        _realtimeSubscription?.close();
+        _isInitialized = false;
+
+        _communities.clear();
+        _communityMemberships.clear();
+        _activities.clear();
+        _activityAttendances.clear();
+        _userProfiles.clear();
+
+        notifyListeners();
+      }
+    });
   }
 
   Future<Document> createDocument(
@@ -65,7 +86,6 @@ class DatabaseProvider with ChangeNotifier {
       fetchTasks.add(Future.wait([_fetchUserProfiles()]));
 
       await Future.wait(fetchTasks);
-
       notifyListeners();
     } catch (e) {
       print(e);
@@ -193,9 +213,11 @@ class DatabaseProvider with ChangeNotifier {
 
   void _updateMemberships(
       Community community, Map<String, dynamic> payload, List<String> events) {
-    print('Updating memberships');
     final membership = CommunityMembership.fromMap(payload);
     if (events.contains('databases.*.collections.*.documents.*.create')) {
+      if (_communityMemberships[community.$id] == null) {
+        _communityMemberships[community.$id] = [];
+      }
       _communityMemberships[community.$id]?.add(membership);
     } else if (events
         .contains('databases.*.collections.*.documents.*.update')) {
@@ -215,6 +237,9 @@ class DatabaseProvider with ChangeNotifier {
       Community community, Map<String, dynamic> payload, List<String> events) {
     final activity = Activity.fromMap(payload);
     if (events.contains('databases.*.collections.*.documents.*.create')) {
+      if (_activities[community.$id] == null) {
+        _activities[community.$id] = [];
+      }
       _activities[community.$id]?.add(activity);
     } else if (events
         .contains('databases.*.collections.*.documents.*.update')) {
@@ -233,6 +258,9 @@ class DatabaseProvider with ChangeNotifier {
       Community community, Map<String, dynamic> payload, List<String> events) {
     final attendance = ActivityAttendance.fromMap(payload);
     if (events.contains('databases.*.collections.*.documents.*.create')) {
+      if (_activityAttendances[community.$id] == null) {
+        _activityAttendances[community.$id] = [];
+      }
       _activityAttendances[community.$id]?.add(attendance);
     } else if (events
         .contains('databases.*.collections.*.documents.*.update')) {
@@ -248,11 +276,6 @@ class DatabaseProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> _reinitializeRealTimeSubscription() async {
-    _realtimeSubscription?.close();
-    await _initializeRealTimeSubscription();
-  }
-
   @override
   void dispose() {
     _realtimeSubscription?.close();
@@ -263,9 +286,8 @@ class DatabaseProvider with ChangeNotifier {
       String name, String description, int iconCode, String type) async {
     try {
       await _appwriteService.createCommunity(name, description, iconCode, type);
-      await _reinitializeRealTimeSubscription();
     } catch (e) {
-      print(e);
+      rethrow;
     }
   }
 }

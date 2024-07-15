@@ -1,5 +1,6 @@
 import 'package:activator_app/src/core/provider/auth_provider.dart';
 import 'package:activator_app/src/core/provider/db_provider.dart';
+import 'package:activator_app/src/core/services/appwrite_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -25,11 +26,18 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+        Provider<AppwriteService>(
+          create: (_) => AppwriteService(),
+          lazy: false,
+        ),
         ChangeNotifierProvider(
-          create: (_) => AuthProvider()..checkSession(),
+          create: (context) => AuthProvider(
+            Provider.of<AppwriteService>(context, listen: false),
+          )..checkSession(),
         ),
         ChangeNotifierProvider(
           create: (context) => DatabaseProvider(
+            Provider.of<AppwriteService>(context, listen: false),
             Provider.of<AuthProvider>(context, listen: false),
           ),
         ),

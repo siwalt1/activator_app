@@ -58,25 +58,35 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
           _selectedIcon!.codePoint,
           EnumConverter.enumToString(_selectedActivityType!),
         );
-      } on Exception {
-        AlertDialog(
-          title: const Text('Error'),
-          content: const Text('Try again later.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Close'),
-            ),
-          ],
+        if (!mounted) return;
+        setState(() {
+          _isLoading = false;
+        });
+        Navigator.of(context).pop();
+      } catch (e) {
+        print(e.toString());
+        setState(() {
+          _isLoading = false;
+        });
+        if (!mounted) return;
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('Something went wrong'),
+              content: const Text('Try again later.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Close'),
+                ),
+              ],
+            );
+          },
         );
       }
-      if (!mounted) return;
-      setState(() {
-        _isLoading = false;
-      });
-      Navigator.of(context).pop();
     }
   }
 

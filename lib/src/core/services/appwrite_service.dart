@@ -6,16 +6,20 @@ import 'package:appwrite/models.dart';
 
 class AppwriteService {
   final Client client = Client();
-  late final Account account = Account(client);
-  late final Databases databases = Databases(client);
-  late final Functions functions = Functions(client);
-  late final Realtime realtime = Realtime(client);
-  late final Teams teams = Teams(client);
+  late final Account account;
+  late final Databases databases;
+  late final Functions functions;
+  late final Realtime realtime;
 
   AppwriteService() {
     client
         .setEndpoint(AppConstants.APPWRITE_API_ENDPOINT)
         .setProject(AppConstants.APPWRITE_PROJECT_ID);
+
+    account = Account(client);
+    databases = Databases(client);
+    functions = Functions(client);
+    realtime = Realtime(client);
   }
 
   // login
@@ -112,17 +116,7 @@ class AppwriteService {
         print('Error creating community');
       }
     } catch (e) {
-      print('Error: $e');
+      rethrow;
     }
-  }
-
-  // list teams
-  Future<TeamList> listTeams() {
-    return teams.list();
-  }
-
-  // list team members
-  Future<MembershipList> listTeamMemberships(String teamId) {
-    return teams.listMemberships(teamId: teamId);
   }
 }

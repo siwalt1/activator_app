@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:activator_app/src/core/services/appwrite_service.dart';
 
 class AuthProvider with ChangeNotifier {
-  final AppwriteService _appwriteService = AppwriteService();
+  final AppwriteService _appwriteService;
   User? _user;
   bool _isAuthenticated = false;
 
   bool get isAuthenticated => _isAuthenticated;
   User? get user => _user;
+
+  AuthProvider(this._appwriteService);
 
   Future<void> registerUser(String email, String password, String name) async {
     try {
@@ -29,6 +31,8 @@ class AuthProvider with ChangeNotifier {
       _isAuthenticated = true;
       notifyListeners();
     } catch (e) {
+      _user = null;
+      _isAuthenticated = false;
       rethrow;
     }
   }
