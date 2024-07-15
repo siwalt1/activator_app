@@ -9,6 +9,7 @@ import 'package:appwrite/appwrite.dart';
 import 'package:flutter/material.dart';
 import 'package:activator_app/src/core/services/appwrite_service.dart';
 import 'package:appwrite/models.dart';
+import 'package:flutter/scheduler.dart';
 
 class DatabaseProvider with ChangeNotifier {
   final AppwriteService _appwriteService;
@@ -32,7 +33,23 @@ class DatabaseProvider with ChangeNotifier {
   Map<String, UserProfile> get userProfiles => _userProfiles;
   bool get isInitialized => _isInitialized;
 
+  late final AppLifecycleListener appLifecycleListener;
+  late final AppLifecycleState? appLifecycleState;
+
   DatabaseProvider(this._appwriteService, this._authProvider) {
+    _initialize();
+  }
+
+  void _initialize() {
+    appLifecycleState = SchedulerBinding.instance.lifecycleState;
+    appLifecycleListener = AppLifecycleListener(
+      onDetach: () => _realtimeSubscription?.close(),
+      onRestart: () => {
+        if (_authProvider.user != null && _realtimeSubscription == null)
+          _initializeRealTimeSubscription()
+      },
+    );
+
     if (_authProvider.user != null) {
       print('#init_0: Reinitializing realtime subscription');
       _initializeRealTimeSubscription();
@@ -138,6 +155,7 @@ class DatabaseProvider with ChangeNotifier {
   }
 
   _initializeRealTimeSubscription() async {
+    print('#init_3: Initializing realtime subscription');
     final realtime = _appwriteService.realtime;
 
     await getCommunities();
@@ -149,63 +167,72 @@ class DatabaseProvider with ChangeNotifier {
       ],
     );
 
-    _realtimeSubscription?.stream.listen((event) {
-      print('Events: ${event.events}');
-      print('Realtime event: ${event.payload}');
+    _realtimeSubscription?.stream.listen(
+      (event) {
+        print('Events: ${event.events}');
+        print('Realtime event: ${event.payload}');
 
-      final Map<String, dynamic> payload = event.payload;
-      final List<String> events = event.events; // List of events
-      final String? collectionId = payload['\$collectionId'];
+        final Map<String, dynamic> payload = event.payload;
+        final List<String> events = event.events; // List of events
+        final String? collectionId = payload['\$collectionId'];
 
-      // Handle user update event
-      if (events.contains('users.*.update')) {
-        _authProvider.updateUser();
-      }
-      // Handle community events
-      else if (collectionId ==
-          AppConstants.APPWRITE_COMMUNITIES_COLLECTION_ID) {
-        final community = Community.fromMap(payload);
-        if (events.contains('databases.*.collections.*.documents.*.create')) {
-          _communities.add(community);
-        } else if (events
-            .contains('databases.*.collections.*.documents.*.update')) {
-          _communities[_communities.indexWhere((c) => c.$id == community.$id)] =
-              community;
-        } else if (events
-            .contains('databases.*.collections.*.documents.*.delete')) {
-          _communities.removeWhere((c) => c.$id == community.$id);
+        // Handle user update event
+        if (events.contains('users.*.update')) {
+          _authProvider.updateUser();
         }
-        notifyListeners();
-      }
-      // Handle userProfile events
-      else if (collectionId ==
-          AppConstants.APPWRITE_USER_PROFILES_COLLECTION_ID) {
-        final userProfile = UserProfile.fromMap(payload);
-        if (events.contains('databases.*.collections.*.documents.*.create') ||
-            events.contains('databases.*.collections.*.documents.*.update')) {
-          _userProfiles[userProfile.userId] = userProfile;
-        } else if (events
-            .contains('databases.*.collections.*.documents.*.delete')) {
-          _userProfiles.remove(userProfile.userId);
+        // Handle community events
+        else if (collectionId ==
+            AppConstants.APPWRITE_COMMUNITIES_COLLECTION_ID) {
+          final community = Community.fromMap(payload);
+          if (events.contains('databases.*.collections.*.documents.*.create')) {
+            _communities.add(community);
+          } else if (events
+              .contains('databases.*.collections.*.documents.*.update')) {
+            _communities[_communities
+                .indexWhere((c) => c.$id == community.$id)] = community;
+          } else if (events
+              .contains('databases.*.collections.*.documents.*.delete')) {
+            _communities.removeWhere((c) => c.$id == community.$id);
+          }
+          notifyListeners();
         }
-        notifyListeners();
-      }
-      // Handle community membership, activity, and attendance events
-      else if (collectionId != null) {
-        for (final community in _communities) {
-          if (community.communityMembershipCollectionId == collectionId) {
-            _updateMemberships(community, payload, events);
-            break;
-          } else if (community.activityCollectionId == collectionId) {
-            _updateActivities(community, payload, events);
-            break;
-          } else if (community.activityAttendanceCollectionId == collectionId) {
-            _updateAttendances(community, payload, events);
-            break;
+        // Handle userProfile events
+        else if (collectionId ==
+            AppConstants.APPWRITE_USER_PROFILES_COLLECTION_ID) {
+          final userProfile = UserProfile.fromMap(payload);
+          if (events.contains('databases.*.collections.*.documents.*.create') ||
+              events.contains('databases.*.collections.*.documents.*.update')) {
+            _userProfiles[userProfile.userId] = userProfile;
+          } else if (events
+              .contains('databases.*.collections.*.documents.*.delete')) {
+            _userProfiles.remove(userProfile.userId);
+          }
+          notifyListeners();
+        }
+        // Handle community membership, activity, and attendance events
+        else if (collectionId != null) {
+          for (final community in _communities) {
+            if (community.communityMembershipCollectionId == collectionId) {
+              _updateMemberships(community, payload, events);
+              break;
+            } else if (community.activityCollectionId == collectionId) {
+              _updateActivities(community, payload, events);
+              break;
+            } else if (community.activityAttendanceCollectionId ==
+                collectionId) {
+              _updateAttendances(community, payload, events);
+              break;
+            }
           }
         }
-      }
-    });
+      },
+      onError: (e) {
+        print('Realtime error: $e');
+        if (_authProvider.user != null) _initializeRealTimeSubscription();
+      },
+      cancelOnError: true,
+      onDone: () => _realtimeSubscription = null,
+    );
 
     _isInitialized = true;
     notifyListeners();
