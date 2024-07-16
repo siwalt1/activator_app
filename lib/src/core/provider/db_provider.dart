@@ -233,8 +233,12 @@ class DatabaseProvider with ChangeNotifier {
             _communities.add(community);
           } else if (events
               .contains('databases.*.collections.*.documents.*.update')) {
-            _communities[_communities
-                .indexWhere((c) => c.$id == community.$id)] = community;
+            int index = _communities.indexWhere((c) => c.$id == community.$id);
+            if (index != -1) {
+              _communities[index] = community;
+            } else {
+              _communities.add(community);
+            }
           } else if (events
               .contains('databases.*.collections.*.documents.*.delete')) {
             _communities.removeWhere((c) => c.$id == community.$id);
@@ -310,8 +314,15 @@ class DatabaseProvider with ChangeNotifier {
           membership;
     } else if (events
         .contains('databases.*.collections.*.documents.*.delete')) {
-      _communityMemberships[community.$id]
-          ?.removeWhere((m) => m.$id == membership.$id);
+      if (membership.userId == _authProvider.user?.$id) {
+        _communities.removeWhere((c) => c.$id == community.$id);
+        _activities.remove(community.$id);
+        _activityAttendances.remove(community.$id);
+        _communityMemberships.remove(community.$id);
+      } else {
+        _communityMemberships[community.$id]
+            ?.removeWhere((m) => m.$id == membership.$id);
+      }
     }
 
     notifyListeners();
@@ -370,6 +381,14 @@ class DatabaseProvider with ChangeNotifier {
       String name, String description, int iconCode, String type) async {
     try {
       await _appwriteService.createCommunity(name, description, iconCode, type);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> leaveCommunity(String communityId) async {
+    try {
+      await _appwriteService.leaveCommunity(communityId);
     } catch (e) {
       rethrow;
     }

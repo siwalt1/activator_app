@@ -119,4 +119,30 @@ class AppwriteService {
       rethrow;
     }
   }
+
+  // leave community
+  Future<void> leaveCommunity(String communityId) async {
+    try {
+      final jwt = await getJWT().then((jwt) => jwt.jwt);
+      print('JWT: $jwt');
+
+      final response = await functions.createExecution(
+        functionId: AppConstants.APPWRITE_LEAVE_COMMUNITY_FUNCTION_ID,
+        body: jsonEncode({
+          'communityId': communityId,
+        }),
+        headers: {
+          'authorization': 'Bearer $jwt',
+        },
+      );
+
+      if (response.responseStatusCode == 200) {
+        print('Community left successfully');
+      } else {
+        print('Error leaving community');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

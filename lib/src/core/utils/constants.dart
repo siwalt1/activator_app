@@ -16,6 +16,7 @@ class AppConstants {
   static const String APPWRITE_COMMUNITIES_COLLECTION_ID = '666088a92a47959a2ff4';
   static const String APPWRITE_USER_PROFILES_COLLECTION_ID = '66915c220021827fbd90';
   static const String APPWRITE_CREATE_COMMUNITY_FUNCTION_ID = '6686fcee001e66841fe0';
+  static const String APPWRITE_LEAVE_COMMUNITY_FUNCTION_ID = '669675be00307be3dd7d';
 
   // Theme constants
   static Color primaryRed = const Color(0xFFC62828);
