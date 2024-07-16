@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:activator_app/src/core/models/activity.dart';
 import 'package:activator_app/src/core/models/activity_attendance.dart';
 import 'package:activator_app/src/core/models/community.dart';
@@ -6,6 +8,7 @@ import 'package:activator_app/src/core/models/user_profile.dart';
 import 'package:activator_app/src/core/provider/auth_provider.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:appwrite/appwrite.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:activator_app/src/core/services/appwrite_service.dart';
 import 'package:appwrite/models.dart';
@@ -23,6 +26,7 @@ class DatabaseProvider with ChangeNotifier {
   final _userProfiles = <String, UserProfile>{};
 
   bool _isInitialized = false;
+  bool _isConnected = false;
 
   List<Community> get communities => _communities;
   Map<String, List<CommunityMembership>> get communityMemberships =>
@@ -32,9 +36,12 @@ class DatabaseProvider with ChangeNotifier {
       _activityAttendances;
   Map<String, UserProfile> get userProfiles => _userProfiles;
   bool get isInitialized => _isInitialized;
+  bool get isConnected => _isConnected;
 
   late final AppLifecycleListener appLifecycleListener;
   late final AppLifecycleState? appLifecycleState;
+  late final StreamSubscription<List<ConnectivityResult>>
+      connectivitySubscription;
 
   DatabaseProvider(this._appwriteService, this._authProvider) {
     _initialize();
@@ -43,17 +50,25 @@ class DatabaseProvider with ChangeNotifier {
   void _initialize() {
     appLifecycleState = SchedulerBinding.instance.lifecycleState;
     appLifecycleListener = AppLifecycleListener(
-      onDetach: () => _realtimeSubscription?.close(),
+      onDetach: () => {
+        print('onDetach'),
+        _realtimeSubscription?.close(),
+        _realtimeSubscription = null,
+      },
       onRestart: () => {
-        if (_authProvider.user != null && _realtimeSubscription == null)
+        print('onRestart'),
+        if (_authProvider.user != null &&
+            (_realtimeSubscription == null ||
+                _realtimeSubscription!.controller.isClosed))
           _initializeRealTimeSubscription()
       },
+      onHide: () => print('onHide'),
+      onShow: () => print('onShow'),
+      onInactive: () => print('onInactive'),
+      onPause: () => print('onPause'),
+      onResume: () => print('onResume'),
     );
 
-    if (_authProvider.user != null) {
-      print('#init_0: Reinitializing realtime subscription');
-      _initializeRealTimeSubscription();
-    }
     _authProvider.addListener(() {
       if (_authProvider.user != null) {
         print('#init_1: Reinitializing realtime subscription');
@@ -61,6 +76,7 @@ class DatabaseProvider with ChangeNotifier {
       } else {
         print('#init_2: Closing realtime subscription');
         _realtimeSubscription?.close();
+        _realtimeSubscription = null;
         _isInitialized = false;
 
         _communities.clear();
@@ -72,6 +88,29 @@ class DatabaseProvider with ChangeNotifier {
         notifyListeners();
       }
     });
+
+    connectivitySubscription =
+        Connectivity().onConnectivityChanged.listen(_updateConnectionStatus);
+  }
+
+  Future<void> _updateConnectionStatus(List<ConnectivityResult> result) async {
+    print('Connection status: $result');
+    // final bool previousConnectionStatus = _isConnected;
+    _isConnected =
+        !(result.contains(ConnectivityResult.none) && result.length == 1);
+
+    // if (_isConnected != previousConnectionStatus) {
+    if (_isConnected && _authProvider.user != null) {
+      print('Connected to the internet.');
+      _realtimeSubscription?.close();
+      _initializeRealTimeSubscription();
+    } else {
+      print('Lost internet connection.');
+      _realtimeSubscription?.close();
+      _realtimeSubscription = null;
+    }
+    notifyListeners();
+    // }
   }
 
   Future<Document> createDocument(
@@ -156,6 +195,12 @@ class DatabaseProvider with ChangeNotifier {
 
   _initializeRealTimeSubscription() async {
     print('#init_3: Initializing realtime subscription');
+
+    if (_isInitialized) {
+      _isInitialized = false;
+      notifyListeners();
+    }
+
     final realtime = _appwriteService.realtime;
 
     await getCommunities();
@@ -228,11 +273,23 @@ class DatabaseProvider with ChangeNotifier {
       },
       onError: (e) {
         print('Realtime error: $e');
-        if (_authProvider.user != null) _initializeRealTimeSubscription();
+        if (_authProvider.user != null && isConnected) {
+          _initializeRealTimeSubscription();
+        }
       },
       cancelOnError: true,
-      onDone: () => _realtimeSubscription = null,
+      onDone: () => {
+        print('Realtime subscription done at ${DateTime.now()}'),
+        _realtimeSubscription = null,
+        if (_authProvider.user != null && isConnected)
+          _initializeRealTimeSubscription(),
+      },
     );
+
+    _realtimeSubscription!.controller.onCancel = () {
+      DateTime nowStr = DateTime.now();
+      print('Realtime subscription cancelled at $nowStr');
+    };
 
     _isInitialized = true;
     notifyListeners();
