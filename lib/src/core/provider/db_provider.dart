@@ -393,4 +393,12 @@ class DatabaseProvider with ChangeNotifier {
       rethrow;
     }
   }
+
+  Future<void> createActivity(String communityId) async {
+    try {
+      await _appwriteService.createActivity(communityId);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

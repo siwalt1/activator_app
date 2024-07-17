@@ -10,7 +10,6 @@ import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/widgets/custom_button.dart';
 import 'package:activator_app/src/core/widgets/custom_progress_indicator.dart';
 import 'package:activator_app/src/features/communities/views/community_settings_view.dart';
-import 'package:appwrite/models.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -65,6 +64,23 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
   void dispose() {
     _rocketController.dispose();
     super.dispose();
+  }
+
+  _createActivity(BuildContext context, bool isNew) async {
+    try {
+      final dbProvider = Provider.of<DatabaseProvider>(context, listen: false);
+      await dbProvider.createActivity(community!.$id);
+    } catch (e) {
+      if (!mounted) return; // Check if the widget is still mounted
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            isNew ? 'Error creating activity' : 'Error joining activity',
+          ),
+        ),
+      );
+      if (isNew) _rocketController.reverse();
+    }
   }
 
   @override
@@ -218,10 +234,11 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
                     left: 0,
                     right: 0,
                     child: GestureDetector(
-                      onTap: () => setState(() {
+                      onTap: () => setState(() async {
                         _isRocketClicked = !_isRocketClicked;
                         if (_isRocketClicked) {
                           _rocketController.forward();
+                          _createActivity(context, true);
                         } else {
                           _rocketController.reverse();
                         }
@@ -343,9 +360,7 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
                           const SizedBox(
                               height: AppConstants.separatorSpacing * 2),
                           CustomButton(
-                            onPressed: () {
-                              // Navigate to the session view
-                            },
+                            onPressed: () => _createActivity(context, false),
                             text: 'Join session',
                             fitTextWidth: true,
                           ),

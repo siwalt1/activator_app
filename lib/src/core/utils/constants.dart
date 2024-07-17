@@ -11,13 +11,19 @@ class AppConstants {
 
   // Appwrite constants
   static const String APPWRITE_PROJECT_ID = '6578c59fdf2ca76934dd';
-  static const String APPWRITE_API_ENDPOINT = 'https://appwrite.walter-wm.de/v1';
+  static const String APPWRITE_API_ENDPOINT =
+      'https://appwrite.walter-wm.de/v1';
   static const String APPWRITE_DATABASE_ID = '6660884169dce3a05e38';
-  static const String APPWRITE_COMMUNITIES_COLLECTION_ID = '666088a92a47959a2ff4';
-  static const String APPWRITE_USER_PROFILES_COLLECTION_ID = '66915c220021827fbd90';
-  static const String APPWRITE_CREATE_COMMUNITY_FUNCTION_ID = '6686fcee001e66841fe0';
-  static const String APPWRITE_LEAVE_COMMUNITY_FUNCTION_ID = '669675be00307be3dd7d';
-
+  static const String APPWRITE_COMMUNITIES_COLLECTION_ID =
+      '666088a92a47959a2ff4';
+  static const String APPWRITE_USER_PROFILES_COLLECTION_ID =
+      '66915c220021827fbd90';
+  static const String APPWRITE_CREATE_COMMUNITY_FUNCTION_ID =
+      '6686fcee001e66841fe0';
+  static const String APPWRITE_LEAVE_COMMUNITY_FUNCTION_ID =
+      '669675be00307be3dd7d';
+  static const String APPWRITE_CREATE_ACTIVITY_FUNCTION_ID =
+      '6697fb0d001a539980fc';
   // Theme constants
   static Color primaryRed = const Color(0xFFC62828);
   static Color secondaryRed = const Color(0xFFFFCDD2);
@@ -66,7 +72,6 @@ class AppConstants {
     ),
   );
 }
-
 
 // Activity types constants
 enum ActivityType {

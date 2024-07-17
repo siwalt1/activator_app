@@ -145,4 +145,30 @@ class AppwriteService {
       rethrow;
     }
   }
+
+  // create activity
+  Future<void> createActivity(String communityId) async {
+    try {
+      final jwt = await getJWT().then((jwt) => jwt.jwt);
+      print('JWT: $jwt');
+
+      final response = await functions.createExecution(
+        functionId: AppConstants.APPWRITE_CREATE_ACTIVITY_FUNCTION_ID,
+        body: jsonEncode({
+          'communityId': communityId,
+        }),
+        headers: {
+          'authorization': 'Bearer $jwt',
+        },
+      );
+
+      if (response.responseStatusCode == 200) {
+        print('Created activity successfully');
+      } else {
+        print('Error creating activity');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
