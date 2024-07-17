@@ -42,9 +42,16 @@ class ProfileWidget extends StatelessWidget {
             size: 50,
           ),
         ),
-        title: Text(user.name, style: const TextStyle(fontSize: 24)),
-        subtitle: Text(user.email),
-        // onTap navigation to ChangeProfileView
+        title: Text(
+          user.name,
+          style: const TextStyle(fontSize: 24),
+          overflow: TextOverflow.ellipsis,
+        ),
+        subtitle: Text(
+          user.email,
+          overflow: TextOverflow.ellipsis,
+        ),
+        trailing: const SizedBox(),
         onTap: () => Navigator.of(context)
             .restorablePushNamed(ChangeProfileView.routeName),
       ),
