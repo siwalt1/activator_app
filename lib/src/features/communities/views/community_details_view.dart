@@ -71,7 +71,7 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
       final dbProvider = Provider.of<DatabaseProvider>(context, listen: false);
       await dbProvider.createActivity(community!.$id);
     } catch (e) {
-      if (!mounted) return; // Check if the widget is still mounted
+      if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
