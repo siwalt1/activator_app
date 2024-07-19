@@ -401,4 +401,12 @@ class DatabaseProvider with ChangeNotifier {
       rethrow;
     }
   }
+
+  Future<void> leaveActivity(String communityId, String activityId) async {
+    try {
+      await _appwriteService.leaveActivity(communityId, activityId);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

@@ -24,6 +24,8 @@ class AppConstants {
       '669675be00307be3dd7d';
   static const String APPWRITE_CREATE_ACTIVITY_FUNCTION_ID =
       '6697fb0d001a539980fc';
+  static const String APPWRITE_LEAVE_ACTIVITY_FUNCTION_ID =
+      '669a1c270019640a6777';
   // Theme constants
   static Color primaryRed = const Color(0xFFC62828);
   static Color secondaryRed = const Color(0xFFFFCDD2);

@@ -171,4 +171,31 @@ class AppwriteService {
       rethrow;
     }
   }
+
+  // leave activity
+  Future<void> leaveActivity(String communityId, String activityId) async {
+    try {
+      final jwt = await getJWT().then((jwt) => jwt.jwt);
+      print('JWT: $jwt');
+
+      final response = await functions.createExecution(
+        functionId: AppConstants.APPWRITE_LEAVE_ACTIVITY_FUNCTION_ID,
+        body: jsonEncode({
+          'communityId': communityId,
+          'activityId': activityId,
+        }),
+        headers: {
+          'authorization': 'Bearer $jwt',
+        },
+      );
+
+      if (response.responseStatusCode == 200) {
+        print('Left activity successfully');
+      } else {
+        print('Error leaving activity');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

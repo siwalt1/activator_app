@@ -10,6 +10,7 @@ class CustomButton extends StatelessWidget {
     this.color,
     this.textColor,
     this.fitTextWidth = false,
+    this.isLoading = false,
   });
 
   final String text;
@@ -18,6 +19,7 @@ class CustomButton extends StatelessWidget {
   final Color? color;
   final Color? textColor;
   final bool fitTextWidth;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -32,12 +34,25 @@ class CustomButton extends StatelessWidget {
       height: 42.0,
       child: Align(
         alignment: alignment,
-        child: Text(
-          text,
-          style: TextStyle(
-            fontSize: 16,
-            color: textColor,
-          ),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Text(
+              text,
+              style: TextStyle(
+                fontSize: 16,
+                color: isLoading ? Colors.transparent : textColor,
+              ),
+            ),
+            if (isLoading)
+              const SizedBox(
+                width: 16,
+                height: 16,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.0,
+                ),
+              ),
+          ],
         ),
       ),
     );
