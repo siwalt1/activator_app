@@ -142,13 +142,19 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: AppConstants.separatorSpacing),
-                        CustomTextFormField(
-                          initialValue: community!.description,
-                          label: 'Description',
-                          maxLines: null,
-                          readOnly: true,
-                        ),
+                        if (community!.description.isNotEmpty)
+                          Column(
+                            children: [
+                              const SizedBox(
+                                  height: AppConstants.separatorSpacing),
+                              CustomTextFormField(
+                                initialValue: community!.description,
+                                label: 'Description',
+                                maxLines: null,
+                                readOnly: true,
+                              ),
+                            ],
+                          ),
                         const SizedBox(height: AppConstants.separatorSpacing),
                         Material(
                           color: Theme.of(context).colorScheme.surfaceContainer,
