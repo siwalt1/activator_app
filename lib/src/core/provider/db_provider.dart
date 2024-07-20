@@ -142,6 +142,7 @@ class DatabaseProvider with ChangeNotifier {
       fetchTasks.add(Future.wait([_fetchUserProfiles()]));
 
       await Future.wait(fetchTasks);
+      _sortCommunitiesByLastActivity();
       notifyListeners();
     } catch (e) {
       print(e);
@@ -173,6 +174,11 @@ class DatabaseProvider with ChangeNotifier {
       AppConstants.APPWRITE_DATABASE_ID,
       community.activityAttendanceCollectionId,
     );
+    if (community.$id == '669a2755003036191f49'){
+      print('+++++++++');
+      print('AttendanceList: ${attendanceList.documents}');
+      print('length: ${attendanceList.documents.length}');
+    }
     _activityAttendances[community.$id] = attendanceList.documents
         .map((doc) => ActivityAttendance.fromMap(doc.data))
         .toList();
@@ -191,6 +197,18 @@ class DatabaseProvider with ChangeNotifier {
     }
 
     notifyListeners();
+  }
+
+  void _sortCommunitiesByLastActivity() {
+    _communities.sort((a, b) {
+      final aLastActivityDate = _activities[a.$id]?.isNotEmpty == true
+          ? _activities[a.$id]!.last.startDate
+          : DateTime.fromMillisecondsSinceEpoch(0);
+      final bLastActivityDate = _activities[b.$id]?.isNotEmpty == true
+          ? _activities[b.$id]!.last.startDate
+          : DateTime.fromMillisecondsSinceEpoch(0);
+      return bLastActivityDate.compareTo(aLastActivityDate);
+    });
   }
 
   _initializeRealTimeSubscription() async {
@@ -243,6 +261,7 @@ class DatabaseProvider with ChangeNotifier {
               .contains('databases.*.collections.*.documents.*.delete')) {
             _communities.removeWhere((c) => c.$id == community.$id);
           }
+          _sortCommunitiesByLastActivity();
           notifyListeners();
         }
         // Handle userProfile events
@@ -273,6 +292,8 @@ class DatabaseProvider with ChangeNotifier {
               break;
             }
           }
+          _sortCommunitiesByLastActivity();
+          notifyListeners();
         }
       },
       onError: (e) {
@@ -325,7 +346,7 @@ class DatabaseProvider with ChangeNotifier {
       }
     }
 
-    notifyListeners();
+    // notifyListeners();
   }
 
   void _updateActivities(
@@ -346,7 +367,7 @@ class DatabaseProvider with ChangeNotifier {
       _activities[community.$id]?.removeWhere((a) => a.$id == activity.$id);
     }
 
-    notifyListeners();
+    // notifyListeners();
   }
 
   void _updateAttendances(
@@ -368,7 +389,7 @@ class DatabaseProvider with ChangeNotifier {
           ?.removeWhere((a) => a.$id == attendance.$id);
     }
 
-    notifyListeners();
+    // notifyListeners();
   }
 
   @override
