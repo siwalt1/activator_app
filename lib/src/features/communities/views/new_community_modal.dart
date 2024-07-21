@@ -198,24 +198,24 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
                                             ),
                                             children: const <TextSpan>[
                                               TextSpan(
-                                                text: 'Solo',
+                                                text: 'Single',
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
                                               TextSpan(
                                                 text:
-                                                    ': Activities that can be done alone, such as reading a book or going for a jog.\n\n',
+                                                    ': Activities that are done alone, such as reading a book or meditating. Theses sessions are done separately and at different times.\n\n',
                                               ),
                                               TextSpan(
-                                                text: 'Multi',
+                                                text: 'Real-time',
                                                 style: TextStyle(
                                                     fontWeight:
                                                         FontWeight.bold),
                                               ),
                                               TextSpan(
                                                 text:
-                                                    ': Activities that require more than one person, like playing a board game or participating in team sports.',
+                                                    ': Activities that require more than one person, like playing a board game or participating in team sports. These sessions are done in real-time.',
                                               ),
                                             ],
                                           ),

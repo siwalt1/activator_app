@@ -16,14 +16,14 @@ class ActivityTypeSelector extends StatelessWidget {
     return Row(
       children: [
         ActivityTypeItem(
-          title: 'Solo',
+          title: 'Single',
           icon: Icons.person,
           isSelected: selectedActivityType == ActivityType.solo,
           onTap: () => onActivityTypeSelected(ActivityType.solo),
         ),
         const SizedBox(width: AppConstants.separatorSpacing),
         ActivityTypeItem(
-          title: 'Multi',
+          title: 'Real-time',
           icon: Icons.group,
           isSelected: selectedActivityType == ActivityType.multi,
           onTap: () => onActivityTypeSelected(ActivityType.multi),
