@@ -198,7 +198,7 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
                                             ),
                                             children: const <TextSpan>[
                                               TextSpan(
-                                                text: 'Single',
+                                                text: 'Solo',
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.bold,
                                                 ),

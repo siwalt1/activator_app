@@ -16,7 +16,7 @@ class ActivityTypeSelector extends StatelessWidget {
     return Row(
       children: [
         ActivityTypeItem(
-          title: 'Single',
+          title: 'Solo',
           icon: Icons.person,
           isSelected: selectedActivityType == ActivityType.solo,
           onTap: () => onActivityTypeSelected(ActivityType.solo),
