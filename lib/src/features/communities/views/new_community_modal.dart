@@ -189,14 +189,19 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
                                           AlertDialog(
                                         title: const Text('Activity types'),
                                         content: RichText(
-                                          text: const TextSpan(
-                                            text: '',
-                                            children: <TextSpan>[
+                                          text: TextSpan(
+                                            style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurface,
+                                              fontSize: 14,
+                                            ),
+                                            children: const <TextSpan>[
                                               TextSpan(
                                                 text: 'Solo',
                                                 style: TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold),
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                               ),
                                               TextSpan(
                                                 text:
