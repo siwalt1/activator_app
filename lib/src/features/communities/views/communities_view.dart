@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:activator_app/src/core/models/activity.dart';
 import 'package:activator_app/src/core/provider/auth_provider.dart';
 import 'package:activator_app/src/core/provider/db_provider.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
@@ -140,8 +141,23 @@ class _CommunitiesViewState extends State<CommunitiesView> {
                           value.activityAttendances[community.$id] == null) {
                         return const CircularProgressIndicator();
                       }
-                      bool isCommunityActive = false;
+                      Activity? activeActivity;
+                      Activity? lastActivity;
+                      String lastActivityUser = '';
                       if (value.activities[community.$id] != null) {
+                        lastActivity = value.activities[community.$id]!.last;
+                        lastActivityUser = value
+                                .userProfiles[value
+                                    .activityAttendances[community.$id]
+                                    ?.singleWhere((att) =>
+                                        att.activityId == lastActivity!.$id &&
+                                        att.joinOrder == 0)
+                                    .userId]
+                                ?.name ??
+                            'Someone';
+                        if (lastActivityUser == authProvider.user!.name) {
+                          lastActivityUser = 'You';
+                        }
                         if (community.type == 'solo') {
                           int activityIndex =
                               value.activities[community.$id]!.indexWhere(
@@ -158,7 +174,8 @@ class _CommunitiesViewState extends State<CommunitiesView> {
                           );
 
                           if (activityIndex != -1) {
-                            isCommunityActive = true;
+                            activeActivity =
+                                value.activities[community.$id]![activityIndex];
                             DateTime endDate = value
                                 .activities[community.$id]![activityIndex]
                                 .endDate;
@@ -178,7 +195,8 @@ class _CommunitiesViewState extends State<CommunitiesView> {
                                 act.type == 'multi',
                           );
                           if (activityIndex != -1) {
-                            isCommunityActive = true;
+                            activeActivity =
+                                value.activities[community.$id]![activityIndex];
                             DateTime endDate = value
                                 .activities[community.$id]![activityIndex]
                                 .endDate;
@@ -220,7 +238,16 @@ class _CommunitiesViewState extends State<CommunitiesView> {
                                 overflow: TextOverflow.ellipsis,
                               ),
                               subtitle: Text(
-                                '${value.communityMemberships[community.$id]?.length} member${value.communityMemberships[community.$id]!.length > 1 ? 's' : ''} · ${community.type} activities',
+                                lastActivity?.type == 'solo' ||
+                                        lastActivity?.type == 'multi'
+                                    ? '$lastActivityUser ${lastActivityUser == 'You' ? 'have' : 'has'} started a session'
+                                    : lastActivity?.type == 'create'
+                                        ? '$lastActivityUser ${lastActivityUser == 'You' ? 'have' : 'has'} created the community'
+                                        : lastActivity?.type == 'join'
+                                            ? '$lastActivityUser ${lastActivityUser == 'You' ? 'have' : 'has'} joined the community'
+                                            : lastActivity?.type == 'leave'
+                                                ? '$lastActivityUser ${lastActivityUser == 'You' ? 'have' : 'has'} left the community'
+                                                : '',
                                 overflow: TextOverflow.ellipsis,
                               ),
                               trailing: SizedBox(
@@ -244,7 +271,7 @@ class _CommunitiesViewState extends State<CommunitiesView> {
                                       ),
                                     ),
                                     // if session is active, show a red dot
-                                    if (isCommunityActive)
+                                    if (activeActivity != null)
                                       Align(
                                         alignment: Alignment.centerRight,
                                         child: Icon(
