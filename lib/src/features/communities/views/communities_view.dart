@@ -25,6 +25,17 @@ class CommunitiesView extends StatefulWidget {
 
 class _CommunitiesViewState extends State<CommunitiesView> {
   Timer? endDateTimer; // timer to refresh the view when an activity ends
+  DateTime? currentTimerEndDate;
+
+  void _setTimer(DateTime endDate) {
+    endDateTimer?.cancel();
+    endDateTimer = Timer(endDate.difference(DateTime.now().toUtc()), () {
+      if (mounted) {
+        setState(() {});
+      }
+    });
+    currentTimerEndDate = endDate;
+  }
 
   void _openMaterialModal(BuildContext context) {
     showModalBottomSheet(
@@ -114,6 +125,8 @@ class _CommunitiesViewState extends State<CommunitiesView> {
               return Consumer<AuthProvider>(
                 builder: (BuildContext context, AuthProvider authProvider,
                     Widget? child) {
+                  // reset the timer endDate
+                  currentTimerEndDate = null;
                   return ListView.builder(
                     // Providing a restorationId allows the ListView to restore the
                     // scroll position when a user leaves and returns to the app after it
@@ -143,22 +156,17 @@ class _CommunitiesViewState extends State<CommunitiesView> {
                                     ) !=
                                     -1,
                           );
+
                           if (activityIndex != -1) {
                             isCommunityActive = true;
-                            // stop previous timer
-                            endDateTimer?.cancel();
-                            // set a new timer to refresh the view
-                            endDateTimer = Timer(
-                              value.activities[community.$id]![activityIndex]
-                                  .endDate
-                                  .difference(DateTime.now().toUtc()),
-                              () {
-                                setState(() {});
-                              },
-                            );
-                          } else {
-                            isCommunityActive = false;
-                            endDateTimer?.cancel();
+                            DateTime endDate = value
+                                .activities[community.$id]![activityIndex]
+                                .endDate;
+                            if (currentTimerEndDate == null ||
+                                (currentTimerEndDate != null &&
+                                    currentTimerEndDate!.isAfter(endDate))) {
+                              _setTimer(endDate);
+                            }
                           }
                         } else if (community.type == 'multi') {
                           int activityIndex =
@@ -171,20 +179,14 @@ class _CommunitiesViewState extends State<CommunitiesView> {
                           );
                           if (activityIndex != -1) {
                             isCommunityActive = true;
-                            // stop previous timer
-                            endDateTimer?.cancel();
-                            // set a new timer to refresh the view
-                            endDateTimer = Timer(
-                              value.activities[community.$id]![activityIndex]
-                                  .endDate
-                                  .difference(DateTime.now().toUtc()),
-                              () {
-                                setState(() {});
-                              },
-                            );
-                          } else {
-                            isCommunityActive = false;
-                            endDateTimer?.cancel();
+                            DateTime endDate = value
+                                .activities[community.$id]![activityIndex]
+                                .endDate;
+                            if (currentTimerEndDate == null ||
+                                (currentTimerEndDate != null &&
+                                    currentTimerEndDate!.isAfter(endDate))) {
+                              _setTimer(endDate);
+                            }
                           }
                         }
                       }
