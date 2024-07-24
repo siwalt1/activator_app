@@ -44,21 +44,13 @@ class _CommunitiesViewState extends State<CommunitiesView> {
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(12.0),
+          top: Radius.circular(AppConstants.borderRadius),
         ),
       ),
       useSafeArea: true,
       elevation: 10,
       builder: (BuildContext bottomSheetContext) {
-        return FractionallySizedBox(
-          heightFactor: 1,
-          child: Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(bottomSheetContext).viewInsets.bottom,
-            ),
-            child: const NewCommunityModal(),
-          ),
-        );
+        return NewCommunityModal(bottomSheetContext: bottomSheetContext);
       },
     );
   }
