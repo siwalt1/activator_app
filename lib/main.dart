@@ -33,7 +33,7 @@ void main() async {
         ChangeNotifierProvider(
           create: (context) => AuthProvider(
             Provider.of<AppwriteService>(context, listen: false),
-          )..checkSession(),
+          ),
         ),
         ChangeNotifierProvider(
           create: (context) => DatabaseProvider(
