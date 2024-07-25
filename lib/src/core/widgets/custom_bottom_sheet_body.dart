@@ -5,18 +5,18 @@ import 'package:flutter/material.dart';
 class CustomBottomSheetBody extends StatelessWidget {
   const CustomBottomSheetBody({
     super.key,
-    required this.child,
     required this.title,
     required this.bottomSheetContext,
     this.initialFullScreen = false,
     this.isLoading = false,
+    required this.child,
   });
 
-  final Widget child;
   final String title;
   final BuildContext bottomSheetContext;
   final bool initialFullScreen;
   final bool isLoading;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {

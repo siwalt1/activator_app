@@ -4,12 +4,15 @@ import 'package:activator_app/src/core/models/community.dart';
 import 'package:activator_app/src/core/models/community_membership.dart';
 import 'package:activator_app/src/core/provider/db_provider.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
+import 'package:activator_app/src/core/widgets/custom_bottom_sheet_body.dart';
+import 'package:activator_app/src/core/widgets/custom_button.dart';
 import 'package:activator_app/src/core/widgets/custom_list_tile.dart';
 import 'package:activator_app/src/core/widgets/custom_list_tile_divider.dart';
 import 'package:activator_app/src/core/widgets/custom_progress_indicator.dart';
 import 'package:activator_app/src/core/widgets/custom_text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:share/share.dart';
 
 class CommunitySettingsView extends StatefulWidget {
   const CommunitySettingsView({
@@ -33,37 +36,165 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
   bool isNavigated = false; // Track if navigation has already happened
   bool _isLoading = false;
 
-  _leaveCommunity() async {
-    final dbProvider = Provider.of<DatabaseProvider>(context, listen: false);
-    try {
-      setState(() {
-        _isLoading = true;
-      });
-      await dbProvider.leaveCommunity(widget.communityId);
-    } catch (e) {
-      if (mounted) {
+  void _leaveCommunity(bool isLastMember) async {
+    Future<void> leaveCommunityAction() async {
+      final dbProvider = Provider.of<DatabaseProvider>(context, listen: false);
+      try {
         setState(() {
-          _isLoading = false;
+          _isLoading = true;
         });
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: const Text('Something went wrong'),
-              content: const Text('Try again later.'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Close'),
-                ),
-              ],
+        await dbProvider.leaveCommunity(widget.communityId);
+      } catch (e) {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text('Something went wrong'),
+                content: const Text('Try again later.'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Close'),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      }
+    }
+
+    // show a dialog to confirm the action
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Leave Community'),
+          content: Text(
+              'Are you sure you want to ${isLastMember ? 'delete' : 'leave'} this community?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                leaveCommunityAction();
+              },
+              child: const Text('Leave'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _openInvitationModal(String invitationToken, String communityName) {
+    String token = invitationToken;
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppConstants.borderRadius),
+        ),
+      ),
+      useSafeArea: true,
+      elevation: 10,
+      builder: (BuildContext bottomSheetContext) {
+        return StatefulBuilder(
+          builder: (
+            BuildContext context,
+            void Function(void Function()) setState,
+          ) {
+            return CustomBottomSheetBody(
+              title: "Invite via link",
+              bottomSheetContext: bottomSheetContext,
+              child: Column(
+                children: [
+                  const CircleAvatar(
+                    radius: 35,
+                    child: Icon(
+                      Icons.add_link_outlined,
+                      size: 50,
+                    ),
+                  ),
+                  const SizedBox(height: AppConstants.separatorSpacing),
+                  const Text('Anyone with this link can join the community.'),
+                  const SizedBox(height: AppConstants.separatorSpacing),
+                  CustomTextFormField(
+                    initialValue:
+                        'https://open.activator-app.walter-wm.de/invite/$token',
+                    readOnly: true,
+                    label: null,
+                  ),
+                  const SizedBox(height: AppConstants.separatorSpacing),
+                  CustomButton(
+                    text: 'Share Link',
+                    color: Theme.of(context).colorScheme.primary,
+                    textColor: Theme.of(context).colorScheme.onPrimary,
+                    onPressed: () {
+                      Share.share(
+                          'Join the community "$communityName" on the activator app at https://open.activator-app.walter-wm.de/invite/$token');
+                    },
+                  ),
+                  const SizedBox(height: AppConstants.separatorSpacing),
+                  CustomButton(
+                    text: 'Reset Link',
+                    color: Theme.of(context).colorScheme.surface,
+                    textColor: Theme.of(context).colorScheme.onSurface,
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: const Text('Reset Link'),
+                            content: const Text(
+                              'Are you sure you want to reset the invitation link? This will make the current link invalid.',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () async {
+                                  final dbProvider =
+                                      Provider.of<DatabaseProvider>(context,
+                                          listen: false);
+                                  Navigator.of(context).pop();
+                                  String? updatedToken = await dbProvider
+                                      .resetInvitationToken(widget.communityId);
+                                  setState(() {
+                                    token = updatedToken ?? token;
+                                  });
+                                },
+                                child: const Text('Reset'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ],
+              ),
             );
           },
         );
-      }
-    }
+      },
+    );
   }
 
   @override
@@ -170,7 +301,10 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
                                 InkWell(
                                   borderRadius: BorderRadius.circular(
                                       AppConstants.borderRadius),
-                                  onTap: () => print('Add Members tapped'),
+                                  onTap: () => _openInvitationModal(
+                                    community!.invitationToken,
+                                    community!.name,
+                                  ),
                                   child: ListTile(
                                     leading: CircleAvatar(
                                       backgroundColor: Colors.transparent,
@@ -228,7 +362,8 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
                           text: communityMemberships?.length == 1
                               ? 'Delete Community'
                               : 'Leave Community',
-                          onPressed: _leaveCommunity,
+                          onPressed: () => _leaveCommunity(
+                              communityMemberships?.length == 1),
                           showArrow: false,
                           textAlign: TextAlign.center,
                           textColor: Theme.of(context).colorScheme.onPrimary,

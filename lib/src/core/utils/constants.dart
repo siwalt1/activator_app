@@ -26,6 +26,8 @@ class AppConstants {
       '6697fb0d001a539980fc';
   static const String APPWRITE_LEAVE_ACTIVITY_FUNCTION_ID =
       '669a1c270019640a6777';
+  static const String APPWRITE_RESET_INVITATION_TOKEN_FUNCTION_ID =
+      '66a14316002b45aa6d3d';
   // Theme constants
   static Color primaryRed = const Color(0xFFC62828);
   static Color secondaryRed = const Color(0xFFFFCDD2);

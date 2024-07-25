@@ -430,4 +430,13 @@ class DatabaseProvider with ChangeNotifier {
       rethrow;
     }
   }
+
+  Future<String?> resetInvitationToken(String communityId) async {
+    try {
+      String? updatedToken = await _appwriteService.resetInvitationToken(communityId);
+      return updatedToken;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

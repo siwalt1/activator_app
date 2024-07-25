@@ -9,6 +9,7 @@ class Community{
     required this.activityAttendanceCollectionId,
     required this.activityCollectionId,
     required this.communityMembershipCollectionId,
+    required this.invitationToken,
   });
 
   final String $id;
@@ -20,6 +21,7 @@ class Community{
   final String activityAttendanceCollectionId;
   final String activityCollectionId;
   final String communityMembershipCollectionId;
+  final String invitationToken;
 
   factory Community.fromMap(Map<String, dynamic> map) {
     return Community(
@@ -32,6 +34,7 @@ class Community{
       activityAttendanceCollectionId: map['activityAttendanceCollectionId'],
       activityCollectionId: map['activityCollectionId'],
       communityMembershipCollectionId: map['communityMembershipCollectionId'],
+      invitationToken: map['invitationToken'],
     );
   }
 
@@ -46,6 +49,7 @@ class Community{
       'activityAttendanceCollectionId': activityAttendanceCollectionId,
       'activityCollectionId': activityCollectionId,
       'communityMembershipCollectionId': communityMembershipCollectionId,
+      'invitationToken': invitationToken,
     };
   }
 }

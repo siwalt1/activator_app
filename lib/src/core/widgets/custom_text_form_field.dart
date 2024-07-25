@@ -16,7 +16,7 @@ class CustomTextFormField extends StatelessWidget {
     this.readOnly = false,
   });
 
-  final String label;
+  final String? label;
   final String initialValue;
   final int? maxLines;
   final int? maxLength;

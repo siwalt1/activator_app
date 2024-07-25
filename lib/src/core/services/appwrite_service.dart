@@ -198,4 +198,31 @@ class AppwriteService {
       rethrow;
     }
   }
+
+  // reset invitation token
+  Future<String?> resetInvitationToken(String communityId) async {
+    try {
+      final jwt = await getJWT().then((jwt) => jwt.jwt);
+      print('JWT: $jwt');
+
+      final Execution response = await functions.createExecution(
+        functionId: AppConstants.APPWRITE_RESET_INVITATION_TOKEN_FUNCTION_ID,
+        body: jsonEncode({'communityId': communityId}),
+        headers: {
+          'authorization': 'Bearer $jwt',
+        },
+      );
+
+      if (response.responseStatusCode == 200) {
+        print('Invitation token reset successfully');
+        var responseBody = jsonDecode(response.responseBody);
+        return responseBody["invitationToken"];
+      } else {
+        print('Error resetting invitation token');
+        return null;
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
