@@ -131,7 +131,7 @@ class _ChangeProfileViewState extends State<ChangeProfileView> {
                         text: 'Change Password',
                         showArrow: false,
                         textAlign: TextAlign.center,
-                        textColor: Theme.of(context).colorScheme.primary,
+                        textColor: Theme.of(context).colorScheme.onSurface,
                         onPressed: () {
                           Widget changeNameView = const ChangePasswordView();
                           Navigator.of(context).push(
@@ -160,7 +160,7 @@ class _ChangeProfileViewState extends State<ChangeProfileView> {
                         showArrow: false,
                         textAlign: TextAlign.center,
                         textColor: Theme.of(context).colorScheme.onPrimary,
-                        backgroundColor: Theme.of(context).colorScheme.error,
+                        backgroundColor: Theme.of(context).colorScheme.primary,
                       ),
                     ],
                   ),
