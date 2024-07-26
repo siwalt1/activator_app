@@ -2,6 +2,7 @@ import 'package:activator_app/src/core/models/activity.dart';
 import 'package:activator_app/src/core/models/activity_attendance.dart';
 import 'package:activator_app/src/core/models/community.dart';
 import 'package:activator_app/src/core/models/community_membership.dart';
+import 'package:activator_app/src/core/provider/auth_provider.dart';
 import 'package:activator_app/src/core/provider/db_provider.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/widgets/custom_bottom_sheet_body.dart';
@@ -197,6 +198,91 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
     );
   }
 
+  void _openUserModal(String userName, DateTime dateJoined, bool isOwnProfile) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppConstants.borderRadius),
+        ),
+      ),
+      useSafeArea: true,
+      elevation: 10,
+      builder: (BuildContext bottomSheetContext) {
+        return StatefulBuilder(
+          builder: (
+            BuildContext context,
+            void Function(void Function()) setState,
+          ) {
+            return CustomBottomSheetBody(
+              bottomSheetContext: bottomSheetContext,
+              child: SizedBox(
+                width: double.infinity,
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 35,
+                      child: Text(userName[0],
+                          style: const TextStyle(fontSize: 30)),
+                    ),
+                    const SizedBox(height: AppConstants.separatorSpacing),
+                    Text(
+                      '${userName}${isOwnProfile ? ' (You)' : ''}',
+                      style: const TextStyle(fontSize: 20),
+                    ),
+                    const SizedBox(height: AppConstants.separatorSpacing),
+                    // Show the date the user joined the community
+                    Text(
+                      'Member since ${dateJoined.toLocal().year}-${dateJoined.toLocal().month}-${dateJoined.toLocal().day}',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: AppConstants.separatorSpacing),
+                    if (!isOwnProfile)
+                      CustomButton(
+                        text: 'Remove from Community',
+                        color: Theme.of(context).colorScheme.primary,
+                        textColor: Theme.of(context).colorScheme.onPrimary,
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: const Text('Remove from Community'),
+                                content: const Text(
+                                    'Are you sure you want to remove this user from the community?'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('Cancel'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                      // remove user from community
+                                    },
+                                    child: const Text('Remove'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                      ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final dbProvider = Provider.of<DatabaseProvider>(context, listen: true);
@@ -330,8 +416,21 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
                                         InkWell(
                                           borderRadius: BorderRadius.circular(
                                               AppConstants.borderRadius),
-                                          onTap: () => print(
-                                              '${membership.userId} tapped'),
+                                          onTap: () {
+                                            final AuthProvider authProvider =
+                                                Provider.of<AuthProvider>(
+                                                    context,
+                                                    listen: false);
+                                            _openUserModal(
+                                              dbProvider
+                                                  .userProfiles[
+                                                      membership.userId]!
+                                                  .name,
+                                              membership.createdAt,
+                                              membership.userId ==
+                                                  authProvider.user!.$id,
+                                            );
+                                          },
                                           child: ListTile(
                                             leading: CircleAvatar(
                                               child: Text(dbProvider

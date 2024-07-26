@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 class CustomBottomSheetBody extends StatelessWidget {
   const CustomBottomSheetBody({
     super.key,
-    required this.title,
+    this.title,
     required this.bottomSheetContext,
     this.initialFullScreen = false,
     this.isLoading = false,
     required this.child,
   });
 
-  final String title;
+  final String? title;
   final BuildContext bottomSheetContext;
   final bool initialFullScreen;
   final bool isLoading;
@@ -34,13 +34,14 @@ class CustomBottomSheetBody extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                  if (title != null)
+                    Text(
+                      title!,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
                   const SizedBox(height: AppConstants.separatorSpacing),
                   Flexible(
                     child: SingleChildScrollView(
