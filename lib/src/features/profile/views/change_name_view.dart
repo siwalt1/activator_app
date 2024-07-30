@@ -11,7 +11,7 @@ class ChangeNameView extends StatefulWidget {
     super.key,
   });
 
-  static const routeName = '/change_value';
+  static const routeName = '/change-name';
 
   @override
   State<ChangeNameView> createState() => _ChangeNameViewState();

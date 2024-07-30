@@ -9,7 +9,6 @@ import 'package:activator_app/src/core/utils/format_date.dart';
 import 'package:activator_app/src/core/widgets/custom_list_tile_divider.dart';
 import 'package:activator_app/src/core/widgets/custom_progress_indicator.dart';
 import 'package:activator_app/src/features/communities/views/new_community_modal.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -202,18 +201,9 @@ class _CommunitiesViewState extends State<CommunitiesView> {
                       }
                       return InkWell(
                         onTap: () {
-                          routeBuilder(context) => CommunityDetailsView(
-                                communityId: community.$id,
-                              );
-
-                          Navigator.of(context).push(
-                            Platform.isIOS
-                                ? CupertinoPageRoute(
-                                    builder: routeBuilder,
-                                  )
-                                : MaterialPageRoute(
-                                    builder: routeBuilder,
-                                  ),
+                          Navigator.of(context).pushNamed(
+                            CommunityDetailsView.routeName,
+                            arguments: {'communityId': community.$id},
                           );
                         },
                         child: Column(

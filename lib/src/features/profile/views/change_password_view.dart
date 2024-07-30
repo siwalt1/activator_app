@@ -11,7 +11,7 @@ class ChangePasswordView extends StatefulWidget {
     super.key,
   });
 
-  static const routeName = '/change_value';
+  static const routeName = '/change-password';
 
   @override
   State<ChangePasswordView> createState() => _ChangePasswordViewState();

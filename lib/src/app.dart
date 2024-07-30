@@ -1,8 +1,13 @@
 import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/features/HomePage/home_page_view.dart';
 import 'package:activator_app/src/features/auth/views/welcome_view.dart';
+import 'package:activator_app/src/features/communities/views/community_details_view.dart';
+import 'package:activator_app/src/features/communities/views/community_settings_view.dart';
 import 'package:activator_app/src/features/initial/views/not_found_view.dart';
 import 'package:activator_app/src/features/initial/views/splash_view.dart';
+import 'package:activator_app/src/features/profile/views/change_email_view.dart';
+import 'package:activator_app/src/features/profile/views/change_name_view.dart';
+import 'package:activator_app/src/features/profile/views/change_password_view.dart';
 import 'package:activator_app/src/features/profile/views/change_profile_view.dart';
 import 'package:activator_app/src/features/profile/views/profile_theme_view.dart';
 import 'package:flutter/cupertino.dart';
@@ -62,9 +67,24 @@ class MyApp extends StatelessWidget {
       // Flutter web url navigation and deep linking.
       onGenerateRoute: (RouteSettings routeSettings) {
         Widget routeBuilder(BuildContext context) {
+          final arguments = routeSettings.arguments as Map<String, dynamic>?;
           switch (routeSettings.name) {
             case WelcomeView.routeName:
               return const WelcomeView();
+            case CommunitySettingsView.routeName:
+              return CommunitySettingsView(
+                communityId: arguments?['communityId'],
+              );
+            case CommunityDetailsView.routeName:
+              return CommunityDetailsView(
+                communityId: arguments?['communityId'],
+              );
+            case ChangeEmailView.routeName:
+              return const ChangeEmailView();
+            case ChangePasswordView.routeName:
+              return const ChangePasswordView();
+            case ChangeNameView.routeName:
+              return const ChangeNameView();
             case ChangeProfileView.routeName:
               return const ChangeProfileView();
             case ProfileThemeView.routeName:

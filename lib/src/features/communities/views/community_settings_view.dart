@@ -21,7 +21,7 @@ class CommunitySettingsView extends StatefulWidget {
     required this.communityId,
   });
 
-  static const routeName = '/community_settings';
+  static const routeName = '/community-settings';
 
   final String communityId;
 

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:activator_app/src/core/controllers/settings_controller.dart';
 import 'package:activator_app/src/core/models/activity.dart';
@@ -12,7 +11,6 @@ import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/widgets/custom_button.dart';
 import 'package:activator_app/src/core/widgets/custom_progress_indicator.dart';
 import 'package:activator_app/src/features/communities/views/community_settings_view.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -23,7 +21,7 @@ class CommunityDetailsView extends StatefulWidget {
     required this.communityId,
   });
 
-  static const routeName = '/sample_item';
+  static const routeName = '/community-details';
 
   final String communityId;
 
@@ -237,21 +235,10 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
         title: (community != null)
             ? GestureDetector(
                 onTap: () {
-                  Platform.isIOS
-                      ? Navigator.of(context).push(
-                          CupertinoPageRoute(
-                            builder: (context) => CommunitySettingsView(
-                              communityId: community!.$id,
-                            ),
-                          ),
-                        )
-                      : Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => CommunitySettingsView(
-                              communityId: community!.$id,
-                            ),
-                          ),
-                        );
+                  Navigator.of(context).pushNamed(
+                    CommunitySettingsView.routeName,
+                    arguments: {'communityId': community!.$id},
+                  );
                 },
                 onTapDown: (_) => setState(() => isTitleTapped = true),
                 onTapUp: (_) => setState(() => isTitleTapped = false),

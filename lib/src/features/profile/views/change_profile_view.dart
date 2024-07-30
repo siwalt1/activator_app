@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:activator_app/src/core/provider/auth_provider.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/utils/slide_direction.dart';
@@ -11,7 +9,6 @@ import 'package:activator_app/src/core/widgets/slide_route.dart';
 import 'package:activator_app/src/features/auth/views/welcome_view.dart';
 import 'package:activator_app/src/features/profile/views/change_password_view.dart';
 import 'package:appwrite/models.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -97,15 +94,8 @@ class _ChangeProfileViewState extends State<ChangeProfileView> {
                         text: user.name,
                         showArrow: true,
                         onPressed: () {
-                          Widget changeNameView = const ChangeNameView();
-                          Navigator.of(context).push(
-                            Platform.isIOS
-                                ? CupertinoPageRoute(
-                                    builder: (context) => changeNameView,
-                                  )
-                                : MaterialPageRoute(
-                                    builder: (context) => changeNameView,
-                                  ),
+                          Navigator.of(context).pushNamed(
+                            ChangeNameView.routeName,
                           );
                         },
                       ),
@@ -114,15 +104,8 @@ class _ChangeProfileViewState extends State<ChangeProfileView> {
                         text: user.email,
                         showArrow: true,
                         onPressed: () {
-                          Widget changeNameView = const ChangeEmailView();
-                          Navigator.of(context).push(
-                            Platform.isIOS
-                                ? CupertinoPageRoute(
-                                    builder: (context) => changeNameView,
-                                  )
-                                : MaterialPageRoute(
-                                    builder: (context) => changeNameView,
-                                  ),
+                          Navigator.of(context).pushNamed(
+                            ChangeEmailView.routeName,
                           );
                         },
                       ),
@@ -133,15 +116,8 @@ class _ChangeProfileViewState extends State<ChangeProfileView> {
                         textAlign: TextAlign.center,
                         textColor: Theme.of(context).colorScheme.onSurface,
                         onPressed: () {
-                          Widget changeNameView = const ChangePasswordView();
-                          Navigator.of(context).push(
-                            Platform.isIOS
-                                ? CupertinoPageRoute(
-                                    builder: (context) => changeNameView,
-                                  )
-                                : MaterialPageRoute(
-                                    builder: (context) => changeNameView,
-                                  ),
+                          Navigator.of(context).pushNamed(
+                            ChangePasswordView.routeName,
                           );
                         },
                       ),
