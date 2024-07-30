@@ -10,6 +10,7 @@ import 'package:activator_app/src/core/widgets/custom_list_tile_divider.dart';
 import 'package:activator_app/src/core/widgets/custom_progress_indicator.dart';
 import 'package:activator_app/src/features/communities/views/new_community_modal.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'community_details_view.dart';
@@ -201,9 +202,8 @@ class _CommunitiesViewState extends State<CommunitiesView> {
                       }
                       return InkWell(
                         onTap: () {
-                          Navigator.of(context).pushNamed(
-                            CommunityDetailsView.routeName,
-                            arguments: {'communityId': community.$id},
+                          context.push(
+                            '${CommunityDetailsView.routeName}/${community.$id}',
                           );
                         },
                         child: Column(

@@ -1,10 +1,9 @@
 import 'package:activator_app/src/core/utils/constants.dart';
-import 'package:activator_app/src/core/utils/slide_direction.dart';
 import 'package:activator_app/src/core/widgets/custom_button.dart';
-import 'package:activator_app/src/core/widgets/slide_route.dart';
 import 'package:activator_app/src/features/auth/views/login_view.dart';
 import 'package:activator_app/src/features/auth/views/signup_view.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class WelcomeView extends StatelessWidget {
   const WelcomeView({super.key});
@@ -85,15 +84,8 @@ class WelcomeView extends StatelessWidget {
                           const SizedBox(height: 30),
                           CustomButton(
                             text: 'Log in',
-                            onPressed: () {
-                              Navigator.pushReplacement(
-                                context,
-                                SlideRoute(
-                                  page: const LoginView(),
-                                  direction: SlideDirection.bottomToTop,
-                                ),
-                              );
-                            },
+                            onPressed: () =>
+                                context.replace(LoginView.routeName),
                             color: AppConstants.darkTheme.colorScheme.primary,
                             textColor:
                                 AppConstants.darkTheme.colorScheme.onPrimary,
@@ -101,15 +93,8 @@ class WelcomeView extends StatelessWidget {
                           const SizedBox(height: 10),
                           CustomButton(
                             text: 'Sign up',
-                            onPressed: () {
-                              Navigator.pushReplacement(
-                                context,
-                                SlideRoute(
-                                  page: const SignupView(),
-                                  direction: SlideDirection.topToBottom,
-                                ),
-                              );
-                            },
+                            onPressed: () =>
+                                context.replace(SignupView.routeName),
                             color: AppConstants
                                 .darkTheme.colorScheme.surfaceContainer,
                             textColor:

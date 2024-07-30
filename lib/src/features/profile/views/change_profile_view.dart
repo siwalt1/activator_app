@@ -1,15 +1,14 @@
 import 'package:activator_app/src/core/provider/auth_provider.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
-import 'package:activator_app/src/core/utils/slide_direction.dart';
 import 'package:activator_app/src/features/profile/views/change_email_view.dart';
 import 'package:activator_app/src/features/profile/views/change_name_view.dart';
 import 'package:activator_app/src/core/widgets/custom_list_tile.dart';
 import 'package:activator_app/src/core/widgets/custom_progress_indicator.dart';
-import 'package:activator_app/src/core/widgets/slide_route.dart';
 import 'package:activator_app/src/features/auth/views/welcome_view.dart';
 import 'package:activator_app/src/features/profile/views/change_password_view.dart';
 import 'package:appwrite/models.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 /// Displays input fields to change the user profile.
@@ -40,14 +39,7 @@ class _ChangeProfileViewState extends State<ChangeProfileView> {
       });
       await authProvider.logoutUser();
       if (!mounted) return; // Check if the widget is still mounted
-      Navigator.pushAndRemoveUntil(
-        context,
-        SlideRoute(
-          page: const WelcomeView(),
-          direction: SlideDirection.leftToRight,
-        ),
-        (Route<dynamic> route) => false, // Remove all previous routes
-      );
+      context.go(WelcomeView.routeName);
     } catch (e) {
       if (!mounted) return; // Check if the widget is still mounted
       // Handle the offline scenario or other errors
@@ -94,9 +86,7 @@ class _ChangeProfileViewState extends State<ChangeProfileView> {
                         text: user.name,
                         showArrow: true,
                         onPressed: () {
-                          Navigator.of(context).pushNamed(
-                            ChangeNameView.routeName,
-                          );
+                          context.push(ChangeNameView.routeName);
                         },
                       ),
                       const SizedBox(height: AppConstants.listTileSpacing),
@@ -104,9 +94,7 @@ class _ChangeProfileViewState extends State<ChangeProfileView> {
                         text: user.email,
                         showArrow: true,
                         onPressed: () {
-                          Navigator.of(context).pushNamed(
-                            ChangeEmailView.routeName,
-                          );
+                          context.push(ChangeEmailView.routeName);
                         },
                       ),
                       const SizedBox(height: AppConstants.separatorSpacing),
@@ -116,9 +104,7 @@ class _ChangeProfileViewState extends State<ChangeProfileView> {
                         textAlign: TextAlign.center,
                         textColor: Theme.of(context).colorScheme.onSurface,
                         onPressed: () {
-                          Navigator.of(context).pushNamed(
-                            ChangePasswordView.routeName,
-                          );
+                          context.push(ChangePasswordView.routeName);
                         },
                       ),
                       const SizedBox(height: AppConstants.listTileSpacing),

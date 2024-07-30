@@ -1,26 +1,20 @@
 import 'package:activator_app/src/core/utils/slide_direction.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
-class SlideRoute extends PageRouteBuilder {
-  final Widget page;
+class SlidePageTransition extends CustomTransitionPage<void> {
   final SlideDirection direction;
+  final Widget child;
   final Duration duration;
 
-  SlideRoute(
-      {required this.page,
-      required this.direction,
-      this.duration = const Duration(milliseconds: 500)})
-      : super(
-          pageBuilder: (BuildContext context, Animation<double> animation,
-              Animation<double> secondaryAnimation) {
-            return page;
-          },
-          transitionsBuilder: (
-            BuildContext context,
-            Animation<double> animation,
-            Animation<double> secondaryAnimation,
-            Widget child,
-          ) {
+  SlidePageTransition({
+    required this.direction,
+    required this.child,
+    this.duration = const Duration(milliseconds: 500),
+  }) : super(
+          key: ValueKey(child),
+          child: child,
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
             Offset begin;
             switch (direction) {
               case SlideDirection.leftToRight:
@@ -43,8 +37,10 @@ class SlideRoute extends PageRouteBuilder {
               CurveTween(curve: curve),
             );
 
+            var offsetAnimation = animation.drive(tween);
+
             return SlideTransition(
-              position: animation.drive(tween),
+              position: offsetAnimation,
               child: child,
             );
           },

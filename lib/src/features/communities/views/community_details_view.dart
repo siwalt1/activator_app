@@ -12,6 +12,7 @@ import 'package:activator_app/src/core/widgets/custom_button.dart';
 import 'package:activator_app/src/core/widgets/custom_progress_indicator.dart';
 import 'package:activator_app/src/features/communities/views/community_settings_view.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 /// Displays detailed information about a Community.
@@ -235,9 +236,8 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
         title: (community != null)
             ? GestureDetector(
                 onTap: () {
-                  Navigator.of(context).pushNamed(
-                    CommunitySettingsView.routeName,
-                    arguments: {'communityId': community!.$id},
+                  context.push(
+                    '${CommunitySettingsView.routeName}/${community?.$id}',
                   );
                 },
                 onTapDown: (_) => setState(() => isTitleTapped = true),

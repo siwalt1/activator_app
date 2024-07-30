@@ -3,6 +3,7 @@ import 'package:activator_app/src/core/widgets/custom_list_tile.dart';
 import 'package:activator_app/src/features/profile/views/profile_theme_view.dart';
 import 'package:activator_app/src/features/profile/widgets/profile_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -35,8 +36,7 @@ class ProfileView extends StatelessWidget {
                 const SizedBox(height: AppConstants.separatorSpacing * 2),
                 CustomListTile(
                   text: "Theme Mode",
-                  onPressed: () => Navigator.of(context)
-                      .restorablePushNamed(ProfileThemeView.routeName),
+                  onPressed: () => context.push(ProfileThemeView.routeName),
                   marginBottom: AppConstants.listTileSpacing,
                 ),
                 CustomListTile(

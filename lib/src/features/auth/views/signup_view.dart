@@ -1,19 +1,20 @@
 import 'package:activator_app/src/core/provider/auth_provider.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
-import 'package:activator_app/src/core/utils/slide_direction.dart';
 import 'package:activator_app/src/core/widgets/custom_button.dart';
 import 'package:activator_app/src/core/widgets/custom_progress_indicator.dart';
-import 'package:activator_app/src/core/widgets/slide_route.dart';
 import 'package:activator_app/src/features/HomePage/home_page_view.dart';
 import 'package:activator_app/src/features/auth/views/login_view.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class SignupView extends StatefulWidget {
   const SignupView({
     super.key,
   });
+
+  static const routeName = '/signup';
 
   @override
   State<SignupView> createState() => _SignupViewState();
@@ -38,13 +39,7 @@ class _SignupViewState extends State<SignupView> {
           nameController.text,
         );
         if (!mounted) return; // Check if the widget is still mounted
-        Navigator.pushReplacement(
-          context,
-          SlideRoute(
-            page: const HomePageView(),
-            direction: SlideDirection.rightToLeft,
-          ),
-        );
+        context.replace(HomePageView.routeName);
       } catch (e) {
         // Show an error message if registration fails
         ScaffoldMessenger.of(context).showSnackBar(
@@ -279,15 +274,8 @@ class _SignupViewState extends State<SignupView> {
                             const SizedBox(height: 10),
                             CustomButton(
                               text: 'Log in',
-                              onPressed: () {
-                                Navigator.pushReplacement(
-                                  context,
-                                  SlideRoute(
-                                    page: const LoginView(),
-                                    direction: SlideDirection.rightToLeft,
-                                  ),
-                                );
-                              },
+                              onPressed: () =>
+                                  context.replace(LoginView.routeName),
                               color: AppConstants
                                   .darkTheme.colorScheme.surfaceContainer,
                               textColor:

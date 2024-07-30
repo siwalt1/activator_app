@@ -1,6 +1,7 @@
 import 'package:activator_app/src/core/provider/auth_provider.dart';
 import 'package:activator_app/src/features/profile/views/change_profile_view.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:appwrite/models.dart';
 
@@ -52,8 +53,7 @@ class ProfileWidget extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
         ),
         trailing: const SizedBox(),
-        onTap: () => Navigator.of(context)
-            .restorablePushNamed(ChangeProfileView.routeName),
+        onTap: () => context.push(ChangeProfileView.routeName),
       ),
     );
   }
