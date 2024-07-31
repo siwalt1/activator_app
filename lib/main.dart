@@ -10,6 +10,7 @@ import 'package:activator_app/src/features/auth/views/signup_view.dart';
 import 'package:activator_app/src/features/auth/views/welcome_view.dart';
 import 'package:activator_app/src/features/communities/views/community_details_view.dart';
 import 'package:activator_app/src/features/communities/views/community_settings_view.dart';
+import 'package:activator_app/src/features/communities/views/invitation_view.dart';
 import 'package:activator_app/src/features/initial/views/not_found_view.dart';
 import 'package:activator_app/src/features/initial/views/splash_view.dart';
 import 'package:activator_app/src/features/profile/views/change_email_view.dart';
@@ -50,6 +51,17 @@ void main() async {
           child: const SplashView(),
           isCupertino: Theme.of(context).platform == TargetPlatform.iOS,
         ),
+      ),
+      GoRoute(
+        path: '/invite/:invitationToken',
+        pageBuilder: (context, state) {
+          final String? invitationToken =
+              state.pathParameters['invitationToken'];
+          return SlidePageTransition(
+            direction: SlideDirection.bottomToTop,
+            child: InvitationView(invitationToken: invitationToken),
+          );
+        },
       ),
       GoRoute(
         path: '/welcome',
