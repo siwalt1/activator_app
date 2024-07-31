@@ -1,4 +1,4 @@
-class Community{
+class Community {
   const Community({
     required this.$id,
     required this.name,
@@ -10,6 +10,7 @@ class Community{
     required this.activityCollectionId,
     required this.communityMembershipCollectionId,
     required this.invitationToken,
+    this.membersCount,
   });
 
   final String $id;
@@ -22,6 +23,7 @@ class Community{
   final String activityCollectionId;
   final String communityMembershipCollectionId;
   final String invitationToken;
+  final int? membersCount;
 
   factory Community.fromMap(Map<String, dynamic> map) {
     return Community(
@@ -35,6 +37,7 @@ class Community{
       activityCollectionId: map['activityCollectionId'],
       communityMembershipCollectionId: map['communityMembershipCollectionId'],
       invitationToken: map['invitationToken'],
+      membersCount: map['membersCount'],
     );
   }
 

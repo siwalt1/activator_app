@@ -28,6 +28,9 @@ class AppConstants {
       '669a1c270019640a6777';
   static const String APPWRITE_RESET_INVITATION_TOKEN_FUNCTION_ID =
       '66a14316002b45aa6d3d';
+  static const String APPWRITE_FETCH_COMMUNITY_INVITATION_TOKEN_FUNCTION_ID =
+      '66aa861b00385713ab4b';
+
   // Theme constants
   static Color primaryRed = const Color(0xFFC62828);
   static Color secondaryRed = const Color(0xFFFFCDD2);

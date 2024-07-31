@@ -174,11 +174,6 @@ class DatabaseProvider with ChangeNotifier {
       AppConstants.APPWRITE_DATABASE_ID,
       community.activityAttendanceCollectionId,
     );
-    if (community.$id == '669a2755003036191f49'){
-      print('+++++++++');
-      print('AttendanceList: ${attendanceList.documents}');
-      print('length: ${attendanceList.documents.length}');
-    }
     _activityAttendances[community.$id] = attendanceList.documents
         .map((doc) => ActivityAttendance.fromMap(doc.data))
         .toList();
@@ -433,8 +428,19 @@ class DatabaseProvider with ChangeNotifier {
 
   Future<String?> resetInvitationToken(String communityId) async {
     try {
-      String? updatedToken = await _appwriteService.resetInvitationToken(communityId);
+      String? updatedToken =
+          await _appwriteService.resetInvitationToken(communityId);
       return updatedToken;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Community> fetchCommunity(String invitationToken) async {
+    try {
+      Community community =
+          await _appwriteService.fetchCommunity(invitationToken);
+      return community;
     } catch (e) {
       rethrow;
     }

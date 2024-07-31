@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:activator_app/src/core/models/community.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart';
@@ -220,6 +221,28 @@ class AppwriteService {
       } else {
         print('Error resetting invitation token');
         return null;
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // fetch community by invitation token
+  Future<Community> fetchCommunity(String invitationToken) async {
+    try {
+      final Execution response = await functions.createExecution(
+        functionId:
+            AppConstants.APPWRITE_FETCH_COMMUNITY_INVITATION_TOKEN_FUNCTION_ID,
+        body: jsonEncode({'invitationToken': invitationToken}),
+      );
+
+      if (response.responseStatusCode == 200) {
+        print('Community fetched successfully');
+        var responseBody = jsonDecode(response.responseBody);
+        return Community.fromMap(responseBody);
+      } else {
+        print('Error fetching community');
+        throw Exception('Error fetching community');
       }
     } catch (e) {
       rethrow;
