@@ -1,12 +1,15 @@
 import 'package:activator_app/src/core/provider/auth_provider.dart';
 import 'package:activator_app/src/features/HomePage/home_page_view.dart';
 import 'package:activator_app/src/features/auth/views/welcome_view.dart';
+import 'package:activator_app/src/features/communities/views/invitation_view.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class SplashView extends StatelessWidget {
-  const SplashView({super.key});
+  const SplashView({super.key, this.invitationToken});
+
+  final String? invitationToken;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +25,13 @@ class SplashView extends StatelessWidget {
               (_) {
                 if (Provider.of<AuthProvider>(context, listen: false)
                     .isAuthenticated) {
-                  context.go(HomePageView.routeName);
+                  if (invitationToken != null) {
+                    context.go(
+                      '${InvitationView.routeName}/$invitationToken',
+                    );
+                  } else {
+                    context.go(HomePageView.routeName);
+                  }
                 } else {
                   context.go(WelcomeView.routeName);
                 }

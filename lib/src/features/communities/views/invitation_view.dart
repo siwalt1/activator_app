@@ -5,6 +5,8 @@ class InvitationView extends StatelessWidget {
 
   const InvitationView({super.key, this.invitationToken});
 
+  static const routeName = '/invitation';
+
   @override
   Widget build(BuildContext context) {
     // You can use the invitationToken to fetch details from the server

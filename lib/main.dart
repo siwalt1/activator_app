@@ -47,10 +47,7 @@ void main() async {
     routes: [
       GoRoute(
         path: '/',
-        pageBuilder: (context, state) => PlatformTransitionPage(
-          child: const SplashView(),
-          isCupertino: Theme.of(context).platform == TargetPlatform.iOS,
-        ),
+        builder: (context, state) => const SplashView(),
       ),
       GoRoute(
         path: '/invite/:invitationToken',
@@ -59,12 +56,20 @@ void main() async {
               state.pathParameters['invitationToken'];
           return SlidePageTransition(
             direction: SlideDirection.bottomToTop,
-            child: InvitationView(invitationToken: invitationToken),
+            child: SplashView(invitationToken: invitationToken),
           );
         },
       ),
       GoRoute(
-        path: '/welcome',
+        path: '${InvitationView.routeName}/:invitationToken',
+        builder: (context, state) {
+          final String? invitationToken =
+              state.pathParameters['invitationToken'];
+          return InvitationView(invitationToken: invitationToken);
+        },
+      ),
+      GoRoute(
+        path: WelcomeView.routeName,
         pageBuilder: (context, state) => SlidePageTransition(
           direction: SlideDirection.leftToRight,
           child: const WelcomeView(),
