@@ -330,7 +330,7 @@ class DatabaseProvider with ChangeNotifier {
           membership;
     } else if (events
         .contains('databases.*.collections.*.documents.*.delete')) {
-      if (membership.userId == _authProvider.user?.$id) {
+      if (membership.userId == _authProvider.user?.id) {
         _communities.removeWhere((c) => c.$id == community.$id);
         _activities.remove(community.$id);
         _activityAttendances.remove(community.$id);

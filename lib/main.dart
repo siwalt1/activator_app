@@ -1,6 +1,8 @@
 import 'package:activator_app/src/core/provider/auth_provider.dart';
 import 'package:activator_app/src/core/provider/db_provider.dart';
 import 'package:activator_app/src/core/services/appwrite_service.dart';
+import 'package:activator_app/src/core/services/supabase_service.dart';
+import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/utils/slide_direction.dart';
 import 'package:activator_app/src/core/widgets/platform_transition_page.dart';
 import 'package:activator_app/src/core/widgets/slide_route.dart';
@@ -21,6 +23,7 @@ import 'package:activator_app/src/features/profile/views/profile_theme_view.dart
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'src/app.dart';
 import 'src/core/controllers/settings_controller.dart';
@@ -29,6 +32,12 @@ import 'src/core/services/settings_service.dart';
 void main() async {
   // Ensure Flutter binding is initialized
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Supabase
+  await Supabase.initialize(
+    url: AppConstants.SUPABASE_URL,
+    anonKey: AppConstants.SUPABASE_ANON_KEY,
+  );
 
   // Set up the SettingsController, which will glue user settings to multiple
   // Flutter Widgets.
@@ -155,13 +164,17 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+        Provider<SupabaseService>(
+          create: (_) => SupabaseService(),
+          lazy: false,
+        ),
         Provider<AppwriteService>(
           create: (_) => AppwriteService(),
           lazy: false,
         ),
         ChangeNotifierProvider(
           create: (context) => AuthProvider(
-            Provider.of<AppwriteService>(context, listen: false),
+            Provider.of<SupabaseService>(context, listen: false),
           ),
         ),
         ChangeNotifierProvider(

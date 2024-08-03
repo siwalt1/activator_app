@@ -3,7 +3,7 @@ import 'package:activator_app/src/features/profile/views/change_profile_view.dar
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:appwrite/models.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProfileWidget extends StatelessWidget {
   const ProfileWidget({
@@ -44,12 +44,12 @@ class ProfileWidget extends StatelessWidget {
           ),
         ),
         title: Text(
-          user.name,
+          user.userMetadata?['display_name'],
           style: const TextStyle(fontSize: 24),
           overflow: TextOverflow.ellipsis,
         ),
         subtitle: Text(
-          user.email,
+          user.email!,
           overflow: TextOverflow.ellipsis,
         ),
         trailing: const SizedBox(),

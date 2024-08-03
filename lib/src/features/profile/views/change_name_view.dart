@@ -1,10 +1,10 @@
 import 'package:activator_app/src/core/provider/auth_provider.dart';
 import 'package:activator_app/src/core/widgets/custom_progress_indicator.dart';
 import 'package:activator_app/src/core/widgets/custom_text_form_field.dart';
-import 'package:appwrite/models.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ChangeNameView extends StatefulWidget {
   const ChangeNameView({
@@ -44,8 +44,8 @@ class _ChangeNameViewState extends State<ChangeNameView> {
     super.didChangeDependencies();
     if (!_initialized) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
-      User user = authProvider.user!;
-      controller.text = user.name;
+      User? user = authProvider.user;
+      controller.text = user?.userMetadata?['display_name'];
       _initialized = true;
     }
   }
@@ -86,8 +86,7 @@ class _ChangeNameViewState extends State<ChangeNameView> {
                 return CupertinoButton(
                   onPressed: controller.text ==
                               Provider.of<AuthProvider>(context, listen: false)
-                                  .user!
-                                  .name ||
+                                  .user?.userMetadata?['display_name'] ||
                           _isLoading
                       ? null
                       : _submit,

@@ -18,24 +18,23 @@ class ChangePasswordView extends StatefulWidget {
 }
 
 class _ChangePasswordViewState extends State<ChangePasswordView> {
-  final oldPwdController = TextEditingController();
   final newPwdController = TextEditingController();
-  final newPwdCheckController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final FocusNode _focusNode = FocusNode();
   bool _isLoading = false;
-  late MultipleTextEditingControllerListener _listener;
 
   @override
   void initState() {
     super.initState();
-    _listener = MultipleTextEditingControllerListener(
-      controllers: [oldPwdController, newPwdController, newPwdCheckController],
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
   }
 
   @override
   void dispose() {
-    _listener.dispose();
+    newPwdController.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -46,7 +45,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
       });
       try {
         await Provider.of<AuthProvider>(context, listen: false)
-            .updatePassword(newPwdController.text, oldPwdController.text);
+            .updatePassword(newPwdController.text);
         if (!mounted) return; // Check if the widget is still mounted
         Navigator.pop(context);
       } catch (e) {
@@ -69,14 +68,11 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
         appBar: AppBar(
           title: const Text('Change Name'),
           actions: [
-            ValueListenableBuilder<bool>(
-              valueListenable: _listener,
+            ValueListenableBuilder<TextEditingValue>(
+              valueListenable: newPwdController,
               builder: (context, value, child) {
                 return CupertinoButton(
-                  onPressed: !_isLoading &&
-                          oldPwdController.text.isNotEmpty &&
-                          newPwdController.text.isNotEmpty &&
-                          newPwdCheckController.text.isNotEmpty
+                  onPressed: !_isLoading && newPwdController.text.isNotEmpty
                       ? _submit
                       : null,
                   child: const Text('Done'),
@@ -101,48 +97,19 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                     children: [
                       const SizedBox(height: AppConstants.paddingSpacing),
                       CustomTextFormField(
-                        label: 'Current Password',
-                        controller: oldPwdController,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your password';
-                          }
-                          if (value.length < 8) {
-                            return 'Password must be at least 8 characters';
-                          }
-                          return null;
-                        },
-                        obscureText: true,
-                      ),
-                      const SizedBox(height: AppConstants.listTileSpacing),
-                      CustomTextFormField(
                         label: 'New Password',
                         controller: newPwdController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your password';
                           }
-                          if (value.length < 8) {
-                            return 'Password must be at least 8 characters';
+                          if (value.length < 6) {
+                            return 'Password must be at least 6 characters';
                           }
                           return null;
                         },
                         obscureText: true,
-                      ),
-                      const SizedBox(height: AppConstants.listTileSpacing),
-                      CustomTextFormField(
-                        label: 'Confirm Password',
-                        controller: newPwdCheckController,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please confirm your password';
-                          }
-                          if (value != newPwdController.text) {
-                            return 'Passwords do not match';
-                          }
-                          return null;
-                        },
-                        obscureText: true,
+                        focusNode: _focusNode,
                       ),
                     ],
                   ),

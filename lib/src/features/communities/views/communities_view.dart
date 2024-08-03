@@ -147,7 +147,8 @@ class _CommunitiesViewState extends State<CommunitiesView> {
                                     .userId]
                                 ?.name ??
                             'Someone';
-                        if (lastActivityUser == authProvider.user!.name) {
+                        if (lastActivityUser ==
+                            authProvider.user!.userMetadata?['display_name']) {
                           lastActivityUser = 'You';
                         }
                         if (community.type == 'solo') {
@@ -160,7 +161,7 @@ class _CommunitiesViewState extends State<CommunitiesView> {
                                         .indexWhere(
                                       (att) =>
                                           att.activityId == act.$id &&
-                                          att.userId == authProvider.user!.$id,
+                                          att.userId == authProvider.user!.id,
                                     ) !=
                                     -1,
                           );

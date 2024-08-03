@@ -2,11 +2,11 @@ import 'package:activator_app/src/core/provider/auth_provider.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/widgets/custom_progress_indicator.dart';
 import 'package:activator_app/src/core/widgets/custom_text_form_field.dart';
-import 'package:appwrite/models.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ChangeEmailView extends StatefulWidget {
   const ChangeEmailView({
@@ -21,7 +21,6 @@ class ChangeEmailView extends StatefulWidget {
 
 class _ChangeEmailViewState extends State<ChangeEmailView> {
   final emailController = TextEditingController();
-  final passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final FocusNode _focusNode = FocusNode();
   bool _isLoading = false;
@@ -38,7 +37,6 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
   @override
   void dispose() {
     emailController.dispose();
-    passwordController.dispose();
     _focusNode.dispose();
     super.dispose();
   }
@@ -49,7 +47,7 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
     if (!_initialized) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       User user = authProvider.user!;
-      emailController.text = user.email;
+      emailController.text = user.email!;
       _initialized = true;
     }
   }
@@ -61,9 +59,17 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
       });
       try {
         await Provider.of<AuthProvider>(context, listen: false)
-            .updateEmail(emailController.text, passwordController.text);
+            .updateEmail(emailController.text);
         if (!mounted) return; // Check if the widget is still mounted
         Navigator.pop(context);
+        // show snackbar to make the use check their email for verification
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Please check your email for verification',
+            ),
+          ),
+        );
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Update failed: $e')),
@@ -129,21 +135,6 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
                           return null;
                         },
                         focusNode: _focusNode,
-                      ),
-                      const SizedBox(height: AppConstants.listTileSpacing),
-                      CustomTextFormField(
-                        label: 'Password',
-                        controller: passwordController,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your password';
-                          }
-                          if (value.length < 8) {
-                            return 'Password must be at least 8 characters';
-                          }
-                          return null;
-                        },
-                        obscureText: true,
                       ),
                     ],
                   ),
