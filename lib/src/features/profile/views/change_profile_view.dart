@@ -6,10 +6,10 @@ import 'package:activator_app/src/core/widgets/custom_list_tile.dart';
 import 'package:activator_app/src/core/widgets/custom_progress_indicator.dart';
 import 'package:activator_app/src/features/auth/views/welcome_view.dart';
 import 'package:activator_app/src/features/profile/views/change_password_view.dart';
-import 'package:appwrite/models.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Displays input fields to change the user profile.
 /// name and email fields are pre-filled with the current user's information.
@@ -83,7 +83,7 @@ class _ChangeProfileViewState extends State<ChangeProfileView> {
                     children: <Widget>[
                       const SizedBox(height: AppConstants.paddingSpacing),
                       CustomListTile(
-                        text: user.name,
+                        text: user.userMetadata?['display_name'],
                         showArrow: true,
                         onPressed: () {
                           context.push(ChangeNameView.routeName);
@@ -91,7 +91,7 @@ class _ChangeProfileViewState extends State<ChangeProfileView> {
                       ),
                       const SizedBox(height: AppConstants.listTileSpacing),
                       CustomListTile(
-                        text: user.email,
+                        text: user.email!,
                         showArrow: true,
                         onPressed: () {
                           context.push(ChangeEmailView.routeName);

@@ -31,6 +31,11 @@ class AppConstants {
   static const String APPWRITE_FETCH_COMMUNITY_INVITATION_TOKEN_FUNCTION_ID =
       '66aa861b00385713ab4b';
 
+  // Supabase constants
+  static const String SUPABASE_URL = 'https://lbireiylyvvvihabizio.supabase.co';
+  static const String SUPABASE_ANON_KEY =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxiaXJlaXlseXZ2dmloYWJpemlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjE4MTU3NjIsImV4cCI6MjAzNzM5MTc2Mn0.2Ab2ezHffRpYgd-pikW6CkKy-EW2jnnhuY3K579j7pc';
+
   // Theme constants
   static Color primaryRed = const Color(0xFFC62828);
   static Color secondaryRed = const Color(0xFFFFCDD2);

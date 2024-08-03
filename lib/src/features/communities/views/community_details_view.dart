@@ -134,7 +134,7 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
               activityAttendances!.indexWhere(
                     (att) =>
                         att.activityId == act.$id &&
-                        att.userId == authProvider.user!.$id,
+                        att.userId == authProvider.user!.id,
                   ) !=
                   -1);
           if (activityIndex != -1) {
@@ -169,7 +169,7 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
         // check if the user is participating in the activity
         if (_currentActivity != null) {
           isUserParticipating = _currentActiveActivityAttendances!.indexWhere(
-                (att) => att.userId == authProvider.user!.$id,
+                (att) => att.userId == authProvider.user!.id,
               ) !=
               -1;
         }
@@ -408,7 +408,7 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
                                     _currentActivityAttendances!.isNotEmpty &&
                                     _currentActivity?.type == 'multi')
                                   Text(
-                                    'by ${_currentActivityAttendances?.where((att) => att.joinOrder == 0).toList()[0].userId == authProvider.user?.$id ? 'You' : dbProvider.userProfiles[_currentActivityAttendances?.where((att) => att.joinOrder == 0).toList()[0].userId]?.name ?? 'Unknown'}',
+                                    'by ${_currentActivityAttendances?.where((att) => att.joinOrder == 0).toList()[0].userId == authProvider.user?.id ? 'You' : dbProvider.userProfiles[_currentActivityAttendances?.where((att) => att.joinOrder == 0).toList()[0].userId]?.name ?? 'Unknown'}',
                                     style: TextStyle(
                                       fontSize: 16,
                                       color: Theme.of(context)

@@ -45,6 +45,7 @@ class _SignupViewState extends State<SignupView> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Registration failed: $e')),
         );
+        print('Registration failed: $e');
       } finally {
         setState(() => _isLoading = false);
       }
@@ -224,8 +225,8 @@ class _SignupViewState extends State<SignupView> {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter your password';
                                 }
-                                if (value.length < 8) {
-                                  return 'Password must be at least 8 characters';
+                                if (value.length < 6) {
+                                  return 'Password must be at least 6 characters';
                                 }
                                 return null;
                               },

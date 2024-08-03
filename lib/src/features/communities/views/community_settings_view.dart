@@ -428,7 +428,7 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
                                                   .name,
                                               membership.createdAt,
                                               membership.userId ==
-                                                  authProvider.user!.$id,
+                                                  authProvider.user!.id,
                                             );
                                           },
                                           child: ListTile(
