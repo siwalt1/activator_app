@@ -12,26 +12,27 @@ class AuthProvider with ChangeNotifier {
 
   AuthProvider(this._supabaseService);
 
-  Future<void> registerUser(String email, String password, String name) async {
-    try {
-      await _supabaseService.register(email, password, name);
-      _user = await _supabaseService.getCurrentUser();
-      _isAuthenticated = true;
-      notifyListeners();
-    } catch (e) {
-      rethrow;
-    }
-  }
-
   Future<void> loginUser(String email, String password) async {
     try {
-      await _supabaseService.login(email, password);
-      _user = await _supabaseService.getCurrentUser();
+      AuthResponse authResponse = await _supabaseService.login(email, password);
+      _user = authResponse.user;
       _isAuthenticated = true;
       notifyListeners();
     } catch (e) {
       _user = null;
       _isAuthenticated = false;
+      rethrow;
+    }
+  }
+
+  Future<void> registerUser(String email, String password, String name) async {
+    try {
+      AuthResponse authResponse =
+          await _supabaseService.register(email, password, name);
+      _user = authResponse.user;
+      _isAuthenticated = true;
+      notifyListeners();
+    } catch (e) {
       rethrow;
     }
   }
@@ -61,9 +62,31 @@ class AuthProvider with ChangeNotifier {
 
   Future<void> updateName(String name) async {
     try {
-      await _supabaseService
+      UserResponse userResponse = await _supabaseService
           .updateUser(UserAttributes(data: {'display_name': name}));
-      _user = await _supabaseService.getCurrentUser();
+      _user = userResponse.user;
+      notifyListeners();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> updateEmail(String email) async {
+    try {
+      UserResponse userResponse =
+          await _supabaseService.updateUser(UserAttributes(email: email));
+      _user = userResponse.user;
+      notifyListeners();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> updatePassword(String password) async {
+    try {
+      UserResponse userResponse =
+          await _supabaseService.updateUser(UserAttributes(password: password));
+      _user = userResponse.user;
       notifyListeners();
     } catch (e) {
       rethrow;
@@ -73,25 +96,5 @@ class AuthProvider with ChangeNotifier {
   Future<void> updateUser() async {
     _user = await _supabaseService.getCurrentUser();
     notifyListeners();
-  }
-
-  Future<void> updateEmail(String email) async {
-    try {
-      await _supabaseService.updateUser(UserAttributes(email: email));
-      _user = await _supabaseService.getCurrentUser();
-      notifyListeners();
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  Future<void> updatePassword(String password) async {
-    try {
-      await _supabaseService.updateUser(UserAttributes(password: password));
-      _user = await _supabaseService.getCurrentUser();
-      notifyListeners();
-    } catch (e) {
-      rethrow;
-    }
   }
 }

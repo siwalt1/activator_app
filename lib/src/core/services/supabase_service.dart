@@ -5,29 +5,27 @@ class SupabaseService {
 
   SupabaseService();
 
-  // login
-  Future<void> login(String email, String password) async {
-    await supabase.auth.signInWithPassword(email: email, password: password);
-  }
-
-  // logout
-  Future<void> logout() async {
-    await supabase.auth.signOut();
-  }
-
   Future<User?> getCurrentUser() async {
     return supabase.auth.currentUser;
   }
 
-  // register user
-  Future<void> register(String email, String password, String name) async {
-    await supabase.auth
+  Future<AuthResponse> login(String email, String password) async {
+    return await supabase.auth
+        .signInWithPassword(email: email, password: password);
+  }
+
+  Future<AuthResponse> register(
+      String email, String password, String name) async {
+    return await supabase.auth
         .signUp(email: email, password: password, data: {'display_name': name});
   }
 
-  // update user
   Future<UserResponse> updateUser(UserAttributes userAttributes) async {
     return await supabase.auth.updateUser(userAttributes);
+  }
+
+  Future<void> logout() async {
+    await supabase.auth.signOut();
   }
 
   // delete user
