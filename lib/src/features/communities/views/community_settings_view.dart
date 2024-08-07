@@ -1,7 +1,6 @@
 import 'package:activator_app/src/core/models/activity.dart';
-import 'package:activator_app/src/core/models/activity_attendance.dart';
 import 'package:activator_app/src/core/models/community.dart';
-import 'package:activator_app/src/core/models/community_membership.dart';
+import 'package:activator_app/src/core/models/community_member.dart';
 import 'package:activator_app/src/core/provider/auth_provider.dart';
 import 'package:activator_app/src/core/provider/db_provider.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
@@ -11,7 +10,10 @@ import 'package:activator_app/src/core/widgets/custom_list_tile.dart';
 import 'package:activator_app/src/core/widgets/custom_list_tile_divider.dart';
 import 'package:activator_app/src/core/widgets/custom_progress_indicator.dart';
 import 'package:activator_app/src/core/widgets/custom_text_form_field.dart';
+import 'package:activator_app/src/features/HomePage/home_page_view.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 
@@ -31,9 +33,8 @@ class CommunitySettingsView extends StatefulWidget {
 
 class _CommunitySettingsViewState extends State<CommunitySettingsView> {
   Community? community;
-  List<CommunityMembership>? communityMemberships;
+  List<CommunityMember>? communityMemberships;
   List<Activity>? activities;
-  List<ActivityAttendance>? activityAttendances;
   bool isNavigated = false; // Track if navigation has already happened
   bool _isLoading = false;
 
@@ -198,7 +199,8 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
     );
   }
 
-  void _openUserModal(String userName, DateTime dateJoined, bool isOwnProfile) {
+  void _openUserModal(
+      String userId, String userName, DateTime dateJoined, bool isOwnProfile) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -248,7 +250,7 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
                         onPressed: () {
                           showDialog(
                             context: context,
-                            builder: (context) {
+                            builder: (buildContext) {
                               return AlertDialog(
                                 title: const Text('Remove from Community'),
                                 content: const Text(
@@ -256,14 +258,21 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
                                 actions: [
                                   TextButton(
                                     onPressed: () {
-                                      Navigator.of(context).pop();
+                                      Navigator.of(buildContext).pop();
                                     },
                                     child: const Text('Cancel'),
                                   ),
                                   TextButton(
-                                    onPressed: () {
+                                    onPressed: () async {
+                                      final dbProvider =
+                                          Provider.of<DatabaseProvider>(context,
+                                              listen: false);
+                                      Navigator.of(buildContext).pop();
+                                      await dbProvider.leaveCommunity(
+                                          widget.communityId,
+                                          userId: userId);
+                                      if (!context.mounted) return;
                                       Navigator.of(context).pop();
-                                      // remove user from community
                                     },
                                     child: const Text('Remove'),
                                   ),
@@ -288,12 +297,10 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
     final dbProvider = Provider.of<DatabaseProvider>(context, listen: true);
     try {
       community = dbProvider.communities.firstWhere(
-        (com) => com.$id == widget.communityId,
+        (com) => com.id == widget.communityId,
       );
-      communityMemberships =
-          dbProvider.communityMemberships[widget.communityId];
+      communityMemberships = dbProvider.communityMembers[widget.communityId];
       activities = dbProvider.activities[widget.communityId];
-      activityAttendances = dbProvider.activityAttendances[widget.communityId];
     } catch (e) {
       community = null;
     }
@@ -303,7 +310,7 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
         if (!isNavigated) {
           isNavigated =
               true; // Set the flag to true to prevent further navigation
-          Navigator.of(context).pop();
+          context.go(HomePageView.routeName);
         }
       });
     }
@@ -359,13 +366,13 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
                             ),
                           ),
                         ),
-                        if (community!.description.isNotEmpty)
+                        if (community?.description?.isNotEmpty ?? false)
                           Column(
                             children: [
                               const SizedBox(
                                   height: AppConstants.separatorSpacing),
                               CustomTextFormField(
-                                initialValue: community!.description,
+                                initialValue: community!.description!,
                                 label: 'Description',
                                 maxLines: null,
                                 readOnly: true,
@@ -409,7 +416,7 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
                                 ...List.generate(
                                   communityMemberships!.length,
                                   (index) {
-                                    final CommunityMembership membership =
+                                    final CommunityMember membership =
                                         communityMemberships![index];
                                     return Column(
                                       children: [
@@ -422,10 +429,12 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
                                                     context,
                                                     listen: false);
                                             _openUserModal(
+                                              membership.userId,
                                               dbProvider
-                                                  .userProfiles[
-                                                      membership.userId]!
-                                                  .name,
+                                                      .profiles[
+                                                          membership.userId]
+                                                      ?.name ??
+                                                  'Unknown',
                                               membership.createdAt,
                                               membership.userId ==
                                                   authProvider.user!.id,
@@ -434,14 +443,15 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
                                           child: ListTile(
                                             leading: CircleAvatar(
                                               child: Text(dbProvider
-                                                  .userProfiles[
-                                                      membership.userId]!
-                                                  .name[0]),
+                                                      .profiles[
+                                                          membership.userId]
+                                                      ?.name[0] ??
+                                                  'U'),
                                             ),
                                             title: Text(dbProvider
-                                                .userProfiles[
-                                                    membership.userId]!
-                                                .name),
+                                                    .profiles[membership.userId]
+                                                    ?.name ??
+                                                'Unknown'),
                                           ),
                                         ),
                                         index !=

@@ -1,35 +1,31 @@
 class ActivityAttendance {
   const ActivityAttendance({
-    required this.$id,
     required this.activityId,
     required this.userId,
-    required this.joinOrder,
-    this.active = true,
+    required this.createdAt,
+    this.isActive = true,
   });
 
-  final String $id;
   final String activityId;
   final String userId;
-  final int joinOrder;
-  final bool active;
+  final DateTime createdAt;
+  final bool isActive;
 
   factory ActivityAttendance.fromMap(Map<String, dynamic> map) {
     return ActivityAttendance(
-      $id: map['\$id'],
-      activityId: map['activityId'],
-      userId: map['userId'],
-      joinOrder: map['joinOrder'],
-      active: map['active'] ?? true,
+      activityId: map['activity_id'],
+      userId: map['user_id'],
+      createdAt: DateTime.parse(map['created_at']),
+      isActive: map['is_active'] ?? true,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      '\$id': $id,
-      'activityId': activityId,
-      'userId': userId,
-      'joinOrder': joinOrder,
-      'active': active,
+      'activity_id': activityId,
+      'user_id': userId,
+      'created_at': createdAt,
+      'is_active': isActive,
     };
   }
 }

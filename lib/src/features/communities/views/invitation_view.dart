@@ -33,19 +33,17 @@ class _InvitationViewState extends State<InvitationView> {
 
   void _fetchCommunity() async {
     // Fetch the community using the invitation token
-    // community = await CommunityService().fetchCommunity(widget.invitationToken);
-    // dbprovider
     final dbProvider = Provider.of<DatabaseProvider>(context, listen: false);
     try {
       community = await dbProvider.fetchCommunity(widget.invitationToken!);
     } catch (e) {
-      // say something went wrong and go back to the home page
+      print("Error fetching community: $e");
       if (!mounted) return;
       context.go(HomePageView.routeName);
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Failed to fetch community'),
+          content: Text('Community not found'),
         ),
       );
     }
@@ -55,8 +53,20 @@ class _InvitationViewState extends State<InvitationView> {
   }
 
   void _joinCommunity() async {
-    // Join the community
-    // CommunityService().joinCommunity(community!.id);
+    final dbProvider = Provider.of<DatabaseProvider>(context, listen: false);
+    try {
+      await dbProvider.joinCommunity(widget.invitationToken!);
+    } catch (e) {
+      print("Error joining community: $e");
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to join community'),
+        ),
+      );
+    }
+    if (!mounted) return;
+    context.go(HomePageView.routeName);
   }
 
   @override
@@ -99,13 +109,13 @@ class _InvitationViewState extends State<InvitationView> {
                                 Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                         ),
-                        if (community!.description.isNotEmpty)
+                        if (community?.description?.isNotEmpty ?? false)
                           Column(
                             children: [
                               const SizedBox(
                                   height: AppConstants.separatorSpacing),
                               CustomTextFormField(
-                                initialValue: community!.description,
+                                initialValue: community!.description!,
                                 label: 'Description',
                                 maxLines: null,
                                 readOnly: true,

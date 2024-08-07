@@ -4,12 +4,13 @@ import 'package:activator_app/src/core/controllers/settings_controller.dart';
 import 'package:activator_app/src/core/models/activity.dart';
 import 'package:activator_app/src/core/models/activity_attendance.dart';
 import 'package:activator_app/src/core/models/community.dart';
-import 'package:activator_app/src/core/models/community_membership.dart';
+import 'package:activator_app/src/core/models/community_member.dart';
 import 'package:activator_app/src/core/provider/auth_provider.dart';
 import 'package:activator_app/src/core/provider/db_provider.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/widgets/custom_button.dart';
 import 'package:activator_app/src/core/widgets/custom_progress_indicator.dart';
+import 'package:activator_app/src/features/HomePage/home_page_view.dart';
 import 'package:activator_app/src/features/communities/views/community_settings_view.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -33,7 +34,7 @@ class CommunityDetailsView extends StatefulWidget {
 class _CommunityDetailsViewState extends State<CommunityDetailsView>
     with SingleTickerProviderStateMixin {
   Community? community;
-  List<CommunityMembership>? communityMemberships;
+  List<CommunityMember>? communityMemberships;
   List<Activity>? activities;
   List<ActivityAttendance>? activityAttendances;
   bool isNavigated = false; // Track if navigation has already happened
@@ -77,8 +78,9 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
   _createActivity(BuildContext context, bool isNew) async {
     try {
       final dbProvider = Provider.of<DatabaseProvider>(context, listen: false);
-      await dbProvider.createActivity(community!.$id);
+      await dbProvider.createActivity(community!.id);
     } catch (e) {
+      print('Error creating activity: $e');
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -94,7 +96,7 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
   _leaveActivity(BuildContext context) async {
     try {
       final dbProvider = Provider.of<DatabaseProvider>(context, listen: false);
-      await dbProvider.leaveActivity(community!.$id, _currentActivity!.$id);
+      await dbProvider.leaveActivity(community!.id, _currentActivity!.id);
     } catch (e) {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -110,106 +112,108 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
     final dbProvider = Provider.of<DatabaseProvider>(context);
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-    try {
-      community = dbProvider.communities.firstWhere(
-        (com) => com.$id == widget.communityId,
+    // try {
+    community = dbProvider.communities.firstWhere(
+      (com) => com.id == widget.communityId,
+    );
+    communityMemberships = dbProvider.communityMembers[widget.communityId];
+    activities = dbProvider.activities[widget.communityId];
+
+    Activity? previousActivity = _currentActivity;
+    if (activities!.isNotEmpty) {
+      if (community?.type == 'multi') {
+        int activityIndex = activities!
+            .indexWhere((act) => act.endDate.isAfter(DateTime.now().toUtc()));
+        if (activityIndex != -1) {
+          _currentActivity = activities![activityIndex];
+        } else {
+          _currentActivity = null;
+        }
+      } else if (community?.type == 'solo') {
+        print('end date: ${activities![0].endDate}');
+        int activityIndex = activities!.indexWhere((act) =>
+            act.endDate.isAfter(DateTime.now().toUtc()) &&
+            dbProvider.activityAttendances[act.id]?.indexWhere(
+                  (att) => att.userId == authProvider.user!.id,
+                ) !=
+                -1);
+        if (activityIndex != -1) {
+          _currentActivity = activities![activityIndex];
+        } else {
+          _currentActivity = null;
+        }
+      }
+
+      _currentActivityAttendances =
+          dbProvider.activityAttendances[_currentActivity?.id];
+
+      _currentActivityAttendances?.sort(
+        (a, b) => a.createdAt.compareTo(b.createdAt),
       );
-      communityMemberships =
-          dbProvider.communityMemberships[widget.communityId];
-      activities = dbProvider.activities[widget.communityId];
-      activityAttendances = dbProvider.activityAttendances[widget.communityId];
-      Activity? previousActivity = _currentActivity;
-      if (activities!.isNotEmpty) {
-        if (community!.type == 'multi') {
-          int activityIndex = activities!
-              .indexWhere((act) => act.endDate.isAfter(DateTime.now().toUtc()));
-          if (activityIndex != -1) {
-            _currentActivity = activities![activityIndex];
-          } else {
+      _currentActiveActivityAttendances =
+          _currentActivityAttendances?.where((att) => att.isActive).toList();
+
+      if (_currentActivity != null) {
+        // stop previous activity timer
+        if (endDateTimer != null) {
+          endDateTimer!.cancel();
+        }
+        // set timer to stop the activity after the end date
+        endDateTimer = Timer(
+          _currentActivity!.endDate.difference(DateTime.now().toUtc()),
+          () {
+            _isRocketClicked = false;
+            _rocketController.reverse();
             _currentActivity = null;
-          }
-        } else if (community!.type == 'solo') {
-          int activityIndex = activities!.indexWhere((act) =>
-              act.endDate.isAfter(DateTime.now().toUtc()) &&
-              activityAttendances!.indexWhere(
-                    (att) =>
-                        att.activityId == act.$id &&
-                        att.userId == authProvider.user!.id,
-                  ) !=
-                  -1);
-          if (activityIndex != -1) {
-            _currentActivity = activities![activityIndex];
-          } else {
-            _currentActivity = null;
-          }
-        }
-        _currentActivityAttendances = activityAttendances!
-            .where((att) => att.activityId == _currentActivity?.$id)
-            .toList();
-        _currentActiveActivityAttendances =
-            _currentActivityAttendances!.where((att) => att.active).toList();
-
-        if (_currentActivity != null) {
-          // stop previous activity timer
-          if (endDateTimer != null) {
-            endDateTimer!.cancel();
-          }
-          // set timer to stop the activity after the end date
-          endDateTimer = Timer(
-            _currentActivity!.endDate.difference(DateTime.now().toUtc()),
-            () {
-              _isRocketClicked = false;
-              _rocketController.reverse();
-              _currentActivity = null;
-              _currentActivityAttendances = null;
-            },
-          );
-        }
-
-        // check if the user is participating in the activity
-        if (_currentActivity != null) {
-          isUserParticipating = _currentActiveActivityAttendances!.indexWhere(
-                (att) => att.userId == authProvider.user!.id,
-              ) !=
-              -1;
-        }
-      } else {
-        _currentActivity = null;
-        _currentActivityAttendances = null;
-        _currentActiveActivityAttendances = null;
+            _currentActivityAttendances = null;
+          },
+        );
       }
 
-      // if an activity has just started, animate the rocket to the top
-      if (previousActivity == null &&
-          _currentActivity != null &&
-          isActivityStatusChecked) {
-        _isRocketClicked = true;
-        _rocketController.forward();
+      // check if the user is participating in the activity
+      if (_currentActivity != null) {
+        isUserParticipating = _currentActiveActivityAttendances!.indexWhere(
+              (att) => att.userId == authProvider.user!.id,
+            ) !=
+            -1;
       }
-
-      // if an activity was just stopped, animate the rocket to the bottom
-      else if (previousActivity != null &&
-          _currentActivity == null &&
-          isActivityStatusChecked) {
-        _isRocketClicked = false;
-        _rocketController.reverse();
-      }
-
-      // if no activity is currently running, set the rocket to the bottom
-      else if (!isActivityStatusChecked && _currentActivity == null) {
-        _rocketController.value = 0.0;
-        _isRocketClicked = false;
-      }
-
-      // if activity is currently running, set the rocket to the top
-      else if (!isActivityStatusChecked && _currentActivity != null) {
-        _rocketController.value = 1.0;
-        _isRocketClicked = true;
-      }
-      isActivityStatusChecked = true;
-    } catch (e) {
-      community = null;
+    } else {
+      _currentActivity = null;
+      _currentActivityAttendances = null;
+      _currentActiveActivityAttendances = null;
     }
+
+    // if an activity has just started, animate the rocket to the top
+    if (previousActivity == null &&
+        _currentActivity != null &&
+        isActivityStatusChecked) {
+      _isRocketClicked = true;
+      _rocketController.forward();
+    }
+
+    // if an activity was just stopped, animate the rocket to the bottom
+    else if (previousActivity != null &&
+        _currentActivity == null &&
+        isActivityStatusChecked) {
+      _isRocketClicked = false;
+      _rocketController.reverse();
+    }
+
+    // if no activity is currently running, set the rocket to the bottom
+    else if (!isActivityStatusChecked && _currentActivity == null) {
+      _rocketController.value = 0.0;
+      _isRocketClicked = false;
+    }
+
+    // if activity is currently running, set the rocket to the top
+    else if (!isActivityStatusChecked && _currentActivity != null) {
+      _rocketController.value = 1.0;
+      _isRocketClicked = true;
+    }
+    isActivityStatusChecked = true;
+    // } catch (e) {
+    //   community = null;
+    // }
 
     double rocketWidth = MediaQuery.of(context).size.width / 1.25 >
             MediaQuery.of(context).size.height / 1.25
@@ -221,7 +225,7 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
         if (!isNavigated) {
           isNavigated =
               true; // Set the flag to true to prevent further navigation
-          Navigator.pop(context);
+          context.go(HomePageView.routeName);
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('You are no longer a member of the community'),
@@ -237,7 +241,7 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
             ? GestureDetector(
                 onTap: () {
                   context.push(
-                    '${CommunitySettingsView.routeName}/${community?.$id}',
+                    '${CommunitySettingsView.routeName}/${community?.id}',
                   );
                 },
                 onTapDown: (_) => setState(() => isTitleTapped = true),
@@ -387,7 +391,6 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
                                   AppBar().preferredSize.height,
                             ),
                             child: Column(
-                              // mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
@@ -403,12 +406,11 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
                                   ),
                                   textAlign: TextAlign.left,
                                 ),
-                                // set the activityAttendant with join number 0
                                 if (_currentActivityAttendances != null &&
                                     _currentActivityAttendances!.isNotEmpty &&
                                     _currentActivity?.type == 'multi')
                                   Text(
-                                    'by ${_currentActivityAttendances?.where((att) => att.joinOrder == 0).toList()[0].userId == authProvider.user?.id ? 'You' : dbProvider.userProfiles[_currentActivityAttendances?.where((att) => att.joinOrder == 0).toList()[0].userId]?.name ?? 'Unknown'}',
+                                    'by ${_currentActivityAttendances?[0].userId == authProvider.user?.id ? 'You' : dbProvider.profiles[_currentActivityAttendances?[0].userId]?.name ?? 'Unknown'}',
                                     style: TextStyle(
                                       fontSize: 16,
                                       color: Theme.of(context)
@@ -485,7 +487,7 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
                                                           ),
                                                           child: Text(
                                                             dbProvider
-                                                                    .userProfiles[
+                                                                    .profiles[
                                                                         membership
                                                                             .userId]
                                                                     ?.name ??
@@ -506,7 +508,6 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
                                       ),
                                     ],
                                   ),
-
                                 Column(
                                   children: [
                                     const SizedBox(

@@ -128,22 +128,38 @@ class _CommunitiesViewState extends State<CommunitiesView> {
                     itemCount: value.communities.length,
                     itemBuilder: (BuildContext context, int index) {
                       final community = value.communities[index];
-                      if (value.activities[community.$id] == null ||
-                          value.communityMemberships[community.$id] == null ||
-                          value.activityAttendances[community.$id] == null) {
-                        return const CircularProgressIndicator();
+                      if (value.activities[community.id] == null ||
+                          value.communityMembers[community.id] == null ||
+                          value.activities[community.id]!.any((activity) =>
+                              value.activityAttendances[activity.id] == null)) {
+                        return ListTile(
+                          leading: CircleAvatar(
+                            child: Icon(
+                              IconData(community.iconCode,
+                                  fontFamily: 'MaterialIcons'),
+                            ),
+                          ),
+                          title: Text(
+                            community.name,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          subtitle: const Text(
+                            'Something went wrong. Please try again later.',
+                            style: TextStyle(
+                              color: Colors.grey,
+                            ),
+                          ),
+                          onTap: () {},
+                        );
                       }
                       Activity? activeActivity;
                       Activity? lastActivity;
                       String lastActivityUser = '';
-                      if (value.activities[community.$id] != null) {
-                        lastActivity = value.activities[community.$id]!.last;
+                      if (value.activities[community.id] != null) {
+                        lastActivity = value.activities[community.id]!.last;
                         lastActivityUser = value
-                                .userProfiles[value
-                                    .activityAttendances[community.$id]
-                                    ?.singleWhere((att) =>
-                                        att.activityId == lastActivity!.$id &&
-                                        att.joinOrder == 0)
+                                .profiles[value
+                                    .activityAttendances[lastActivity.id]?[0]
                                     .userId]
                                 ?.name ??
                             'Someone';
@@ -153,14 +169,14 @@ class _CommunitiesViewState extends State<CommunitiesView> {
                         }
                         if (community.type == 'solo') {
                           int activityIndex =
-                              value.activities[community.$id]!.indexWhere(
+                              value.activities[community.id]!.indexWhere(
                             (act) =>
                                 act.endDate.isAfter(DateTime.now().toUtc()) &&
                                 act.type == 'solo' &&
-                                value.activityAttendances[community.$id]!
+                                value.activityAttendances[act.id]!
                                         .indexWhere(
                                       (att) =>
-                                          att.activityId == act.$id &&
+                                          att.activityId == act.id &&
                                           att.userId == authProvider.user!.id,
                                     ) !=
                                     -1,
@@ -168,9 +184,9 @@ class _CommunitiesViewState extends State<CommunitiesView> {
 
                           if (activityIndex != -1) {
                             activeActivity =
-                                value.activities[community.$id]![activityIndex];
+                                value.activities[community.id]![activityIndex];
                             DateTime endDate = value
-                                .activities[community.$id]![activityIndex]
+                                .activities[community.id]![activityIndex]
                                 .endDate;
                             if (currentTimerEndDate == null ||
                                 (currentTimerEndDate != null &&
@@ -180,7 +196,7 @@ class _CommunitiesViewState extends State<CommunitiesView> {
                           }
                         } else if (community.type == 'multi') {
                           int activityIndex =
-                              value.activities[community.$id]!.indexWhere(
+                              value.activities[community.id]!.indexWhere(
                             (act) =>
                                 act.endDate.isAfter(
                                   DateTime.now().toUtc(),
@@ -189,9 +205,9 @@ class _CommunitiesViewState extends State<CommunitiesView> {
                           );
                           if (activityIndex != -1) {
                             activeActivity =
-                                value.activities[community.$id]![activityIndex];
+                                value.activities[community.id]![activityIndex];
                             DateTime endDate = value
-                                .activities[community.$id]![activityIndex]
+                                .activities[community.id]![activityIndex]
                                 .endDate;
                             if (currentTimerEndDate == null ||
                                 (currentTimerEndDate != null &&
@@ -204,7 +220,7 @@ class _CommunitiesViewState extends State<CommunitiesView> {
                       return InkWell(
                         onTap: () {
                           context.push(
-                            '${CommunityDetailsView.routeName}/${community.$id}',
+                            '${CommunityDetailsView.routeName}/${community.id}',
                           );
                         },
                         child: Column(
@@ -242,7 +258,7 @@ class _CommunitiesViewState extends State<CommunitiesView> {
                                       alignment: Alignment.topRight,
                                       child: Text(
                                         formatDate(
-                                          value.activities[community.$id]!.last
+                                          value.activities[community.id]!.last
                                               .startDate
                                               .toLocal(),
                                         ),

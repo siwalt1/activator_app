@@ -28,7 +28,7 @@ class SupabaseService {
     await supabase.auth.signOut();
   }
 
-  // delete user
+  //TODO: delete user
   Future<void> deleteUser() async {
     final user = supabase.auth.currentUser;
     if (user != null) {
@@ -36,77 +36,50 @@ class SupabaseService {
     }
   }
 
-  // create a new document (assuming 'data' is a map of the columns and values)
-  Future<void> createDocument(String table, Map<String, dynamic> data) async {
-    final response = await supabase.from(table).insert(data);
-    if (response.error != null) {
-      throw response.error!.message;
-    }
-  }
+  Future<List<Map<String, dynamic>>> fetchData(String table,
+      {Map<String, dynamic>? equals, Map<String, dynamic>? inFilter}) async {
+    var query = supabase.from(table).select();
 
-  // get all documents
-  Future<List<Map<String, dynamic>>> getDocuments(String table) async {
-    final response = await supabase.from(table).select();
-    return response;
-  }
-
-  // create community
-  Future<void> createCommunity(
-      String name, String description, int iconCode, String type) async {
-    final user = supabase.auth.currentUser;
-    if (user != null) {
-      await createDocument('communities', {
-        'name': name,
-        'description': description,
-        'icon_code': iconCode,
-        'type': type,
-        'creator_id': user.id
+    if (equals != null) {
+      equals.forEach((key, value) {
+        query = query.eq(key, value);
       });
     }
-  }
 
-  // leave community
-  Future<void> leaveCommunity(String communityId) async {
-    final user = supabase.auth.currentUser;
-    if (user != null) {
-      await supabase
-          .from('community_members')
-          .delete()
-          .eq('community_id', communityId)
-          .eq('user_id', user.id);
+    if (inFilter != null) {
+      inFilter.forEach((column, values) {
+        query = query.inFilter(column, values);
+      });
     }
+
+    return await query;
   }
 
-  // create activity
-  Future<void> createActivity(String communityId, String name) async {
-    await createDocument('activities', {
-      'community_id': communityId,
-      'name': name,
-      'is_active': true,
+  Future<List<Map<String, dynamic>>> rpc(String function,
+      {Map<String, dynamic>? params}) async {
+    return await supabase.rpc(function, params: params);
+  }
+
+  Future<void> rpcVoid(String function, {Map<String, dynamic>? params}) async {
+    await supabase.rpc(function, params: params);
+  }
+
+  Future<void> insertData(String table, Map<String, dynamic> data) async {
+    await supabase.from(table).insert(data);
+  }
+
+  Future<void> updateData(String table, Map<String, dynamic> data,
+      {required String id}) async {
+    await supabase.from(table).update(data).eq('id', id);
+  }
+
+  Future<void> deleteData(String table, Map<String, dynamic> filters) async {
+    var query = supabase.from(table).delete();
+
+    filters.forEach((key, value) {
+      query = query.eq(key, value);
     });
-  }
 
-  // leave activity
-  Future<void> leaveActivity(String activityId) async {
-    final user = supabase.auth.currentUser;
-    if (user != null) {
-      await supabase
-          .from('activity_attendance')
-          .delete()
-          .eq('activity_id', activityId)
-          .eq('user_id', user.id);
-    }
-  }
-
-  // reset invitation token (stub, adjust as needed)
-  Future<String?> resetInvitationToken(String communityId) async {
-    // Implement your logic for resetting the invitation token
-    return null;
-  }
-
-  // fetch community by invitation token (stub, adjust as needed)
-  Future<Map<String, dynamic>> fetchCommunity(String invitationToken) async {
-    // Implement your logic for fetching the community
-    return {};
+    await query;
   }
 }
