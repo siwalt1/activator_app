@@ -1,6 +1,5 @@
 import 'package:activator_app/src/core/provider/auth_provider.dart';
 import 'package:activator_app/src/core/provider/db_provider.dart';
-import 'package:activator_app/src/core/services/appwrite_service.dart';
 import 'package:activator_app/src/core/services/supabase_service.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/utils/slide_direction.dart';
@@ -168,10 +167,6 @@ void main() async {
           create: (_) => SupabaseService(),
           lazy: false,
         ),
-        Provider<AppwriteService>(
-          create: (_) => AppwriteService(),
-          lazy: false,
-        ),
         ChangeNotifierProvider(
           create: (context) => AuthProvider(
             Provider.of<SupabaseService>(context, listen: false),
@@ -179,7 +174,7 @@ void main() async {
         ),
         ChangeNotifierProvider(
           create: (context) => DatabaseProvider(
-            Provider.of<AppwriteService>(context, listen: false),
+            Provider.of<SupabaseService>(context, listen: false),
             Provider.of<AuthProvider>(context, listen: false),
           ),
         ),
