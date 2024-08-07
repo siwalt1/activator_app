@@ -188,7 +188,7 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
                                   ),
                                   TextSpan(
                                     text:
-                                        ': Activities that are done alone, such as reading a book or meditating. Theses sessions are done separately and at different times.\n\n',
+                                        ': Activities that are done alone, such as reading a book or meditating. These sessions are done separately and at different times.\n\n',
                                   ),
                                   TextSpan(
                                     text: 'Real-time',
