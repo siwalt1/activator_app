@@ -6,10 +6,8 @@ import 'package:activator_app/src/core/models/community_member.dart';
 import 'package:activator_app/src/core/models/profile.dart';
 import 'package:activator_app/src/core/provider/auth_provider.dart';
 import 'package:activator_app/src/core/services/supabase_service.dart';
-import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
@@ -372,6 +370,24 @@ class DatabaseProvider with ChangeNotifier {
       'type': type,
       'created_by': _authProvider.user!.id,
     });
+  }
+
+  Future<void> updateCommunity(
+      String communityId, String name, String description, int iconCode, String type) async {
+    final response =
+        await _supabaseService.rpc('update_community', params: {
+      'p_community_id': communityId,
+      'p_name': name,
+      'p_description': description,
+      'p_type': type,
+      'p_icon_code': iconCode,
+    });
+
+    if (response.isEmpty) {
+      throw Exception('Failed to update community');
+    }
+
+    print('Community updated: $response');
   }
 
   Future<void> leaveCommunity(String communityId, {String? userId}) async {

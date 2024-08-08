@@ -30,6 +30,7 @@ class CustomTextFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FormField<String>(
+      initialValue: controller?.text ?? initialValue,
       validator: validator,
       builder: (FormFieldState<String> state) {
         return Column(

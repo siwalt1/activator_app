@@ -5,6 +5,7 @@ import 'package:activator_app/src/core/widgets/custom_bottom_sheet_body.dart';
 import 'package:activator_app/src/core/widgets/custom_button.dart';
 import 'package:activator_app/src/core/widgets/custom_text_form_field.dart';
 import 'package:activator_app/src/features/communities/widgets/activity_type_selector.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 import 'package:provider/provider.dart';
@@ -79,7 +80,7 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
               title: const Text('Something went wrong'),
               content: const Text('Try again later.'),
               actions: [
-                TextButton(
+                CupertinoButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -203,7 +204,7 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
                               ),
                             ),
                             actions: [
-                              TextButton(
+                              CupertinoButton(
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
@@ -247,7 +248,6 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
                 const SizedBox(height: AppConstants.separatorSpacing),
                 CustomTextFormField(
                   label: 'Community name',
-                  initialValue: '',
                   controller: _nameController,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -265,7 +265,6 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
                 const SizedBox(height: AppConstants.separatorSpacing),
                 CustomTextFormField(
                   label: 'Community description',
-                  initialValue: '',
                   maxLines: 2,
                   keyboardType: TextInputType.multiline,
                   controller: _descriptionController,

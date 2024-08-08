@@ -11,6 +11,7 @@ import 'package:activator_app/src/features/auth/views/signup_view.dart';
 import 'package:activator_app/src/features/auth/views/welcome_view.dart';
 import 'package:activator_app/src/features/communities/views/community_details_view.dart';
 import 'package:activator_app/src/features/communities/views/community_settings_view.dart';
+import 'package:activator_app/src/features/communities/views/edit_community_view.dart';
 import 'package:activator_app/src/features/communities/views/invitation_view.dart';
 import 'package:activator_app/src/features/initial/views/not_found_view.dart';
 import 'package:activator_app/src/features/initial/views/splash_view.dart';
@@ -154,6 +155,15 @@ void main() async {
         path: HomePageView.routeName,
         pageBuilder: (context, state) => PlatformTransitionPage(
           child: const HomePageView(),
+          isCupertino: Theme.of(context).platform == TargetPlatform.iOS,
+        ),
+      ),
+      GoRoute(
+        path: '${EditCommunityView.routeName}/:communityId',
+        pageBuilder: (context, state) => PlatformTransitionPage(
+          child: EditCommunityView(
+            communityId: state.pathParameters['communityId']!,
+          ),
           isCupertino: Theme.of(context).platform == TargetPlatform.iOS,
         ),
       ),

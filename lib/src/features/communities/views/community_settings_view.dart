@@ -11,7 +11,8 @@ import 'package:activator_app/src/core/widgets/custom_list_tile_divider.dart';
 import 'package:activator_app/src/core/widgets/custom_progress_indicator.dart';
 import 'package:activator_app/src/core/widgets/custom_text_form_field.dart';
 import 'package:activator_app/src/features/HomePage/home_page_view.dart';
-import 'package:flutter/foundation.dart';
+import 'package:activator_app/src/features/communities/views/edit_community_view.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -58,7 +59,7 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
                 title: const Text('Something went wrong'),
                 content: const Text('Try again later.'),
                 actions: [
-                  TextButton(
+                  CupertinoButton(
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -318,11 +319,9 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          // Add a 'edit' button to the app bar with the text 'Edit' - no icon button - when clicked it does not show a border around the button
-          TextButton(
-            onPressed: () {
-              print('Edit button clicked');
-            },
+          CupertinoButton(
+            onPressed: () => context
+                .push('${EditCommunityView.routeName}/${widget.communityId}'),
             child: const Text('Edit'),
           ),
         ],
