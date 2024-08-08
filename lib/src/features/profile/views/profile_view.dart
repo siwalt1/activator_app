@@ -23,7 +23,7 @@ class ProfileView extends StatelessWidget {
       ),
       body: SafeArea(
         child: Center(
-          child: Container(
+          child: Padding(
             padding: const EdgeInsets.only(
                 left: AppConstants.paddingSpacing,
                 right: AppConstants.paddingSpacing,
