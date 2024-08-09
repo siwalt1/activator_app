@@ -13,6 +13,7 @@ import 'package:activator_app/src/core/widgets/custom_progress_indicator.dart';
 import 'package:activator_app/src/core/widgets/custom_text_form_field.dart';
 import 'package:activator_app/src/features/HomePage/home_page_view.dart';
 import 'package:activator_app/src/features/communities/views/edit_community_view.dart';
+import 'package:activator_app/src/features/communities/widgets/info_boxes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -374,20 +375,43 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
                             ),
                           ),
                         ),
+                        const SizedBox(height: AppConstants.separatorSpacing),
+                        InfoBoxes(
+                          items: [
+                            IconLabelPair(
+                              icon: Icon(community?.type == 'solo'
+                                  ? Icons.person
+                                  : Icons.people),
+                              label: community?.type == 'solo'
+                                  ? 'solo'
+                                  : 'real-time',
+                            ),
+                            IconLabelPair(
+                              icon: const Icon(Icons.timelapse),
+                              label: '1h',
+                            ),
+                            IconLabelPair(
+                              icon:
+                                  const Icon(Icons.notifications_off_outlined),
+                              label: 'off',
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                            height: AppConstants.separatorSpacing * 1.5),
                         if (community?.description?.isNotEmpty ?? false)
                           Column(
                             children: [
-                              const SizedBox(
-                                  height: AppConstants.separatorSpacing),
                               CustomTextFormField(
                                 initialValue: community!.description!,
                                 label: 'Description',
                                 maxLines: null,
                                 readOnly: true,
                               ),
+                              const SizedBox(
+                                  height: AppConstants.separatorSpacing),
                             ],
                           ),
-                        const SizedBox(height: AppConstants.separatorSpacing),
                         Material(
                           color: Theme.of(context).colorScheme.surfaceContainer,
                           borderRadius:
