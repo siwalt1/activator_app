@@ -28,6 +28,7 @@ class InfoBoxes extends StatelessWidget {
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
