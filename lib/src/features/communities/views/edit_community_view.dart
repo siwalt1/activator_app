@@ -2,6 +2,8 @@ import 'package:activator_app/src/core/models/community.dart';
 import 'package:activator_app/src/core/provider/db_provider.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/utils/enum_converter.dart';
+import 'package:activator_app/src/core/utils/format_duration.dart';
+import 'package:activator_app/src/core/widgets/custom_list_tile.dart';
 import 'package:activator_app/src/core/widgets/custom_progress_indicator.dart';
 import 'package:activator_app/src/core/widgets/custom_text_form_field.dart';
 import 'package:activator_app/src/features/communities/widgets/activity_type_selector.dart';
@@ -26,12 +28,15 @@ class EditCommunityView extends StatefulWidget {
 
 class _EditCommunityViewState extends State<EditCommunityView> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController(text: 'test');
+  final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
   bool _isLoading = false;
-  ActivityType? _selectedActivityType;
-  IconData? _selectedIcon;
+  late ActivityType _selectedActivityType;
+  late IconData _selectedIcon;
+  late NotificationType _selectedNotificationType;
+  late int _selectedActivityDuration;
   late Community _community;
+  final ValueNotifier<bool> _controllerListener = ValueNotifier(false);
 
   @override
   void initState() {
@@ -44,6 +49,11 @@ class _EditCommunityViewState extends State<EditCommunityView> {
     _descriptionController.text = _community.description ?? '';
     _selectedIcon = IconData(_community.iconCode, fontFamily: 'MaterialIcons');
     _selectedActivityType = _community.type;
+    _selectedNotificationType = _community.notificationType;
+    _selectedActivityDuration = _community.activityDuration;
+
+    _nameController.addListener(_updateControllerListener);
+    _descriptionController.addListener(_updateControllerListener);
   }
 
   _pickIcon() async {
@@ -62,9 +72,8 @@ class _EditCommunityViewState extends State<EditCommunityView> {
   Future<void> _submit() async {
     // update form state
     if (_formKey.currentState!.validate()) {
-      // if the activity has changed, ask the user to confirm
-      if (_community.type !=
-          EnumConverter.enumToString(_selectedActivityType!)) {
+      // if the activity type has changed, ask the user to confirm
+      if (_community.type != _selectedActivityType) {
         final confirmed = await showDialog<bool>(
           context: context,
           builder: (context) {
@@ -97,14 +106,15 @@ class _EditCommunityViewState extends State<EditCommunityView> {
       setState(() {
         _isLoading = true;
       });
+      if (!mounted) return;
       final dbProvider = Provider.of<DatabaseProvider>(context, listen: false);
       try {
         await dbProvider.updateCommunity(
           _community.id,
           _nameController.text,
           _descriptionController.text,
-          _selectedIcon!.codePoint,
-          EnumConverter.enumToString(_selectedActivityType!),
+          _selectedIcon.codePoint,
+          EnumConverter.enumToString(_selectedActivityType),
         );
         if (!mounted) return;
         setState(() {
@@ -138,10 +148,20 @@ class _EditCommunityViewState extends State<EditCommunityView> {
     }
   }
 
+  void _updateControllerListener() {
+    _controllerListener.value = !(_community.type == _selectedActivityType &&
+            _community.name == _nameController.text &&
+            _community.description == _descriptionController.text &&
+            _community.notificationType == _selectedNotificationType &&
+            _community.activityDuration == _selectedActivityDuration) &&
+        !_isLoading;
+  }
+
   @override
   void dispose() {
     _nameController.dispose();
     _descriptionController.dispose();
+    _controllerListener.dispose();
     super.dispose();
   }
 
@@ -150,9 +170,14 @@ class _EditCommunityViewState extends State<EditCommunityView> {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          CupertinoButton(
-            onPressed: _submit,
-            child: const Text('Done'),
+          ValueListenableBuilder<bool>(
+            valueListenable: _controllerListener,
+            builder: (_, settingsHaveChangedAndIsNotLoading, child) {
+              return CupertinoButton(
+                onPressed: settingsHaveChangedAndIsNotLoading ? _submit : null,
+                child: const Text('Done'),
+              );
+            },
           ),
         ],
       ),
@@ -201,7 +226,7 @@ class _EditCommunityViewState extends State<EditCommunityView> {
                                         ),
                                       ),
                                       child: Icon(
-                                        _selectedIcon ?? Icons.add,
+                                        _selectedIcon,
                                         size: 40,
                                       ),
                                     ),
@@ -287,6 +312,13 @@ class _EditCommunityViewState extends State<EditCommunityView> {
                                   onActivityTypeSelected: (type) {
                                     setState(() {
                                       _selectedActivityType = type;
+                                      if (type == ActivityType.solo &&
+                                          _selectedNotificationType ==
+                                              NotificationType
+                                                  .activityCreationNoJoin) {
+                                        _selectedNotificationType =
+                                            NotificationType.all;
+                                      }
                                     });
                                   },
                                 ),
@@ -324,6 +356,71 @@ class _EditCommunityViewState extends State<EditCommunityView> {
                                   }
                                   return null;
                                 },
+                              ),
+                              const SizedBox(
+                                  height: AppConstants.separatorSpacing),
+                              CustomListTile(
+                                text: "Notifications",
+                                onPressed: () => print('onPressed'),
+                                marginBottom: AppConstants.listTileSpacing,
+                                showArrow: false,
+                                trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      _selectedNotificationType ==
+                                              NotificationType.all
+                                          ? 'On'
+                                          : _selectedNotificationType ==
+                                                  NotificationType
+                                                      .activityCreationNoJoin
+                                              ? 'When Activity Started'
+                                              : 'Off',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurface,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Icon(
+                                      Icons.arrow_forward_ios,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant,
+                                      size: 15,
+                                    )
+                                  ],
+                                ),
+                              ),
+                              CustomListTile(
+                                text: "Activity duration",
+                                onPressed: () => print('onPressed'),
+                                marginBottom: AppConstants.listTileSpacing,
+                                trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      formatDuration(
+                                          _selectedActivityDuration!),
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurface),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Icon(
+                                      Icons.arrow_forward_ios,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant,
+                                      size: 15,
+                                    )
+                                  ],
+                                ),
                               ),
                             ],
                           ),

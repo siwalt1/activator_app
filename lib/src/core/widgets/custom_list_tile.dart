@@ -11,6 +11,7 @@ class CustomListTile extends StatelessWidget {
     this.showArrow = true,
     this.textAlign = TextAlign.start,
     this.backgroundColor,
+    this.trailing,
   });
 
   final String text;
@@ -20,6 +21,7 @@ class CustomListTile extends StatelessWidget {
   final bool showArrow;
   final TextAlign textAlign;
   final Color? backgroundColor;
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +40,8 @@ class CustomListTile extends StatelessWidget {
           ],
         ),
         child: ListTile(
-          tileColor: backgroundColor ?? Theme.of(context).colorScheme.surfaceContainer,
+          tileColor:
+              backgroundColor ?? Theme.of(context).colorScheme.surfaceContainer,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppConstants.borderRadius),
           ),
@@ -50,15 +53,17 @@ class CustomListTile extends StatelessWidget {
               color: textColor ?? Theme.of(context).colorScheme.onSurface,
               fontSize: 16,
             ),
+            overflow: TextOverflow.ellipsis,
           ),
           onTap: onPressed,
-          trailing: showArrow
-              ? Icon(
-                  Icons.arrow_forward_ios,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  size: 15,
-                )
-              : null,
+          trailing: trailing ??
+              (showArrow
+                  ? Icon(
+                      Icons.arrow_forward_ios,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      size: 15,
+                    )
+                  : null),
         ),
       ),
     );
