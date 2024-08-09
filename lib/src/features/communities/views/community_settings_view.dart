@@ -1,6 +1,7 @@
 import 'package:activator_app/src/core/models/activity.dart';
 import 'package:activator_app/src/core/models/community.dart';
 import 'package:activator_app/src/core/models/community_member.dart';
+import 'package:activator_app/src/core/models/profile.dart';
 import 'package:activator_app/src/core/provider/auth_provider.dart';
 import 'package:activator_app/src/core/provider/db_provider.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
@@ -35,6 +36,7 @@ class CommunitySettingsView extends StatefulWidget {
 class _CommunitySettingsViewState extends State<CommunitySettingsView> {
   Community? community;
   List<CommunityMember>? communityMemberships;
+  List<Profile>? profiles;
   List<Activity>? activities;
   bool isNavigated = false; // Track if navigation has already happened
   bool _isLoading = false;
@@ -301,6 +303,13 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
         (com) => com.id == widget.communityId,
       );
       communityMemberships = dbProvider.communityMembers[widget.communityId];
+      profiles = dbProvider.profiles.values
+          .where((profile) =>
+              communityMemberships
+                  ?.any((membership) => membership.userId == profile.id) ??
+              false)
+          .toList();
+      profiles?.sort((a, b) => a.name.compareTo(b.name));
       activities = dbProvider.activities[widget.communityId];
     } catch (e) {
       community = null;
@@ -413,10 +422,14 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
                                 ),
                                 const CustomListTileDivider(),
                                 ...List.generate(
-                                  communityMemberships!.length,
+                                  profiles?.length ?? 0,
                                   (index) {
+                                    final Profile profile = profiles![index];
                                     final CommunityMember membership =
-                                        communityMemberships![index];
+                                        communityMemberships!.firstWhere(
+                                            (membership) =>
+                                                membership.userId ==
+                                                profile.id);
                                     return Column(
                                       children: [
                                         InkWell(
@@ -428,12 +441,8 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
                                                     context,
                                                     listen: false);
                                             _openUserModal(
-                                              membership.userId,
-                                              dbProvider
-                                                      .profiles[
-                                                          membership.userId]
-                                                      ?.name ??
-                                                  'Unknown',
+                                              profile.id,
+                                              profile.name,
                                               membership.createdAt,
                                               membership.userId ==
                                                   authProvider.user!.id,
@@ -441,20 +450,12 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
                                           },
                                           child: ListTile(
                                             leading: CircleAvatar(
-                                              child: Text(dbProvider
-                                                      .profiles[
-                                                          membership.userId]
-                                                      ?.name[0] ??
-                                                  'U'),
+                                              child: Text(profile.name[0]),
                                             ),
-                                            title: Text(dbProvider
-                                                    .profiles[membership.userId]
-                                                    ?.name ??
-                                                'Unknown'),
+                                            title: Text(profile.name),
                                           ),
                                         ),
-                                        index !=
-                                                communityMemberships!.length - 1
+                                        index != profiles!.length - 1
                                             ? const CustomListTileDivider()
                                             : const SizedBox(),
                                       ],
