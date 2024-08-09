@@ -43,9 +43,7 @@ class _EditCommunityViewState extends State<EditCommunityView> {
     _nameController.text = _community.name;
     _descriptionController.text = _community.description ?? '';
     _selectedIcon = IconData(_community.iconCode, fontFamily: 'MaterialIcons');
-    _selectedActivityType =
-        EnumConverter.enumFromString(_community.type, ActivityType.values)
-            as ActivityType;
+    _selectedActivityType = _community.type;
   }
 
   _pickIcon() async {

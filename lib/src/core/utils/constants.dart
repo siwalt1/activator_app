@@ -67,4 +67,15 @@ class AppConstants {
 enum ActivityType {
   solo,
   multi,
+  joinCommunity,
+  leaveCommunity,
+  createCommunity,
+  updateCommunity,
+}
+
+// notificaiton types constants
+enum NotificationType {
+  off,
+  activityCreationNoJoin,
+  all,
 }

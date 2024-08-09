@@ -121,7 +121,7 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
 
     Activity? previousActivity = _currentActivity;
     if (activities!.isNotEmpty) {
-      if (community?.type == 'multi') {
+      if (community?.type == ActivityType.multi) {
         int activityIndex = activities!
             .indexWhere((act) => act.endDate.isAfter(DateTime.now().toUtc()));
         if (activityIndex != -1) {
@@ -129,7 +129,7 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
         } else {
           _currentActivity = null;
         }
-      } else if (community?.type == 'solo') {
+      } else if (community?.type ==  ActivityType.solo) {
         print('end date: ${activities![0].endDate}');
         int activityIndex = activities!.indexWhere((act) =>
             act.endDate.isAfter(DateTime.now().toUtc()) &&
@@ -408,7 +408,7 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
                                 ),
                                 if (_currentActivityAttendances != null &&
                                     _currentActivityAttendances!.isNotEmpty &&
-                                    _currentActivity?.type == 'multi')
+                                    _currentActivity?.type == ActivityType.multi)
                                   Text(
                                     'by ${_currentActivityAttendances?[0].userId == authProvider.user?.id ? 'You' : dbProvider.profiles[_currentActivityAttendances?[0].userId]?.name ?? 'Unknown'}',
                                     style: TextStyle(
@@ -418,7 +418,7 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
                                           .onPrimary,
                                     ),
                                   ),
-                                if (_currentActivity?.type == 'multi')
+                                if (_currentActivity?.type == ActivityType.multi)
                                   Column(
                                     children: [
                                       const SizedBox(
@@ -528,7 +528,7 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
                                       },
                                       text: !isUserParticipating
                                           ? 'Join session'
-                                          : _currentActivity?.type == 'multi' &&
+                                          : _currentActivity?.type == ActivityType.multi &&
                                                   _currentActiveActivityAttendances!
                                                           .length >
                                                       1

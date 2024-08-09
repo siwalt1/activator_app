@@ -1,3 +1,6 @@
+import 'package:activator_app/src/core/utils/constants.dart';
+import 'package:activator_app/src/core/utils/enum_converter.dart';
+
 class Community {
   const Community({
     required this.id,
@@ -8,6 +11,8 @@ class Community {
     required this.invitationToken,
     required this.createdAt,
     required this.updatedAt,
+    required this.activityDuration,
+    required this.notificationType,
     this.createdBy,
     this.membersCount,
   });
@@ -16,10 +21,12 @@ class Community {
   final String name;
   final String? description;
   final int iconCode;
-  final String type;
+  final ActivityType type;
   final String invitationToken;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final int activityDuration;
+  final NotificationType notificationType;
   final String? createdBy;
   final int? membersCount;
 
@@ -29,11 +36,16 @@ class Community {
       name: map['name'],
       description: map['description'],
       iconCode: map['icon_code'],
-      type: map['type'],
+      type: EnumConverter.enumFromString(map['type'], ActivityType.values)
+          as ActivityType,
       createdAt: DateTime.parse(map['created_at']),
       updatedAt: DateTime.parse(map['updated_at']),
       createdBy: map['created_by'],
       invitationToken: map['invitation_token'],
+      activityDuration: map['activity_duration'],
+      notificationType: EnumConverter.enumFromString(
+              map['notification_type'], NotificationType.values)
+          as NotificationType,
       membersCount: map['members_count'],
     );
   }
@@ -44,11 +56,13 @@ class Community {
       'name': name,
       'description': description,
       'icon_code': iconCode,
-      'type': type,
+      'type': EnumConverter.enumToString(type),
       'invitation_token': invitationToken,
       'created_at': createdAt,
       'updated_at': updatedAt,
       'created_by': createdBy,
+      'activity_duration': activityDuration,
+      'notification_type': EnumConverter.enumToString(notificationType),
     };
   }
 }

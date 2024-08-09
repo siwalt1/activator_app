@@ -5,6 +5,7 @@ import 'package:activator_app/src/core/models/profile.dart';
 import 'package:activator_app/src/core/provider/auth_provider.dart';
 import 'package:activator_app/src/core/provider/db_provider.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
+import 'package:activator_app/src/core/utils/format_duration.dart';
 import 'package:activator_app/src/core/widgets/custom_bottom_sheet_body.dart';
 import 'package:activator_app/src/core/widgets/custom_button.dart';
 import 'package:activator_app/src/core/widgets/custom_list_tile.dart';
@@ -379,21 +380,31 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
                         InfoBoxes(
                           items: [
                             IconLabelPair(
-                              icon: Icon(community?.type == 'solo'
+                              icon: Icon(community?.type == ActivityType.solo
                                   ? Icons.person
                                   : Icons.people),
-                              label: community?.type == 'solo'
+                              label: community?.type == ActivityType.solo
                                   ? 'solo'
                                   : 'real-time',
                             ),
                             IconLabelPair(
                               icon: const Icon(Icons.timelapse),
-                              label: '1h',
+                              label: formatDuration(
+                                  community!.activityDuration),
                             ),
                             IconLabelPair(
-                              icon:
-                                  const Icon(Icons.notifications_off_outlined),
-                              label: 'off',
+                              icon: Icon(community!.notificationType ==
+                                      NotificationType.off
+                                  ? Icons.notifications_off_outlined
+                                  : Icons.notifications_on_outlined),
+                              label: community!.notificationType ==
+                                      NotificationType.off
+                                  ? 'off'
+                                  : community!.notificationType ==
+                                          NotificationType
+                                              .activityCreationNoJoin
+                                      ? 'activity started'
+                                      : 'on',
                             ),
                           ],
                         ),

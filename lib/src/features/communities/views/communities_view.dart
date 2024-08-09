@@ -167,14 +167,13 @@ class _CommunitiesViewState extends State<CommunitiesView> {
                             authProvider.user!.userMetadata?['display_name']) {
                           lastActivityUser = 'You';
                         }
-                        if (community.type == 'solo') {
+                        if (community.type == ActivityType.solo) {
                           int activityIndex =
                               value.activities[community.id]!.indexWhere(
                             (act) =>
                                 act.endDate.isAfter(DateTime.now().toUtc()) &&
-                                act.type == 'solo' &&
-                                value.activityAttendances[act.id]!
-                                        .indexWhere(
+                                act.type == ActivityType.solo &&
+                                value.activityAttendances[act.id]!.indexWhere(
                                       (att) =>
                                           att.activityId == act.id &&
                                           att.userId == authProvider.user!.id,
@@ -194,14 +193,14 @@ class _CommunitiesViewState extends State<CommunitiesView> {
                               _setTimer(endDate);
                             }
                           }
-                        } else if (community.type == 'multi') {
+                        } else if (community.type == ActivityType.multi) {
                           int activityIndex =
                               value.activities[community.id]!.indexWhere(
                             (act) =>
                                 act.endDate.isAfter(
                                   DateTime.now().toUtc(),
                                 ) &&
-                                act.type == 'multi',
+                                act.type == ActivityType.multi,
                           );
                           if (activityIndex != -1) {
                             activeActivity =
@@ -237,16 +236,23 @@ class _CommunitiesViewState extends State<CommunitiesView> {
                                 overflow: TextOverflow.ellipsis,
                               ),
                               subtitle: Text(
-                                lastActivity?.type == 'solo' ||
-                                        lastActivity?.type == 'multi'
+                                lastActivity?.type == ActivityType.solo ||
+                                        lastActivity?.type == ActivityType.multi
                                     ? '$lastActivityUser ${lastActivityUser == 'You' ? 'have' : 'has'} started a session'
-                                    : lastActivity?.type == 'create'
+                                    : lastActivity?.type ==
+                                            ActivityType.createCommunity
                                         ? '$lastActivityUser ${lastActivityUser == 'You' ? 'have' : 'has'} created the community'
-                                        : lastActivity?.type == 'join'
+                                        : lastActivity?.type ==
+                                                ActivityType.joinCommunity
                                             ? '$lastActivityUser ${lastActivityUser == 'You' ? 'have' : 'has'} joined the community'
-                                            : lastActivity?.type == 'leave'
+                                            : lastActivity?.type ==
+                                                    ActivityType.leaveCommunity
                                                 ? '$lastActivityUser ${lastActivityUser == 'You' ? 'have' : 'has'} left the community'
-                                                : '',
+                                                : lastActivity?.type ==
+                                                        ActivityType
+                                                            .updateCommunity
+                                                    ? '$lastActivityUser ${lastActivityUser == 'You' ? 'have' : 'has'} updated the community settings'
+                                                    : '',
                                 overflow: TextOverflow.ellipsis,
                               ),
                               trailing: SizedBox(
