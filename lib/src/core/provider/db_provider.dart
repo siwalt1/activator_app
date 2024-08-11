@@ -364,30 +364,39 @@ class DatabaseProvider with ChangeNotifier {
   }
 
   Future<void> createCommunity(
-      String name, String description, int iconCode, String type) async {
+    String name,
+    String description,
+    int iconCode,
+    ActivityType type,
+    int activityDuration,
+    NotificationType notificationType,
+  ) async {
     await _supabaseService.insertData('communities', {
       'name': name,
       'description': description,
       'icon_code': iconCode,
-      'type': type,
+      'type': EnumConverter.enumToString(type),
       'created_by': _authProvider.user!.id,
+      'activity_duration': activityDuration,
+      'notification_type': EnumConverter.enumToString(notificationType),
     });
   }
 
   Future<void> updateCommunity(
-      String communityId,
-      String name,
-      String description,
-      int iconCode,
-      ActivityType type,
-      int activityDuration,
-      NotificationType notificationType) async {
+    String communityId,
+    String name,
+    String description,
+    int iconCode,
+    ActivityType type,
+    int activityDuration,
+    NotificationType notificationType,
+  ) async {
     final response = await _supabaseService.rpc('update_community', params: {
       'p_community_id': communityId,
       'p_name': name,
       'p_description': description,
-      'p_type': EnumConverter.enumToString(type),
       'p_icon_code': iconCode,
+      'p_type': EnumConverter.enumToString(type),
       'p_activity_duration': activityDuration,
       'p_notification_type': EnumConverter.enumToString(notificationType),
     });

@@ -1,10 +1,12 @@
 import 'package:activator_app/src/core/provider/db_provider.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
-import 'package:activator_app/src/core/utils/enum_converter.dart';
 import 'package:activator_app/src/core/widgets/custom_bottom_sheet_body.dart';
 import 'package:activator_app/src/core/widgets/custom_button.dart';
+import 'package:activator_app/src/core/widgets/custom_list_tile.dart';
 import 'package:activator_app/src/core/widgets/custom_text_form_field.dart';
+import 'package:activator_app/src/features/communities/widgets/activity_duration_selector.dart';
 import 'package:activator_app/src/features/communities/widgets/activity_type_selector.dart';
+import 'package:activator_app/src/features/communities/widgets/notification_type_selector.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
@@ -29,6 +31,8 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
   bool _isLoading = false;
   ActivityType? _selectedActivityType;
   IconData? _selectedIcon;
+  NotificationType _selectedNotificationType = NotificationType.all;
+  int _selectedActivityDuration = 60;
   bool _isSubmitted = false;
 
   _pickIcon() async {
@@ -60,7 +64,9 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
           _nameController.text,
           _descriptionController.text,
           _selectedIcon!.codePoint,
-          EnumConverter.enumToString(_selectedActivityType!),
+          _selectedActivityType!,
+          _selectedActivityDuration,
+          _selectedNotificationType,
         );
         if (!mounted) return;
         setState(() {
@@ -275,6 +281,29 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
                       return 'Description must be less than 500 characters';
                     }
                     return null;
+                  },
+                ),
+                const SizedBox(height: AppConstants.separatorSpacing),
+                NotificationTypeSelector(
+                  selectedNotificationType: _selectedNotificationType,
+                  notificationTypeList: NotificationType.values
+                      .where((type) =>
+                          !(_selectedActivityType == ActivityType.solo &&
+                              type == NotificationType.activityCreationNoJoin))
+                      .toList(),
+                  onNotificationTypeSelected: (type) {
+                    setState(() {
+                      _selectedNotificationType = type;
+                    });
+                  },
+                ),
+                const SizedBox(height: AppConstants.listTileSpacing),
+                ActivityDurationSelector(
+                  selectedActivityDuration: _selectedActivityDuration,
+                  onActivityDurationTypeSelected: (duration) {
+                    setState(() {
+                      _selectedActivityDuration = duration;
+                    });
                   },
                 ),
               ],

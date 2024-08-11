@@ -62,7 +62,7 @@ class NotificationTypeSelector extends StatelessWidget {
     return CustomListTile(
       text: "Notifications",
       onPressed: () => _showNotificationPicker(context),
-      marginBottom: AppConstants.listTileSpacing,
+      marginBottom: 0,
       showArrow: false,
       trailing: Row(
         mainAxisSize: MainAxisSize.min,

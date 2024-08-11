@@ -126,7 +126,7 @@ class _ActivityDurationSelectorState extends State<ActivityDurationSelector> {
     return CustomListTile(
       text: "Activity duration",
       onPressed: _showTimePicker,
-      marginBottom: AppConstants.listTileSpacing,
+      marginBottom: 0,
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

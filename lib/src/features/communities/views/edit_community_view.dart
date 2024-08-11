@@ -381,6 +381,8 @@ class _EditCommunityViewState extends State<EditCommunityView> {
                                   _updateControllerListener();
                                 },
                               ),
+                              const SizedBox(
+                                  height: AppConstants.listTileSpacing),
                               ActivityDurationSelector(
                                 selectedActivityDuration:
                                     _selectedActivityDuration,
