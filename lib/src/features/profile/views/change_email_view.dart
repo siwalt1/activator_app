@@ -136,6 +136,14 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
                         },
                         focusNode: _focusNode,
                       ),
+                      const SizedBox(height: AppConstants.separatorSpacing / 2),
+                      Text(
+                        'You will receive an email to verify your new email address.',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          fontSize: 12,
+                        ),
+                      ),
                     ],
                   ),
                 ),
