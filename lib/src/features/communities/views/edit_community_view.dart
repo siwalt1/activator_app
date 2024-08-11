@@ -1,7 +1,6 @@
 import 'package:activator_app/src/core/models/community.dart';
 import 'package:activator_app/src/core/provider/db_provider.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
-import 'package:activator_app/src/core/utils/enum_converter.dart';
 import 'package:activator_app/src/core/widgets/custom_progress_indicator.dart';
 import 'package:activator_app/src/core/widgets/custom_text_form_field.dart';
 import 'package:activator_app/src/features/communities/widgets/activity_duration_selector.dart';
@@ -115,7 +114,9 @@ class _EditCommunityViewState extends State<EditCommunityView> {
           _nameController.text,
           _descriptionController.text,
           _selectedIcon.codePoint,
-          EnumConverter.enumToString(_selectedActivityType),
+          _selectedActivityType,
+          _selectedActivityDuration,
+          _selectedNotificationType,
         );
         if (!mounted) return;
         setState(() {

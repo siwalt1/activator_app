@@ -6,6 +6,8 @@ import 'package:activator_app/src/core/models/community_member.dart';
 import 'package:activator_app/src/core/models/profile.dart';
 import 'package:activator_app/src/core/provider/auth_provider.dart';
 import 'package:activator_app/src/core/services/supabase_service.dart';
+import 'package:activator_app/src/core/utils/constants.dart';
+import 'package:activator_app/src/core/utils/enum_converter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -373,14 +375,21 @@ class DatabaseProvider with ChangeNotifier {
   }
 
   Future<void> updateCommunity(
-      String communityId, String name, String description, int iconCode, String type) async {
-    final response =
-        await _supabaseService.rpc('update_community', params: {
+      String communityId,
+      String name,
+      String description,
+      int iconCode,
+      ActivityType type,
+      int activityDuration,
+      NotificationType notificationType) async {
+    final response = await _supabaseService.rpc('update_community', params: {
       'p_community_id': communityId,
       'p_name': name,
       'p_description': description,
-      'p_type': type,
+      'p_type': EnumConverter.enumToString(type),
       'p_icon_code': iconCode,
+      'p_activity_duration': activityDuration,
+      'p_notification_type': EnumConverter.enumToString(notificationType),
     });
 
     if (response.isEmpty) {
@@ -519,11 +528,11 @@ class DatabaseProvider with ChangeNotifier {
       if (!_communities.any((c) => c.id == community.id)) {
         _communities.add(community);
       }
-      _communityMembers[communityId] = members!;
+      _communityMembers[communityId] = members;
       for (var profile in profiles) {
         _profiles[profile.id] = profile;
       }
-      _activities[communityId] = activities!;
+      _activities[communityId] = activities;
       for (var attendance in attendances) {
         if (!_activityAttendances.containsKey(attendance.activityId)) {
           _activityAttendances[attendance.activityId] = [];
