@@ -73,9 +73,15 @@ enum ActivityType {
   updateCommunity,
 }
 
-// notificaiton types constants
+// notification types constants
 enum NotificationType {
   off,
   activityCreationNoJoin,
   all,
 }
+
+const Map<NotificationType, String> notificationTypeDescriptions = {
+  NotificationType.off: 'Off',
+  NotificationType.activityCreationNoJoin: 'When Activity Started',
+  NotificationType.all: 'On',
+};

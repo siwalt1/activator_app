@@ -264,7 +264,7 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
                 ),
                 const SizedBox(height: AppConstants.separatorSpacing),
                 CustomTextFormField(
-                  label: 'Community description',
+                  label: 'Community description (optional)',
                   maxLines: 2,
                   keyboardType: TextInputType.multiline,
                   controller: _descriptionController,

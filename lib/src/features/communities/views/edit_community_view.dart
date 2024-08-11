@@ -2,11 +2,11 @@ import 'package:activator_app/src/core/models/community.dart';
 import 'package:activator_app/src/core/provider/db_provider.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/utils/enum_converter.dart';
-import 'package:activator_app/src/core/utils/format_duration.dart';
-import 'package:activator_app/src/core/widgets/custom_list_tile.dart';
 import 'package:activator_app/src/core/widgets/custom_progress_indicator.dart';
 import 'package:activator_app/src/core/widgets/custom_text_form_field.dart';
+import 'package:activator_app/src/features/communities/widgets/activity_duration_selector.dart';
 import 'package:activator_app/src/features/communities/widgets/activity_type_selector.dart';
+import 'package:activator_app/src/features/communities/widgets/notification_type_selector.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
@@ -66,6 +66,7 @@ class _EditCommunityViewState extends State<EditCommunityView> {
       setState(() {
         _selectedIcon = icon;
       });
+      _updateControllerListener();
     }
   }
 
@@ -149,12 +150,14 @@ class _EditCommunityViewState extends State<EditCommunityView> {
   }
 
   void _updateControllerListener() {
-    _controllerListener.value = !(_community.type == _selectedActivityType &&
-            _community.name == _nameController.text &&
-            _community.description == _descriptionController.text &&
-            _community.notificationType == _selectedNotificationType &&
-            _community.activityDuration == _selectedActivityDuration) &&
-        !_isLoading;
+    _controllerListener.value =
+        !(_community.iconCode == _selectedIcon.codePoint &&
+                _community.type == _selectedActivityType &&
+                _community.name == _nameController.text &&
+                _community.description == _descriptionController.text &&
+                _community.notificationType == _selectedNotificationType &&
+                _community.activityDuration == _selectedActivityDuration) &&
+            !_isLoading;
   }
 
   @override
@@ -319,6 +322,7 @@ class _EditCommunityViewState extends State<EditCommunityView> {
                                         _selectedNotificationType =
                                             NotificationType.all;
                                       }
+                                      _updateControllerListener();
                                     });
                                   },
                                 ),
@@ -344,7 +348,7 @@ class _EditCommunityViewState extends State<EditCommunityView> {
                               const SizedBox(
                                   height: AppConstants.separatorSpacing),
                               CustomTextFormField(
-                                label: 'Community description',
+                                label: 'Community description (optional)',
                                 maxLines: 2,
                                 keyboardType: TextInputType.multiline,
                                 controller: _descriptionController,
@@ -359,68 +363,32 @@ class _EditCommunityViewState extends State<EditCommunityView> {
                               ),
                               const SizedBox(
                                   height: AppConstants.separatorSpacing),
-                              CustomListTile(
-                                text: "Notifications",
-                                onPressed: () => print('onPressed'),
-                                marginBottom: AppConstants.listTileSpacing,
-                                showArrow: false,
-                                trailing: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      _selectedNotificationType ==
-                                              NotificationType.all
-                                          ? 'On'
-                                          : _selectedNotificationType ==
-                                                  NotificationType
-                                                      .activityCreationNoJoin
-                                              ? 'When Activity Started'
-                                              : 'Off',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSurface,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Icon(
-                                      Icons.arrow_forward_ios,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurfaceVariant,
-                                      size: 15,
-                                    )
-                                  ],
-                                ),
+                              NotificationTypeSelector(
+                                selectedNotificationType:
+                                    _selectedNotificationType,
+                                notificationTypeList: NotificationType.values
+                                    .where((type) => !(_selectedActivityType ==
+                                            ActivityType.solo &&
+                                        type ==
+                                            NotificationType
+                                                .activityCreationNoJoin))
+                                    .toList(),
+                                onNotificationTypeSelected: (type) {
+                                  setState(() {
+                                    _selectedNotificationType = type;
+                                  });
+                                  _updateControllerListener();
+                                },
                               ),
-                              CustomListTile(
-                                text: "Activity duration",
-                                onPressed: () => print('onPressed'),
-                                marginBottom: AppConstants.listTileSpacing,
-                                trailing: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      formatDuration(
-                                          _selectedActivityDuration!),
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSurface),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Icon(
-                                      Icons.arrow_forward_ios,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurfaceVariant,
-                                      size: 15,
-                                    )
-                                  ],
-                                ),
+                              ActivityDurationSelector(
+                                selectedActivityDuration:
+                                    _selectedActivityDuration,
+                                onActivityDurationTypeSelected: (duration) {
+                                  setState(() {
+                                    _selectedActivityDuration = duration;
+                                  });
+                                  _updateControllerListener();
+                                },
                               ),
                             ],
                           ),
