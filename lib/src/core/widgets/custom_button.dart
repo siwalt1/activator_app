@@ -33,7 +33,6 @@ class CustomButton extends StatelessWidget {
       highlightElevation: 0,
       height: 56.0,
       visualDensity: const VisualDensity(vertical: -3),
-      padding: EdgeInsets.zero,
       child: Align(
         alignment: alignment,
         child: Stack(
