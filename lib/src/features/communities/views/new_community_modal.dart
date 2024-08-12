@@ -2,7 +2,6 @@ import 'package:activator_app/src/core/provider/db_provider.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/widgets/custom_bottom_sheet_body.dart';
 import 'package:activator_app/src/core/widgets/custom_button.dart';
-import 'package:activator_app/src/core/widgets/custom_list_tile.dart';
 import 'package:activator_app/src/core/widgets/custom_text_form_field.dart';
 import 'package:activator_app/src/features/communities/widgets/activity_duration_selector.dart';
 import 'package:activator_app/src/features/communities/widgets/activity_type_selector.dart';
@@ -36,6 +35,8 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
   bool _isSubmitted = false;
 
   _pickIcon() async {
+    FocusScope.of(context).requestFocus(FocusNode());
+    
     IconData? icon = await showIconPicker(
       context,
       iconPackModes: [IconPack.roundedMaterial],

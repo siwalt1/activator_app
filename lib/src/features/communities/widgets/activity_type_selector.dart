@@ -19,14 +19,20 @@ class ActivityTypeSelector extends StatelessWidget {
           title: 'Solo',
           icon: Icons.person,
           isSelected: selectedActivityType == ActivityType.solo,
-          onTap: () => onActivityTypeSelected(ActivityType.solo),
+          onTap: () => {
+            FocusScope.of(context).requestFocus(FocusNode()),
+            onActivityTypeSelected(ActivityType.solo),
+          },
         ),
         const SizedBox(width: AppConstants.separatorSpacing),
         ActivityTypeItem(
           title: 'Real-time',
           icon: Icons.group,
           isSelected: selectedActivityType == ActivityType.multi,
-          onTap: () => onActivityTypeSelected(ActivityType.multi),
+          onTap: () => {
+            FocusScope.of(context).requestFocus(FocusNode()),
+            onActivityTypeSelected(ActivityType.multi),
+          },
         ),
       ],
     );

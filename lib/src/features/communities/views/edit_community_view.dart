@@ -56,6 +56,8 @@ class _EditCommunityViewState extends State<EditCommunityView> {
   }
 
   _pickIcon() async {
+    FocusScope.of(context).requestFocus(FocusNode());
+
     IconData? icon = await showIconPicker(
       context,
       iconPackModes: [IconPack.roundedMaterial],
