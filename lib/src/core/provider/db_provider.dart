@@ -121,12 +121,12 @@ class DatabaseProvider with ChangeNotifier {
         .subscribe();
   }
 
-  void _handleDatabaseChangeEvent(PostgresChangePayload payload) {
+  Future<void> _handleDatabaseChangeEvent(PostgresChangePayload payload) async {
     final PostgresChangeEvent eventType = payload.eventType;
     final String table = payload.table;
     switch (eventType) {
       case PostgresChangeEvent.insert:
-        _handleInsertEvent(table, payload.newRecord);
+        await _handleInsertEvent(table, payload.newRecord);
         break;
       case PostgresChangeEvent.update:
         _handleUpdateEvent(table, payload.newRecord);
@@ -135,8 +135,10 @@ class DatabaseProvider with ChangeNotifier {
         _handleDeleteEvent(table, payload.oldRecord);
         break;
       default:
-        print('Unknown event type: $eventType');
+        break;
     }
+    _sortCommunitiesByLastActivity();
+    notifyListeners();
   }
 
   Future<void> _handleInsertEvent(
@@ -144,13 +146,19 @@ class DatabaseProvider with ChangeNotifier {
     switch (table) {
       case 'communities':
         final newCommunity = Community.fromMap(newRecord);
+        if (_communities.any((c) => c.id == newCommunity.id)) {
+          return;
+        }
         _communities.add(newCommunity);
-        _sortCommunitiesByLastActivity();
         break;
       case 'community_members':
         final newMember = CommunityMember.fromMap(newRecord);
         if (!_communityMembers.containsKey(newMember.communityId)) {
           _communityMembers[newMember.communityId] = [];
+        }
+        if (_communityMembers[newMember.communityId]!
+            .any((m) => m.userId == newMember.userId)) {
+          return;
         }
         _communityMembers[newMember.communityId]!.add(newMember);
         if (newMember.userId != _authProvider.user!.id) {
@@ -161,7 +169,7 @@ class DatabaseProvider with ChangeNotifier {
             }
           });
         } else {
-          _fetchSingleCommunity(newMember.communityId);
+          await _fetchSingleCommunity(newMember.communityId);
         }
         break;
       case 'activities':
@@ -169,13 +177,20 @@ class DatabaseProvider with ChangeNotifier {
         if (!_activities.containsKey(newActivity.communityId)) {
           _activities[newActivity.communityId] = [];
         }
+        if (_activities[newActivity.communityId]!
+            .any((a) => a.id == newActivity.id)) {
+          return;
+        }
         _activities[newActivity.communityId]!.add(newActivity);
-        _sortCommunitiesByLastActivity();
         break;
       case 'activity_attendances':
         final newAttendance = ActivityAttendance.fromMap(newRecord);
         if (!_activityAttendances.containsKey(newAttendance.activityId)) {
           _activityAttendances[newAttendance.activityId] = [];
+        }
+        if (_activityAttendances[newAttendance.activityId]!
+            .any((a) => a.userId == newAttendance.userId)) {
+          return;
         }
         _activityAttendances[newAttendance.activityId]!.add(newAttendance);
         break;
@@ -183,10 +198,7 @@ class DatabaseProvider with ChangeNotifier {
         final newProfile = Profile.fromMap(newRecord);
         _profiles[newProfile.id] = newProfile;
         break;
-      default:
-        print('Unknown table: $table');
     }
-    notifyListeners();
   }
 
   void _handleUpdateEvent(String table, Map<String, dynamic> updatedRecord) {
@@ -197,7 +209,8 @@ class DatabaseProvider with ChangeNotifier {
             _communities.indexWhere((c) => c.id == updatedCommunity.id);
         if (index != -1) {
           _communities[index] = updatedCommunity;
-          _sortCommunitiesByLastActivity();
+        } else {
+          _communities.add(updatedCommunity);
         }
         break;
       case 'community_members':
@@ -210,6 +223,8 @@ class DatabaseProvider with ChangeNotifier {
           if (index != -1) {
             members[index] = updatedMember;
           }
+        } else {
+          _communityMembers[updatedMember.communityId] = [updatedMember];
         }
         break;
       case 'activities':
@@ -220,8 +235,9 @@ class DatabaseProvider with ChangeNotifier {
               activities.indexWhere((a) => a.id == updatedActivity.id);
           if (index != -1) {
             activities[index] = updatedActivity;
-            _sortCommunitiesByLastActivity();
           }
+        } else {
+          _activities[updatedActivity.communityId] = [updatedActivity];
         }
         break;
       case 'activity_attendances':
@@ -235,16 +251,15 @@ class DatabaseProvider with ChangeNotifier {
           if (index != -1) {
             attendances[index] = updatedAttendance;
           }
+        } else {
+          _activityAttendances[updatedAttendance.activityId] = [updatedAttendance];
         }
         break;
       case 'profiles':
         final updatedProfile = Profile.fromMap(updatedRecord);
         _profiles[updatedProfile.id] = updatedProfile;
         break;
-      default:
-        print('Unknown table: $table');
     }
-    notifyListeners();
   }
 
   void _handleDeleteEvent(String table, Map<String, dynamic> oldRecord) {
@@ -287,10 +302,7 @@ class DatabaseProvider with ChangeNotifier {
         final oldProfileId = oldRecord['id'];
         _profiles.remove(oldProfileId);
         break;
-      default:
-        print('Unknown table: $table');
     }
-    notifyListeners();
   }
 
   Future<void> _fetchCommunities() async {
@@ -371,15 +383,28 @@ class DatabaseProvider with ChangeNotifier {
     int activityDuration,
     NotificationType notificationType,
   ) async {
-    await _supabaseService.insertData('communities', {
-      'name': name,
-      'description': description,
-      'icon_code': iconCode,
-      'type': EnumConverter.enumToString(type),
-      'created_by': _authProvider.user!.id,
-      'activity_duration': activityDuration,
-      'notification_type': EnumConverter.enumToString(notificationType),
+    final response = await _supabaseService.rpc('create_community', params: {
+      'p_name': name,
+      'p_description': description,
+      'p_icon_code': iconCode,
+      'p_type': EnumConverter.enumToString(type),
+      'p_activity_duration': activityDuration,
+      'p_notification_type': EnumConverter.enumToString(notificationType),
     });
+
+    if (response.isEmpty) {
+      throw Exception('Failed to create community');
+    }
+
+    final community = Community.fromMap(response.first['communities']);
+    final member = CommunityMember.fromMap(response.first['members']);
+    final activity = Activity.fromMap(response.first['activities']);
+    final attendance = ActivityAttendance.fromMap(response.first['activity_attendances']);
+
+    _communities.add(community);
+    _communityMembers[community.id] = [member];
+    _activities[community.id] = [activity];
+    _activityAttendances[activity.id] = [attendance];
   }
 
   Future<void> updateCommunity(
@@ -548,9 +573,6 @@ class DatabaseProvider with ChangeNotifier {
         }
         _activityAttendances[attendance.activityId]!.add(attendance);
       }
-
-      _sortCommunitiesByLastActivity();
-      notifyListeners();
     } catch (e) {
       print('Error fetching community data: $e');
       rethrow;
