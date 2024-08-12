@@ -252,7 +252,9 @@ class DatabaseProvider with ChangeNotifier {
             attendances[index] = updatedAttendance;
           }
         } else {
-          _activityAttendances[updatedAttendance.activityId] = [updatedAttendance];
+          _activityAttendances[updatedAttendance.activityId] = [
+            updatedAttendance
+          ];
         }
         break;
       case 'profiles':
@@ -399,7 +401,8 @@ class DatabaseProvider with ChangeNotifier {
     final community = Community.fromMap(response.first['communities']);
     final member = CommunityMember.fromMap(response.first['members']);
     final activity = Activity.fromMap(response.first['activities']);
-    final attendance = ActivityAttendance.fromMap(response.first['activity_attendances']);
+    final attendance =
+        ActivityAttendance.fromMap(response.first['activity_attendances']);
 
     _communities.add(community);
     _communityMembers[community.id] = [member];
@@ -430,7 +433,27 @@ class DatabaseProvider with ChangeNotifier {
       throw Exception('Failed to update community');
     }
 
-    print('Community updated: $response');
+    final community = Community.fromMap(response.first['community']);
+
+    final index = _communities.indexWhere((c) => c.id == communityId);
+    if (index != -1) {
+      _communities[index] = community;
+    } else {
+      _communities.add(community);
+    }
+
+    final stoppedActivities = response.first['stopped_activities']
+        .map((a) => Activity.fromMap(a))
+        .toList();
+    final activities = _activities[community.id];
+    if (activities != null) {
+      for (var activity in stoppedActivities) {
+        final index = activities.indexWhere((a) => a.id == activity.id);
+        if (index != -1) {
+          activities[index] = activity;
+        }
+      }
+    }
   }
 
   Future<void> leaveCommunity(String communityId, {String? userId}) async {
