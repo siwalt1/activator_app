@@ -83,6 +83,7 @@ class _InvitationViewState extends State<InvitationView> {
                 padding: const EdgeInsets.all(AppConstants.paddingSpacing),
                 child: Center(
                   child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

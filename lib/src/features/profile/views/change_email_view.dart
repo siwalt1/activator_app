@@ -111,6 +111,7 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
           children: [
             SafeArea(
               child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
                 padding: const EdgeInsets.only(
                   left: 20,
                   right: 20,

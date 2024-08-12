@@ -198,6 +198,7 @@ class _EditCommunityViewState extends State<EditCommunityView> {
                 top: 0,
               ),
               child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
                 child: Column(
                   children: [
                     Form(

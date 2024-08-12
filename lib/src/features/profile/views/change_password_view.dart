@@ -85,6 +85,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
           children: [
             SafeArea(
               child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
                 padding: const EdgeInsets.only(
                   left: 20,
                   right: 20,

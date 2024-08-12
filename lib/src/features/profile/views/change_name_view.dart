@@ -100,6 +100,7 @@ class _ChangeNameViewState extends State<ChangeNameView> {
           children: [
             SafeArea(
               child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
                 padding: const EdgeInsets.only(
                   left: 20,
                   right: 20,
