@@ -36,10 +36,13 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
 
   _pickIcon() async {
     FocusScope.of(context).requestFocus(FocusNode());
-    
+
     IconData? icon = await showIconPicker(
       context,
-      iconPackModes: [IconPack.roundedMaterial],
+      iconPickerShape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppConstants.borderRadius),
+      ),
+      iconPackModes: [IconPack.material],
     );
 
     if (icon != null) {

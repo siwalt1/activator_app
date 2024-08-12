@@ -60,7 +60,10 @@ class _EditCommunityViewState extends State<EditCommunityView> {
 
     IconData? icon = await showIconPicker(
       context,
-      iconPackModes: [IconPack.roundedMaterial],
+      iconPickerShape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppConstants.borderRadius),
+      ),
+      iconPackModes: [IconPack.material],
     );
 
     if (icon != null) {
