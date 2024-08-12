@@ -408,6 +408,9 @@ class DatabaseProvider with ChangeNotifier {
     _communityMembers[community.id] = [member];
     _activities[community.id] = [activity];
     _activityAttendances[activity.id] = [attendance];
+
+    _sortCommunitiesByLastActivity();
+    notifyListeners();
   }
 
   Future<void> updateCommunity(
@@ -454,14 +457,65 @@ class DatabaseProvider with ChangeNotifier {
         }
       }
     }
+
+    _sortCommunitiesByLastActivity();
+    notifyListeners();
   }
 
   Future<void> leaveCommunity(String communityId, {String? userId}) async {
     userId ??= _authProvider.user!.id;
-    await _supabaseService.deleteData(
-      'community_members',
-      {'community_id': communityId, 'user_id': userId},
+
+    final response = await _supabaseService.rpc(
+      'leave_community',
+      params: {
+        'p_community_id': communityId,
+        'p_user_id': userId,
+      },
     );
+
+    if (response.isEmpty) {
+      throw Exception('Failed to leave community');
+    }
+
+    final deletedCommunity = response.first['deleted_community'] != null
+        ? Community.fromMap(response.first['deleted_community'])
+        : null;
+    final leaverMember = response.first['leaver_member'] != null
+        ? CommunityMember.fromMap(response.first['leaver_member'])
+        : null;
+    final leaverActivity = response.first['leaver_activity'] != null
+        ? Activity.fromMap(response.first['leaver_activity'])
+        : null;
+    final activityAttendance = response.first['activity_attendance'] != null
+        ? ActivityAttendance.fromMap(response.first['activity_attendance'])
+        : null;
+
+    if (deletedCommunity != null) {
+      _communities.removeWhere((c) => c.id == deletedCommunity.id);
+      _communityMembers.remove(deletedCommunity.id);
+      _activities[deletedCommunity.id]?.forEach((activity) {
+        _activityAttendances.remove(activity.id);
+      });
+      _activities.remove(deletedCommunity.id);
+    } else {
+      final members = _communityMembers[leaverMember!.communityId];
+      if (members != null) {
+        members.removeWhere((m) => m.userId == leaverMember.userId);
+      }
+      if (_activities.containsKey(leaverActivity!.communityId)) {
+        _activities[leaverActivity.communityId]!.add(leaverActivity);
+      } else {
+        _activities[leaverActivity.communityId] = [leaverActivity];
+      }
+      if (!_activityAttendances.containsKey(activityAttendance!.activityId)) {
+        _activityAttendances[activityAttendance.activityId] = [
+          activityAttendance
+        ];
+      }
+      _sortCommunitiesByLastActivity();
+    }
+
+    notifyListeners();
   }
 
   Future<void> createActivity(String communityId) async {
@@ -498,6 +552,9 @@ class DatabaseProvider with ChangeNotifier {
     } else {
       _activityAttendances[attendance.activityId] = [attendance];
     }
+
+    _sortCommunitiesByLastActivity();
+    notifyListeners();
   }
 
   Future<void> leaveActivity(String communityId) async {
@@ -537,6 +594,9 @@ class DatabaseProvider with ChangeNotifier {
         }
       }
     }
+
+    _sortCommunitiesByLastActivity();
+    notifyListeners();
   }
 
   Future<String?> resetInvitationToken(String communityId) async {
@@ -577,7 +637,7 @@ class DatabaseProvider with ChangeNotifier {
           .fetchData('communities', equals: {'id': communityId});
 
       // Fetch the community members and their profiles
-      final membersProfilesFuture = await (() async {
+      final membersProfilesFuture = (() async {
         final membersResponse = await _supabaseService.fetchData(
             'community_members',
             equals: {'community_id': communityId});
@@ -595,7 +655,7 @@ class DatabaseProvider with ChangeNotifier {
       })();
 
       // Fetch the activities and their attendances
-      final activityAttendancesFuture = await (() async {
+      final activityAttendancesFuture = (() async {
         final activitiesResponse = await _supabaseService
             .fetchData('activities', equals: {'community_id': communityId});
 
