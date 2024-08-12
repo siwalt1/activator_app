@@ -9,7 +9,7 @@ import 'package:activator_app/src/core/services/supabase_service.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/utils/enum_converter.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
@@ -473,9 +473,34 @@ class DatabaseProvider with ChangeNotifier {
     if (response.isEmpty) {
       throw Exception('Failed to create activity');
     }
+
+    final activity = Activity.fromMap(response.first['activities']);
+    final attendance =
+        ActivityAttendance.fromMap(response.first['activity_attendances']);
+
+    if (_activities.containsKey(activity.communityId)) {
+      final activities = _activities[activity.communityId]!;
+      final index = activities.indexWhere((a) => a.id == activity.id);
+      if (index != -1) {
+        activities[index] = activity;
+      }
+    } else {
+      _activities[activity.communityId] = [activity];
+    }
+
+    if (_activityAttendances.containsKey(attendance.activityId)) {
+      final attendances = _activityAttendances[attendance.activityId]!;
+      final index =
+          attendances.indexWhere((a) => a.userId == attendance.userId);
+      if (index != -1) {
+        attendances[index] = attendance;
+      }
+    } else {
+      _activityAttendances[attendance.activityId] = [attendance];
+    }
   }
 
-  Future<void> leaveActivity(String communityId, String activityId) async {
+  Future<void> leaveActivity(String communityId) async {
     final response = await _supabaseService.rpc(
       'stop_leave_activity',
       params: {'p_community_id': communityId},
@@ -485,7 +510,33 @@ class DatabaseProvider with ChangeNotifier {
       throw Exception('Failed to leave activity');
     }
 
-    print('Activity stopped: $response');
+    final stoppedActivity = response.first['stopped_activity'] != null
+        ? Activity.fromMap(response.first['stopped_activity'])
+        : null;
+    final updatedAttendance = response.first['updated_attendance'] != null
+        ? ActivityAttendance.fromMap(response.first['updated_attendance'])
+        : null;
+
+    if (stoppedActivity != null) {
+      final activities = _activities[stoppedActivity.communityId];
+      if (activities != null) {
+        final index = activities.indexWhere((a) => a.id == stoppedActivity.id);
+        if (index != -1) {
+          activities[index] = stoppedActivity;
+        }
+      }
+    }
+
+    if (updatedAttendance != null) {
+      final attendances = _activityAttendances[updatedAttendance.activityId];
+      if (attendances != null) {
+        final index =
+            attendances.indexWhere((a) => a.userId == updatedAttendance.userId);
+        if (index != -1) {
+          attendances[index] = updatedAttendance;
+        }
+      }
+    }
   }
 
   Future<String?> resetInvitationToken(String communityId) async {
@@ -597,8 +648,9 @@ class DatabaseProvider with ChangeNotifier {
         _activityAttendances[attendance.activityId]!.add(attendance);
       }
     } catch (e) {
-      print('Error fetching community data: $e');
-      rethrow;
+      if (kDebugMode) {
+        print('Failed to fetch community: $e');
+      }
     }
   }
 }
