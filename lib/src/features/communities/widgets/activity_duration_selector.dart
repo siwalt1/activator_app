@@ -101,6 +101,7 @@ class _ActivityDurationSelectorState extends State<ActivityDurationSelector> {
 
   void _showInvalidDurationDialog() {
     showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (context) {
         return AlertDialog(
