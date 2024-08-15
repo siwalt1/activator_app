@@ -5,8 +5,8 @@ class SupabaseService {
 
   SupabaseService();
 
-  Future<User?> getCurrentUser() async {
-    return supabase.auth.currentUser;
+  Future<UserResponse> getCurrentUser() async {
+    return supabase.auth.getUser();
   }
 
   Future<AuthResponse> login(String email, String password) async {

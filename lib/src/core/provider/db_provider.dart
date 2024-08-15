@@ -260,6 +260,9 @@ class DatabaseProvider with ChangeNotifier {
       case 'profiles':
         final updatedProfile = Profile.fromMap(updatedRecord);
         _profiles[updatedProfile.id] = updatedProfile;
+        if (updatedProfile.id == _authProvider.user!.id) {
+          _authProvider.checkSession();
+        }
         break;
     }
   }

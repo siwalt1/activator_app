@@ -50,8 +50,14 @@ class AuthProvider with ChangeNotifier {
 
   Future<void> checkSession() async {
     try {
-      _user = await _supabaseService.getCurrentUser();
-      _isAuthenticated = _user != null;
+      UserResponse? userResponse = await _supabaseService.getCurrentUser();
+      if (userResponse.user != null) {
+        _user = userResponse.user;
+        _isAuthenticated = true;
+      } else {
+        _isAuthenticated = false;
+        _user = null;
+      }
       notifyListeners();
     } catch (e) {
       _isAuthenticated = false;
@@ -91,10 +97,5 @@ class AuthProvider with ChangeNotifier {
     } catch (e) {
       rethrow;
     }
-  }
-
-  Future<void> updateUser() async {
-    _user = await _supabaseService.getCurrentUser();
-    notifyListeners();
   }
 }
