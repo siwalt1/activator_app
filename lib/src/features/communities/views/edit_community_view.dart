@@ -111,6 +111,7 @@ class _EditCommunityViewState extends State<EditCommunityView> {
       setState(() {
         _isLoading = true;
       });
+      _updateControllerListener();
       if (!mounted) return;
       final dbProvider = Provider.of<DatabaseProvider>(context, listen: false);
       try {
@@ -127,6 +128,7 @@ class _EditCommunityViewState extends State<EditCommunityView> {
         setState(() {
           _isLoading = false;
         });
+        _updateControllerListener();
         Navigator.of(context).pop();
       } catch (e) {
         print(e.toString());
