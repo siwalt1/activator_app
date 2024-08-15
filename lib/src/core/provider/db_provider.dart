@@ -70,13 +70,48 @@ class DatabaseProvider with ChangeNotifier {
 
   Future<void> _loadInitialData() async {
     print('#1.0 Loading initial data...');
-    await Future.wait([
-      _fetchCommunities(),
-      _fetchProfiles(),
-      _fetchCommunityMembers(),
-      _fetchActivities(),
-      _fetchActivityAttendances(),
-    ]);
+    final response = await _supabaseService.rpc('fetch_initial_data');
+
+    if (response.isEmpty) {
+      throw Exception('Failed to fetch initial data');
+    }
+
+    final List<dynamic> communities = response.first['communities'];
+    final List<dynamic> communityMembers = response.first['community_members'];
+    final List<dynamic> activities = response.first['activities'];
+    final List<dynamic> activityAttendances = response.first['activity_attendances'];
+    final List<dynamic> profiles = response.first['profiles'];
+
+    _communities.addAll(
+      communities.map((item) => Community.fromMap(item)).toList(),
+    );
+
+    _communityMembers.addAll(
+      groupBy(
+        communityMembers.map((item) => CommunityMember.fromMap(item)).toList(),
+        (CommunityMember member) => member.communityId,
+      ),
+    );
+
+    _activities.addAll(
+      groupBy(
+        activities.map((item) => Activity.fromMap(item)).toList(),
+        (Activity activity) => activity.communityId,
+      ),
+    );
+
+    _activityAttendances.addAll(
+      groupBy(
+        activityAttendances
+            .map((item) => ActivityAttendance.fromMap(item))
+            .toList(),
+        (ActivityAttendance attendance) => attendance.activityId,
+      ),
+    );
+
+    _profiles.addAll({
+      for (var profile in profiles) profile['id']: Profile.fromMap(profile)
+    });
 
     _sortCommunitiesByLastActivity();
     _isInitialized = true;
@@ -308,56 +343,6 @@ class DatabaseProvider with ChangeNotifier {
         _profiles.remove(oldProfileId);
         break;
     }
-  }
-
-  Future<void> _fetchCommunities() async {
-    final response = await _supabaseService.fetchData('communities');
-
-    _communities.clear();
-    _communities
-        .addAll(response.map((item) => Community.fromMap(item)).toList());
-  }
-
-  Future<void> _fetchCommunityMembers() async {
-    final response = await _supabaseService.fetchData('community_members');
-
-    final List<CommunityMember> data =
-        response.map((item) => CommunityMember.fromMap(item)).toList();
-
-    _communityMembers.clear();
-    _communityMembers
-        .addAll(groupBy(data, (CommunityMember member) => member.communityId));
-  }
-
-  Future<void> _fetchActivities() async {
-    final response = await _supabaseService.fetchData('activities');
-
-    final List<Activity> data =
-        response.map((item) => Activity.fromMap(item)).toList();
-
-    _activities.clear();
-    _activities
-        .addAll(groupBy(data, (Activity activity) => activity.communityId));
-  }
-
-  Future<void> _fetchActivityAttendances() async {
-    final response = await _supabaseService.fetchData('activity_attendances');
-
-    final List<ActivityAttendance> data =
-        response.map((item) => ActivityAttendance.fromMap(item)).toList();
-
-    _activityAttendances.clear();
-    _activityAttendances.addAll(groupBy(
-        data, (ActivityAttendance attendance) => attendance.activityId));
-  }
-
-  Future<void> _fetchProfiles() async {
-    final response = await _supabaseService.fetchData('profiles');
-
-    _profiles.clear();
-    _profiles.addAll({
-      for (var profile in response) profile['id']: Profile.fromMap(profile)
-    });
   }
 
   void _sortCommunitiesByLastActivity() {
