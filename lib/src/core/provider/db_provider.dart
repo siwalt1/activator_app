@@ -82,6 +82,8 @@ class DatabaseProvider with ChangeNotifier {
     final List<dynamic> activityAttendances = response.first['activity_attendances'];
     final List<dynamic> profiles = response.first['profiles'];
 
+    _clearData();
+
     _communities.addAll(
       communities.map((item) => Community.fromMap(item)).toList(),
     );
