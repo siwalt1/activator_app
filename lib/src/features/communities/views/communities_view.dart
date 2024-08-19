@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:activator_app/src/core/models/activity.dart';
@@ -25,19 +24,6 @@ class CommunitiesView extends StatefulWidget {
 }
 
 class _CommunitiesViewState extends State<CommunitiesView> {
-  Timer? endDateTimer; // timer to refresh the view when an activity ends
-  DateTime? currentTimerEndDate;
-
-  void _setTimer(DateTime endDate) {
-    endDateTimer?.cancel();
-    endDateTimer = Timer(endDate.difference(DateTime.now().toUtc()), () {
-      if (mounted) {
-        setState(() {});
-      }
-    });
-    currentTimerEndDate = endDate;
-  }
-
   void _openMaterialModal(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -118,8 +104,6 @@ class _CommunitiesViewState extends State<CommunitiesView> {
               return Consumer<AuthProvider>(
                 builder: (BuildContext context, AuthProvider authProvider,
                     Widget? child) {
-                  // reset the timer endDate
-                  currentTimerEndDate = null;
                   return ListView.builder(
                     // Providing a restorationId allows the ListView to restore the
                     // scroll position when a user leaves and returns to the app after it

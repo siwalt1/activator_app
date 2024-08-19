@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:activator_app/src/core/controllers/settings_controller.dart';
 import 'package:activator_app/src/core/models/activity.dart';
 import 'package:activator_app/src/core/models/activity_attendance.dart';
@@ -46,7 +44,6 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
   List<ActivityAttendance>? _currentActivityAttendances;
   List<ActivityAttendance>? _currentActiveActivityAttendances;
   bool isUserParticipating = false;
-  Timer? endDateTimer;
 
   late AnimationController _rocketController;
   late Animation<double> _rocketAnimation;
@@ -152,23 +149,6 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
       _currentActiveActivityAttendances =
           _currentActivityAttendances?.where((att) => att.isActive).toList();
 
-      if (_currentActivity != null) {
-        // stop previous activity timer
-        if (endDateTimer != null) {
-          endDateTimer!.cancel();
-        }
-        // set timer to stop the activity after the end date
-        endDateTimer = Timer(
-          _currentActivity!.endDate.difference(DateTime.now().toUtc()),
-          () {
-            _isRocketClicked = false;
-            _rocketController.reverse();
-            _currentActivity = null;
-            _currentActivityAttendances = null;
-          },
-        );
-      }
-
       // check if the user is participating in the activity
       if (_currentActivity != null) {
         isUserParticipating = _currentActiveActivityAttendances!.indexWhere(
@@ -187,7 +167,7 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
         _currentActivity != null &&
         isActivityStatusChecked) {
       _isRocketClicked = true;
-      _rocketController.forward();
+      if(mounted) _rocketController.forward();
     }
 
     // if an activity was just stopped, animate the rocket to the bottom
@@ -195,7 +175,7 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
         _currentActivity == null &&
         isActivityStatusChecked) {
       _isRocketClicked = false;
-      _rocketController.reverse();
+      if(mounted) _rocketController.reverse();
     }
 
     // if no activity is currently running, set the rocket to the bottom
