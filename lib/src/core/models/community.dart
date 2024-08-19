@@ -2,7 +2,7 @@ import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/utils/enum_converter.dart';
 
 class Community {
-  const Community({
+  Community({
     required this.id,
     required this.name,
     this.description,
@@ -22,7 +22,7 @@ class Community {
   final String? description;
   final int iconCode;
   final ActivityType type;
-  final String invitationToken;
+  String invitationToken;
   final DateTime createdAt;
   final DateTime updatedAt;
   final int activityDuration;
@@ -64,5 +64,9 @@ class Community {
       'activity_duration': activityDuration,
       'notification_type': EnumConverter.enumToString(notificationType),
     };
+  }
+
+  set newInvitationToken(String value) {
+    invitationToken = value;
   }
 }

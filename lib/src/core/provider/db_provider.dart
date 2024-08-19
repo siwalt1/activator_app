@@ -79,7 +79,8 @@ class DatabaseProvider with ChangeNotifier {
     final List<dynamic> communities = response.first['communities'];
     final List<dynamic> communityMembers = response.first['community_members'];
     final List<dynamic> activities = response.first['activities'];
-    final List<dynamic> activityAttendances = response.first['activity_attendances'];
+    final List<dynamic> activityAttendances =
+        response.first['activity_attendances'];
     final List<dynamic> profiles = response.first['profiles'];
 
     _clearData();
@@ -594,6 +595,10 @@ class DatabaseProvider with ChangeNotifier {
       'reset_invitation_token',
       params: {'p_community_id': communityId},
     );
+
+    final community = _communities.firstWhere((c) => c.id == communityId);
+    community.newInvitationToken = response[0]['new_token'];
+
     return response[0]['new_token'];
   }
 
