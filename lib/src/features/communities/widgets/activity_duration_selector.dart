@@ -53,7 +53,7 @@ class _ActivityDurationSelectorState extends State<ActivityDurationSelector> {
         },
       ).then((_) {
         FocusScope.of(context).requestFocus(FocusNode());
-        if (widget.selectedActivityDuration == 0) {
+        if (widget.selectedActivityDuration < 5) {
           _showInvalidDurationDialog();
         }
       });
@@ -92,7 +92,7 @@ class _ActivityDurationSelectorState extends State<ActivityDurationSelector> {
         ),
       ).then((_) {
         FocusScope.of(context).requestFocus(FocusNode());
-        if (widget.selectedActivityDuration == 0) {
+        if (widget.selectedActivityDuration < 5) {
           _showInvalidDurationDialog();
         }
       });
@@ -107,7 +107,7 @@ class _ActivityDurationSelectorState extends State<ActivityDurationSelector> {
         return AlertDialog(
           title: const Text('Invalid Duration'),
           content: const Text(
-              'Duration cannot be 0 minutes. Please select a valid duration.'),
+              'Activity duration should be at least 5 minutes. Please select a valid duration.'),
           actions: [
             CupertinoButton(
               onPressed: () {
