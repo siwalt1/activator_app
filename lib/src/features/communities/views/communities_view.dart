@@ -171,8 +171,8 @@ class _CommunitiesViewState extends State<CommunitiesView> {
                           int activityIndex =
                               value.activities[community.id]!.indexWhere(
                             (act) =>
-                                act.endDate.isAfter(DateTime.now().toUtc()) &&
                                 act.type == ActivityType.solo &&
+                                act.isActive &&
                                 value.activityAttendances[act.id]!.indexWhere(
                                       (att) =>
                                           att.activityId == act.id &&
@@ -184,35 +184,16 @@ class _CommunitiesViewState extends State<CommunitiesView> {
                           if (activityIndex != -1) {
                             activeActivity =
                                 value.activities[community.id]![activityIndex];
-                            DateTime endDate = value
-                                .activities[community.id]![activityIndex]
-                                .endDate;
-                            if (currentTimerEndDate == null ||
-                                (currentTimerEndDate != null &&
-                                    currentTimerEndDate!.isAfter(endDate))) {
-                              _setTimer(endDate);
-                            }
                           }
                         } else if (community.type == ActivityType.multi) {
                           int activityIndex =
                               value.activities[community.id]!.indexWhere(
                             (act) =>
-                                act.endDate.isAfter(
-                                  DateTime.now().toUtc(),
-                                ) &&
-                                act.type == ActivityType.multi,
+                                act.isActive && act.type == ActivityType.multi,
                           );
                           if (activityIndex != -1) {
                             activeActivity =
                                 value.activities[community.id]![activityIndex];
-                            DateTime endDate = value
-                                .activities[community.id]![activityIndex]
-                                .endDate;
-                            if (currentTimerEndDate == null ||
-                                (currentTimerEndDate != null &&
-                                    currentTimerEndDate!.isAfter(endDate))) {
-                              _setTimer(endDate);
-                            }
                           }
                         }
                       }

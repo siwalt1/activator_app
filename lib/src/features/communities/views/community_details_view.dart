@@ -98,6 +98,7 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
       final dbProvider = Provider.of<DatabaseProvider>(context, listen: false);
       await dbProvider.leaveActivity(community!.id);
     } catch (e) {
+      print('Error leaving activity: $e');
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -122,17 +123,15 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
     Activity? previousActivity = _currentActivity;
     if (activities!.isNotEmpty) {
       if (community?.type == ActivityType.multi) {
-        int activityIndex = activities!
-            .indexWhere((act) => act.endDate.isAfter(DateTime.now().toUtc()));
+        int activityIndex = activities!.indexWhere((act) => act.isActive);
         if (activityIndex != -1) {
           _currentActivity = activities![activityIndex];
         } else {
           _currentActivity = null;
         }
       } else if (community?.type == ActivityType.solo) {
-        print('end date: ${activities![0].endDate}');
         int activityIndex = activities!.indexWhere((act) =>
-            act.endDate.isAfter(DateTime.now().toUtc()) &&
+            act.isActive &&
             dbProvider.activityAttendances[act.id]?.indexWhere(
                   (att) => att.userId == authProvider.user!.id,
                 ) !=

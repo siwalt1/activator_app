@@ -8,6 +8,7 @@ class Activity {
     required this.startDate,
     required this.endDate,
     required this.type,
+    required this.isActive,
   });
 
   final String id;
@@ -15,6 +16,7 @@ class Activity {
   final DateTime startDate;
   final DateTime endDate;
   final ActivityType type;
+  final bool isActive;
 
   factory Activity.fromMap(Map<String, dynamic> map) {
     return Activity(
@@ -24,6 +26,7 @@ class Activity {
       endDate: DateTime.parse(map['end_date']),
       type: EnumConverter.enumFromString(map['type'], ActivityType.values)
           as ActivityType,
+      isActive: map['is_active'],
     );
   }
 
@@ -34,6 +37,7 @@ class Activity {
       'start_date': startDate,
       'end_date': endDate,
       'type': EnumConverter.enumToString(type),
+      'is_active': isActive,
     };
   }
 }
