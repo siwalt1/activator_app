@@ -167,7 +167,7 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
         _currentActivity != null &&
         isActivityStatusChecked) {
       _isRocketClicked = true;
-      if(mounted) _rocketController.forward();
+      if (mounted) _rocketController.forward();
     }
 
     // if an activity was just stopped, animate the rocket to the bottom
@@ -175,7 +175,7 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
         _currentActivity == null &&
         isActivityStatusChecked) {
       _isRocketClicked = false;
-      if(mounted) _rocketController.reverse();
+      if (mounted) _rocketController.reverse();
     }
 
     // if no activity is currently running, set the rocket to the bottom
@@ -224,6 +224,12 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
                   );
                 },
                 onTapDown: (_) => setState(() => isTitleTapped = true),
+                onLongPress: () => setState(() => isTitleTapped = true),
+                onLongPressCancel: () => setState(() => isTitleTapped = false),
+                onLongPressEnd: (_) => setState(() => isTitleTapped = false),
+                onLongPressDown: (_) => setState(() => isTitleTapped = true),
+                onLongPressStart: (_) => setState(() => isTitleTapped = true),
+                onLongPressUp: () => setState(() => isTitleTapped = false),
                 onTapUp: (_) => setState(() => isTitleTapped = false),
                 onTapCancel: () => setState(() => isTitleTapped = false),
                 child: Container(
@@ -248,7 +254,7 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
                                     ? Theme.of(context)
                                         .colorScheme
                                         .onSurface
-                                        .withOpacity(0.75)
+                                        .withOpacity(0.55)
                                     : Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
@@ -260,7 +266,7 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
                                     ? Theme.of(context)
                                         .colorScheme
                                         .onSurfaceVariant
-                                        .withOpacity(0.75)
+                                        .withOpacity(0.55)
                                     : Theme.of(context)
                                         .colorScheme
                                         .onSurfaceVariant,
