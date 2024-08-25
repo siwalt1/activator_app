@@ -240,6 +240,11 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
                     onActivityTypeSelected: (type) {
                       setState(() {
                         _selectedActivityType = type;
+                        if (type == ActivityType.solo &&
+                            _selectedNotificationType ==
+                                NotificationType.activityCreationNoJoin) {
+                          _selectedNotificationType = NotificationType.all;
+                        }
                       });
                     },
                   ),
