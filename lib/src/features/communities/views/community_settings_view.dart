@@ -498,6 +498,7 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
                         ),
                         const SizedBox(height: AppConstants.separatorSpacing),
                         CustomListTile(
+                          key: ValueKey(communityMemberships?.length), // Force rebuild when memberships change
                           text: communityMemberships?.length == 1
                               ? 'Delete Community'
                               : 'Leave Community',
