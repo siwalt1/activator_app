@@ -191,9 +191,13 @@ class _CommunitiesViewState extends State<CommunitiesView> {
                           children: [
                             ListTile(
                               leading: CircleAvatar(
+                                radius: 24.0,
                                 child: Icon(
-                                  IconData(community.iconCode,
-                                      fontFamily: 'MaterialIcons'),
+                                  IconData(
+                                    community.iconCode,
+                                    fontFamily: 'MaterialIcons',
+                                  ),
+                                  // size: 32.0,
                                 ),
                               ),
                               title: Text(
@@ -220,40 +224,36 @@ class _CommunitiesViewState extends State<CommunitiesView> {
                                                     : '',
                                 overflow: TextOverflow.ellipsis,
                               ),
-                              trailing: SizedBox(
-                                width: 100,
-                                child: Stack(
-                                  children: [
-                                    // last session date in relation to the current date using formatDate function
-                                    Align(
-                                      alignment: Alignment.topRight,
-                                      child: Text(
-                                        formatDate(
-                                          value.activities[community.id]!.last
-                                              .startDate
-                                              .toLocal(),
-                                        ),
-                                        style: TextStyle(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSurfaceVariant,
-                                        ),
-                                      ),
+                              trailing: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  // Last session date in relation to the current date using formatDate function
+                                  Text(
+                                    formatDate(
+                                      value.activities[community.id]!.last
+                                          .startDate
+                                          .toLocal(),
                                     ),
-                                    // if session is active, show a red dot
-                                    if (activeActivity != null)
-                                      Align(
-                                        alignment: Alignment.centerRight,
-                                        child: Icon(
-                                          Icons.brightness_1_rounded,
-                                          size: 12.5,
-                                          color: Theme.of(context)
+                                    style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 4.0),
+                                    child: Icon(
+                                      Icons.brightness_1_rounded,
+                                      size: 12.5,
+                                      color: activeActivity != null
+                                          ? Theme.of(context)
                                               .colorScheme
-                                              .primary,
-                                        ),
-                                      ),
-                                  ],
-                                ),
+                                              .primary
+                                          : Colors.transparent,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                             const CustomListTileDivider(),
