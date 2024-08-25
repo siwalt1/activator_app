@@ -31,6 +31,7 @@ class CommunityDetailsView extends StatefulWidget {
 
 class _CommunityDetailsViewState extends State<CommunityDetailsView>
     with SingleTickerProviderStateMixin {
+  DateTime? _lastChange;
   Community? community;
   List<CommunityMember>? communityMemberships;
   List<Activity>? activities;
@@ -110,108 +111,111 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
     final dbProvider = Provider.of<DatabaseProvider>(context);
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-    // try {
-    community = dbProvider.communities.firstWhere(
-      (com) => com.id == widget.communityId,
-    );
-    communityMemberships = dbProvider.communityMembers[widget.communityId];
-    activities = dbProvider.activities[widget.communityId];
-
-    Activity? previousActivity = _currentActivity;
-    if (activities!.isNotEmpty) {
-      if (community?.type == ActivityType.multi) {
-        int activityIndex = activities!.indexWhere((act) => act.isActive);
-        if (activityIndex != -1) {
-          _currentActivity = activities![activityIndex];
-        } else {
-          _currentActivity = null;
-        }
-      } else if (community?.type == ActivityType.solo) {
-        int activityIndex = activities!.indexWhere((act) =>
-            act.isActive &&
-            dbProvider.activityAttendances[act.id]?.indexWhere(
-                  (att) => att.userId == authProvider.user!.id,
-                ) !=
-                -1);
-        if (activityIndex != -1) {
-          _currentActivity = activities![activityIndex];
-        } else {
-          _currentActivity = null;
-        }
-      }
-
-      _currentActivityAttendances =
-          dbProvider.activityAttendances[_currentActivity?.id];
-
-      _currentActivityAttendances?.sort(
-        (a, b) => a.createdAt.compareTo(b.createdAt),
-      );
-      _currentActiveActivityAttendances =
-          _currentActivityAttendances?.where((att) => att.isActive).toList();
-
-      // check if the user is participating in the activity
-      if (_currentActivity != null) {
-        isUserParticipating = _currentActiveActivityAttendances!.indexWhere(
-              (att) => att.userId == authProvider.user!.id,
-            ) !=
-            -1;
-      }
-    } else {
-      _currentActivity = null;
-      _currentActivityAttendances = null;
-      _currentActiveActivityAttendances = null;
-    }
-
-    // if an activity has just started, animate the rocket to the top
-    if (previousActivity == null &&
-        _currentActivity != null &&
-        isActivityStatusChecked) {
-      _isRocketClicked = true;
-      if (mounted) _rocketController.forward();
-    }
-
-    // if an activity was just stopped, animate the rocket to the bottom
-    else if (previousActivity != null &&
-        _currentActivity == null &&
-        isActivityStatusChecked) {
-      _isRocketClicked = false;
-      if (mounted) _rocketController.reverse();
-    }
-
-    // if no activity is currently running, set the rocket to the bottom
-    else if (!isActivityStatusChecked && _currentActivity == null) {
-      _rocketController.value = 0.0;
-      _isRocketClicked = false;
-    }
-
-    // if activity is currently running, set the rocket to the top
-    else if (!isActivityStatusChecked && _currentActivity != null) {
-      _rocketController.value = 1.0;
-      _isRocketClicked = true;
-    }
-    isActivityStatusChecked = true;
-    // } catch (e) {
-    //   community = null;
-    // }
-
     double rocketWidth = MediaQuery.of(context).size.width / 1.25 >
             MediaQuery.of(context).size.height / 1.25
         ? MediaQuery.of(context).size.height / 1.25
         : MediaQuery.of(context).size.width / 1.25;
 
-    if ((community == null) && !isNavigated) {
-      Future.microtask(() {
-        if (!isNavigated) {
-          isNavigated =
-              true; // Set the flag to true to prevent further navigation
-          context.go(HomePageView.routeName);
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('You are no longer a member of the community'),
-            ),
-          );
+    if (_lastChange == null || dbProvider.lastChange != _lastChange) {
+      _lastChange = dbProvider.lastChange;
+      try {
+        community = dbProvider.communities.firstWhere(
+          (com) => com.id == widget.communityId,
+        );
+      } catch (e) {
+        return Container();
+      }
+      communityMemberships = dbProvider.communityMembers[widget.communityId];
+      activities = dbProvider.activities[widget.communityId];
+
+      Activity? previousActivity = _currentActivity;
+      if (activities!.isNotEmpty) {
+        if (community?.type == ActivityType.multi) {
+          int activityIndex = activities!.indexWhere((act) => act.isActive);
+          if (activityIndex != -1) {
+            _currentActivity = activities![activityIndex];
+          } else {
+            _currentActivity = null;
+          }
+        } else if (community?.type == ActivityType.solo) {
+          int activityIndex = activities!.indexWhere((act) =>
+              act.isActive &&
+              dbProvider.activityAttendances[act.id]?.indexWhere(
+                    (att) => att.userId == authProvider.user!.id,
+                  ) !=
+                  -1);
+          if (activityIndex != -1) {
+            _currentActivity = activities![activityIndex];
+          } else {
+            _currentActivity = null;
+          }
         }
-      });
+
+        _currentActivityAttendances =
+            dbProvider.activityAttendances[_currentActivity?.id];
+
+        _currentActivityAttendances?.sort(
+          (a, b) => a.createdAt.compareTo(b.createdAt),
+        );
+        _currentActiveActivityAttendances =
+            _currentActivityAttendances?.where((att) => att.isActive).toList();
+
+        // check if the user is participating in the activity
+        if (_currentActivity != null) {
+          isUserParticipating = _currentActiveActivityAttendances!.indexWhere(
+                (att) => att.userId == authProvider.user!.id,
+              ) !=
+              -1;
+        }
+      } else {
+        _currentActivity = null;
+        _currentActivityAttendances = null;
+        _currentActiveActivityAttendances = null;
+      }
+
+      // if an activity has just started, animate the rocket to the top
+      if (previousActivity == null &&
+          _currentActivity != null &&
+          isActivityStatusChecked) {
+        _isRocketClicked = true;
+        if (mounted) _rocketController.forward();
+      }
+
+      // if an activity was just stopped, animate the rocket to the bottom
+      else if (previousActivity != null &&
+          _currentActivity == null &&
+          isActivityStatusChecked) {
+        _isRocketClicked = false;
+        if (mounted) _rocketController.reverse();
+      }
+
+      // if no activity is currently running, set the rocket to the bottom
+      else if (!isActivityStatusChecked && _currentActivity == null) {
+        _rocketController.value = 0.0;
+        _isRocketClicked = false;
+      }
+
+      // if activity is currently running, set the rocket to the top
+      else if (!isActivityStatusChecked && _currentActivity != null) {
+        _rocketController.value = 1.0;
+        _isRocketClicked = true;
+      }
+      isActivityStatusChecked = true;
+
+      if ((community == null) && !isNavigated) {
+        Future.microtask(() {
+          if (!isNavigated) {
+            isNavigated =
+                true; // Set the flag to true to prevent further navigation
+            context.go(HomePageView.routeName);
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('You are no longer a member of the community'),
+              ),
+            );
+          }
+        });
+      }
     }
 
     return Scaffold(

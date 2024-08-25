@@ -18,6 +18,8 @@ class DatabaseProvider with ChangeNotifier {
   final AuthProvider _authProvider;
   RealtimeChannel? _realtimeChannel;
 
+  DateTime? _lastChange;
+
   final List<Community> _communities = <Community>[];
   final _communityMembers = <String, List<CommunityMember>>{};
   final _activities = <String, List<Activity>>{};
@@ -27,6 +29,7 @@ class DatabaseProvider with ChangeNotifier {
   bool _isInitialized = false;
   bool _isConnected = false;
 
+  DateTime? get lastChange => _lastChange;
   List<Community> get communities => _communities;
   Map<String, List<CommunityMember>> get communityMembers => _communityMembers;
   Map<String, List<Activity>> get activities => _activities;
@@ -118,6 +121,7 @@ class DatabaseProvider with ChangeNotifier {
 
     _sortCommunitiesByLastActivity();
     _isInitialized = true;
+    _lastChange = DateTime.now();
     notifyListeners();
   }
 
@@ -128,6 +132,8 @@ class DatabaseProvider with ChangeNotifier {
     _activityAttendances.clear();
     _profiles.clear();
     _isInitialized = false;
+    
+    _lastChange = DateTime.now();
     notifyListeners();
   }
 
@@ -140,6 +146,7 @@ class DatabaseProvider with ChangeNotifier {
       _realtimeChannel?.unsubscribe();
       _realtimeChannel = null;
     }
+    _lastChange = DateTime.now();
     notifyListeners();
   }
 
@@ -176,6 +183,7 @@ class DatabaseProvider with ChangeNotifier {
         break;
     }
     _sortCommunitiesByLastActivity();
+    _lastChange = DateTime.now();
     notifyListeners();
   }
 
@@ -401,6 +409,7 @@ class DatabaseProvider with ChangeNotifier {
     _activityAttendances[activity.id] = [attendance];
 
     _sortCommunitiesByLastActivity();
+    _lastChange = DateTime.now();
     notifyListeners();
   }
 
@@ -450,6 +459,7 @@ class DatabaseProvider with ChangeNotifier {
     }
 
     _sortCommunitiesByLastActivity();
+    _lastChange = DateTime.now();
     notifyListeners();
   }
 
@@ -505,7 +515,7 @@ class DatabaseProvider with ChangeNotifier {
       }
       _sortCommunitiesByLastActivity();
     }
-
+    _lastChange = DateTime.now();
     notifyListeners();
   }
 
@@ -545,6 +555,7 @@ class DatabaseProvider with ChangeNotifier {
     }
 
     _sortCommunitiesByLastActivity();
+    _lastChange = DateTime.now();
     notifyListeners();
   }
 
@@ -587,6 +598,7 @@ class DatabaseProvider with ChangeNotifier {
     }
 
     _sortCommunitiesByLastActivity();
+    _lastChange = DateTime.now();
     notifyListeners();
   }
 
