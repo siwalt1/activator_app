@@ -6,7 +6,7 @@ class PlatformTransitionPage<T> extends Page<T> {
   final Widget child;
   final bool isCupertino;
 
-  PlatformTransitionPage({required this.child, required this.isCupertino}) : super(key: ValueKey(child));
+  const PlatformTransitionPage({required this.child, required this.isCupertino});
 
   @override
   Route<T> createRoute(BuildContext context) {
