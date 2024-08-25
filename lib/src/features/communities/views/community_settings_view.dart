@@ -248,44 +248,49 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
                     ),
                     const SizedBox(height: AppConstants.separatorSpacing),
                     if (!isOwnProfile)
-                      CustomButton(
-                        text: 'Remove from Community',
-                        color: Theme.of(context).colorScheme.primary,
-                        textColor: Theme.of(context).colorScheme.onPrimary,
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (buildContext) {
-                              return AlertDialog(
-                                title: const Text('Remove from Community'),
-                                content: const Text(
-                                    'Are you sure you want to remove this user from the community?'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(buildContext).pop();
-                                    },
-                                    child: const Text('Cancel'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () async {
-                                      final dbProvider =
-                                          Provider.of<DatabaseProvider>(context,
-                                              listen: false);
-                                      Navigator.of(buildContext).pop();
-                                      await dbProvider.leaveCommunity(
-                                          widget.communityId,
-                                          userId: userId);
-                                      if (!context.mounted) return;
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text('Remove'),
-                                  ),
-                                ],
+                      Column(
+                        children: [
+                          CustomButton(
+                            text: 'Remove from Community',
+                            color: Theme.of(context).colorScheme.primary,
+                            textColor: Theme.of(context).colorScheme.onPrimary,
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (buildContext) {
+                                  return AlertDialog(
+                                    title: const Text('Remove from Community'),
+                                    content: const Text(
+                                        'Are you sure you want to remove this user from the community?'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(buildContext).pop();
+                                        },
+                                        child: const Text('Cancel'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () async {
+                                          final dbProvider =
+                                              Provider.of<DatabaseProvider>(context,
+                                                  listen: false);
+                                          Navigator.of(buildContext).pop();
+                                          await dbProvider.leaveCommunity(
+                                              widget.communityId,
+                                              userId: userId);
+                                          if (!context.mounted) return;
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text('Remove'),
+                                      ),
+                                    ],
+                                  );
+                                },
                               );
                             },
-                          );
-                        },
+                          ),
+                          const SizedBox(height: AppConstants.separatorSpacing),
+                        ],
                       ),
                   ],
                 ),
