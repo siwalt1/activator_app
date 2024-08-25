@@ -122,11 +122,32 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
         community = dbProvider.communities.firstWhere(
           (com) => com.id == widget.communityId,
         );
+
+        communityMemberships = dbProvider.communityMembers[widget.communityId];
+        activities = dbProvider.activities[widget.communityId];
       } catch (e) {
+        community = null;
+      }
+
+      if ((community == null) && !isNavigated) {
+        Future.microtask(() {
+          if (!isNavigated) {
+            isNavigated =
+                true; // Set the flag to true to prevent further navigation
+            print('Navigation from CommunityDetailsView to HomePageView');
+            context.go(HomePageView.routeName);
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('You are no longer a member of the community'),
+              ),
+            );
+          }
+        });
+      }
+
+      if (community == null) {
         return Container();
       }
-      communityMemberships = dbProvider.communityMembers[widget.communityId];
-      activities = dbProvider.activities[widget.communityId];
 
       Activity? previousActivity = _currentActivity;
       if (activities!.isNotEmpty) {
@@ -201,21 +222,6 @@ class _CommunityDetailsViewState extends State<CommunityDetailsView>
         _isRocketClicked = true;
       }
       isActivityStatusChecked = true;
-
-      if ((community == null) && !isNavigated) {
-        Future.microtask(() {
-          if (!isNavigated) {
-            isNavigated =
-                true; // Set the flag to true to prevent further navigation
-            context.go(HomePageView.routeName);
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('You are no longer a member of the community'),
-              ),
-            );
-          }
-        });
-      }
     }
 
     return Scaffold(

@@ -40,7 +40,6 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
   List<CommunityMember>? communityMemberships;
   List<Profile>? profiles;
   List<Activity>? activities;
-  bool isNavigated = false; // Track if navigation has already happened
   bool _isLoading = false;
 
   void _leaveCommunity(bool isLastMember) async {
@@ -272,7 +271,8 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
                                       TextButton(
                                         onPressed: () async {
                                           final dbProvider =
-                                              Provider.of<DatabaseProvider>(context,
+                                              Provider.of<DatabaseProvider>(
+                                                  context,
                                                   listen: false);
                                           Navigator.of(buildContext).pop();
                                           await dbProvider.leaveCommunity(
@@ -320,16 +320,6 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
       activities = dbProvider.activities[widget.communityId];
     } catch (e) {
       community = null;
-    }
-
-    if ((community == null) && !isNavigated) {
-      Future.microtask(() {
-        if (!isNavigated) {
-          isNavigated =
-              true; // Set the flag to true to prevent further navigation
-          context.go(HomePageView.routeName);
-        }
-      });
     }
 
     return Scaffold(
@@ -394,8 +384,8 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
                             ),
                             IconLabelPair(
                               icon: const Icon(Icons.timelapse),
-                              label: formatDuration(
-                                  community!.activityDuration),
+                              label:
+                                  formatDuration(community!.activityDuration),
                             ),
                             IconLabelPair(
                               icon: Icon(community!.notificationType ==
