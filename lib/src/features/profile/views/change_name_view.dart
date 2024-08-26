@@ -1,4 +1,5 @@
 import 'package:activator_app/src/core/provider/auth_provider.dart';
+import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/widgets/custom_progress_indicator.dart';
 import 'package:activator_app/src/core/widgets/custom_text_form_field.dart';
 import 'package:flutter/cupertino.dart';
@@ -86,7 +87,8 @@ class _ChangeNameViewState extends State<ChangeNameView> {
                 return CupertinoButton(
                   onPressed: controller.text ==
                               Provider.of<AuthProvider>(context, listen: false)
-                                  .user?.userMetadata?['display_name'] ||
+                                  .user
+                                  ?.userMetadata?['display_name'] ||
                           _isLoading
                       ? null
                       : _submit,
@@ -99,17 +101,15 @@ class _ChangeNameViewState extends State<ChangeNameView> {
         body: Stack(
           children: [
             SafeArea(
-              child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
+              child: Padding(
                 padding: const EdgeInsets.only(
-                  left: 20,
-                  right: 20,
-                  bottom: 20,
-                  top: 0,
-                ),
-                child: Column(
+                    left: AppConstants.paddingSpacing,
+                    right: AppConstants.paddingSpacing,
+                    bottom: AppConstants.paddingSpacing,
+                    top: 0),
+                child: ListView(
                   children: [
-                    const SizedBox(height: 20),
+                    const SizedBox(height: AppConstants.paddingSpacing),
                     Form(
                       key: _formKey,
                       child: CustomTextFormField(

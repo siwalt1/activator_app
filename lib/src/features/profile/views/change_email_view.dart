@@ -110,43 +110,48 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
         body: Stack(
           children: [
             SafeArea(
-              child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
+              child: Padding(
                 padding: const EdgeInsets.only(
-                  left: 20,
-                  right: 20,
-                  bottom: 20,
-                  top: 0,
-                ),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      const SizedBox(height: AppConstants.paddingSpacing),
-                      CustomTextFormField(
-                        label: 'Email',
-                        controller: emailController,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your email';
-                          }
-                          if (!EmailValidator.validate(value)) {
-                            return 'Please enter a valid email';
-                          }
-                          return null;
-                        },
-                        focusNode: _focusNode,
+                    left: AppConstants.paddingSpacing,
+                    right: AppConstants.paddingSpacing,
+                    bottom: AppConstants.paddingSpacing,
+                    top: 0),
+                child: ListView(
+                  children: [
+                    const SizedBox(height: AppConstants.paddingSpacing),
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          CustomTextFormField(
+                            label: 'Email',
+                            controller: emailController,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter your email';
+                              }
+                              if (!EmailValidator.validate(value)) {
+                                return 'Please enter a valid email';
+                              }
+                              return null;
+                            },
+                            focusNode: _focusNode,
+                          ),
+                          const SizedBox(
+                              height: AppConstants.separatorSpacing / 2),
+                          Text(
+                            'You will receive an email to verify your new email address.',
+                            style: TextStyle(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: AppConstants.separatorSpacing / 2),
-                      Text(
-                        'You will receive an email to verify your new email address.',
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),

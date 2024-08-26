@@ -84,36 +84,38 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
         body: Stack(
           children: [
             SafeArea(
-              child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
+              child: Padding(
                 padding: const EdgeInsets.only(
-                  left: 20,
-                  right: 20,
-                  bottom: 20,
-                  top: 0,
-                ),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      const SizedBox(height: AppConstants.paddingSpacing),
-                      CustomTextFormField(
-                        label: 'New Password',
-                        controller: newPwdController,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your password';
-                          }
-                          if (value.length < 6) {
-                            return 'Password must be at least 6 characters';
-                          }
-                          return null;
-                        },
-                        obscureText: true,
-                        focusNode: _focusNode,
+                    left: AppConstants.paddingSpacing,
+                    right: AppConstants.paddingSpacing,
+                    bottom: AppConstants.paddingSpacing,
+                    top: 0),
+                child: ListView(
+                  children: [
+                    const SizedBox(height: AppConstants.paddingSpacing),
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          CustomTextFormField(
+                            label: 'New Password',
+                            controller: newPwdController,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter your password';
+                              }
+                              if (value.length < 6) {
+                                return 'Password must be at least 6 characters';
+                              }
+                              return null;
+                            },
+                            obscureText: true,
+                            focusNode: _focusNode,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
