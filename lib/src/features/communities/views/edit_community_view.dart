@@ -3,6 +3,7 @@ import 'package:activator_app/src/core/provider/db_provider.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/widgets/custom_progress_indicator.dart';
 import 'package:activator_app/src/core/widgets/custom_text_form_field.dart';
+import 'package:activator_app/src/core/widgets/platform_alert_dialog.dart';
 import 'package:activator_app/src/features/communities/widgets/activity_duration_selector.dart';
 import 'package:activator_app/src/features/communities/widgets/activity_type_selector.dart';
 import 'package:activator_app/src/features/communities/widgets/notification_type_selector.dart';
@@ -82,25 +83,11 @@ class _EditCommunityViewState extends State<EditCommunityView> {
         final confirmed = await showDialog<bool>(
           context: context,
           builder: (context) {
-            return AlertDialog(
-              title: const Text('Change activity type?'),
-              content: const Text(
-                'Changing the activity type will stop all current activities. Are you sure you want to proceed?',
-              ),
-              actions: [
-                CupertinoButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(false);
-                  },
-                  child: const Text('Cancel'),
-                ),
-                CupertinoButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(true);
-                  },
-                  child: const Text('Proceed'),
-                ),
-              ],
+            return const PlatformAlertDialog(
+              title: 'Change Activity Type?',
+              content: Text(
+                  'Changing the activity type will stop all current activities. Are you sure you want to proceed?'),
+              confirmText: 'Proceed',
             );
           },
         );
@@ -139,17 +126,11 @@ class _EditCommunityViewState extends State<EditCommunityView> {
         showDialog(
           context: context,
           builder: (context) {
-            return AlertDialog(
-              title: const Text('Something went wrong'),
-              content: const Text('Try again later.'),
-              actions: [
-                CupertinoButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Close'),
-                ),
-              ],
+            return const PlatformAlertDialog(
+              title: 'Something went wrong',
+              content: Text('Try again later.'),
+              showCancel: false,
+              confirmText: 'Close',
             );
           },
         );
@@ -262,8 +243,9 @@ class _EditCommunityViewState extends State<EditCommunityView> {
                                       showDialog(
                                         context: context,
                                         builder: (BuildContext context) =>
-                                            AlertDialog(
-                                          title: const Text('Activity types'),
+                                            PlatformAlertDialog(
+                                          title:
+                                              'Activity types${Theme.of(context).platform == TargetPlatform.iOS ? '\n' : ''}',
                                           content: RichText(
                                             text: TextSpan(
                                               style: TextStyle(
@@ -274,7 +256,7 @@ class _EditCommunityViewState extends State<EditCommunityView> {
                                               ),
                                               children: const <TextSpan>[
                                                 TextSpan(
-                                                  text: 'Solo',
+                                                  text: 'Single',
                                                   style: TextStyle(
                                                     fontWeight: FontWeight.bold,
                                                   ),
@@ -284,7 +266,7 @@ class _EditCommunityViewState extends State<EditCommunityView> {
                                                       ': Activities that are done alone, such as reading a book or meditating. These sessions are done separately and at different times.\n\n',
                                                 ),
                                                 TextSpan(
-                                                  text: 'Real-time',
+                                                  text: 'Multi',
                                                   style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold),
@@ -296,14 +278,7 @@ class _EditCommunityViewState extends State<EditCommunityView> {
                                               ],
                                             ),
                                           ),
-                                          actions: [
-                                            CupertinoButton(
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                              child: const Text('Close'),
-                                            ),
-                                          ],
+                                          showCancel: false,
                                         ),
                                       );
                                     },

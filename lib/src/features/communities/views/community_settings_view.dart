@@ -12,6 +12,7 @@ import 'package:activator_app/src/core/widgets/custom_list_tile.dart';
 import 'package:activator_app/src/core/widgets/custom_list_tile_divider.dart';
 import 'package:activator_app/src/core/widgets/custom_progress_indicator.dart';
 import 'package:activator_app/src/core/widgets/custom_text_form_field.dart';
+import 'package:activator_app/src/core/widgets/platform_alert_dialog.dart';
 import 'package:activator_app/src/features/HomePage/home_page_view.dart';
 import 'package:activator_app/src/features/communities/views/edit_community_view.dart';
 import 'package:activator_app/src/features/communities/widgets/info_boxes.dart';
@@ -58,17 +59,11 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
           showDialog(
             context: context,
             builder: (context) {
-              return AlertDialog(
-                title: const Text('Something went wrong'),
-                content: const Text('Try again later.'),
-                actions: [
-                  CupertinoButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Close'),
-                  ),
-                ],
+              return const PlatformAlertDialog(
+                title: 'Something went wrong',
+                content: Text('Try again later.'),
+                showCancel: false,
+                confirmText: 'Close',
               );
             },
           );
@@ -80,25 +75,11 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: const Text('Leave Community'),
+        return PlatformAlertDialog(
+          title: '${isLastMember ? 'Delete' : 'Leave'} Community',
           content: Text(
               'Are you sure you want to ${isLastMember ? 'delete' : 'leave'} this community?'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                leaveCommunityAction();
-              },
-              child: const Text('Leave'),
-            ),
-          ],
+          onConfirm: leaveCommunityAction,
         );
       },
     );
@@ -162,38 +143,26 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
                       showDialog(
                         context: context,
                         builder: (context) {
-                          return AlertDialog(
-                            title: const Text('Reset Link'),
+                          return PlatformAlertDialog(
+                            title: 'Reset Link',
                             content: const Text(
-                              'Are you sure you want to reset the invitation link? This will make the current link invalid.',
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: const Text('Cancel'),
-                              ),
-                              TextButton(
-                                onPressed: () async {
-                                  final dbProvider =
-                                      Provider.of<DatabaseProvider>(context,
-                                          listen: false);
-                                  Navigator.of(context).pop();
-                                  String? updatedToken = await dbProvider
-                                      .resetInvitationToken(widget.communityId);
-                                  setState(() {
-                                    token = updatedToken ?? token;
-                                  });
-                                },
-                                child: const Text('Reset'),
-                              ),
-                            ],
+                                'Are you sure you want to reset the invitation link? This will make the current link invalid.'),
+                            onConfirm: () async {
+                              final dbProvider = Provider.of<DatabaseProvider>(
+                                  context,
+                                  listen: false);
+                              String? updatedToken = await dbProvider
+                                  .resetInvitationToken(widget.communityId);
+                              setState(() {
+                                token = updatedToken ?? token;
+                              });
+                            },
                           );
                         },
                       );
                     },
                   ),
+                  const SizedBox(height: AppConstants.separatorSpacing * 2),
                 ],
               ),
             );
@@ -245,10 +214,10 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
-                    const SizedBox(height: AppConstants.separatorSpacing),
                     if (!isOwnProfile)
                       Column(
                         children: [
+                          const SizedBox(height: AppConstants.separatorSpacing),
                           CustomButton(
                             text: 'Remove from Community',
                             color: Theme.of(context).colorScheme.primary,
@@ -257,41 +226,28 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
                               showDialog(
                                 context: context,
                                 builder: (buildContext) {
-                                  return AlertDialog(
-                                    title: const Text('Remove from Community'),
+                                  return PlatformAlertDialog(
+                                    title: 'Remove from Community',
                                     content: const Text(
                                         'Are you sure you want to remove this user from the community?'),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(buildContext).pop();
-                                        },
-                                        child: const Text('Cancel'),
-                                      ),
-                                      TextButton(
-                                        onPressed: () async {
-                                          final dbProvider =
-                                              Provider.of<DatabaseProvider>(
-                                                  context,
-                                                  listen: false);
-                                          Navigator.of(buildContext).pop();
-                                          await dbProvider.leaveCommunity(
-                                              widget.communityId,
-                                              userId: userId);
-                                          if (!context.mounted) return;
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: const Text('Remove'),
-                                      ),
-                                    ],
+                                    onConfirm: () async {
+                                      final dbProvider =
+                                          Provider.of<DatabaseProvider>(context,
+                                              listen: false);
+                                      await dbProvider.leaveCommunity(
+                                          widget.communityId,
+                                          userId: userId);
+                                      if (!context.mounted) return;
+                                      Navigator.of(context).pop();
+                                    },
                                   );
                                 },
                               );
                             },
                           ),
-                          const SizedBox(height: AppConstants.separatorSpacing),
                         ],
                       ),
+                    const SizedBox(height: AppConstants.separatorSpacing * 2),
                   ],
                 ),
               ),
@@ -379,8 +335,8 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
                                   ? Icons.person
                                   : Icons.people),
                               label: community?.type == ActivityType.solo
-                                  ? 'solo'
-                                  : 'real-time',
+                                  ? 'single'
+                                  : 'multi',
                             ),
                             IconLabelPair(
                               icon: const Icon(Icons.timelapse),
@@ -498,7 +454,8 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
                         ),
                         const SizedBox(height: AppConstants.separatorSpacing),
                         CustomListTile(
-                          key: ValueKey(communityMemberships?.length), // Force rebuild when memberships change
+                          key: ValueKey(communityMemberships
+                              ?.length), // Force rebuild when memberships change
                           text: communityMemberships?.length == 1
                               ? 'Delete Community'
                               : 'Leave Community',

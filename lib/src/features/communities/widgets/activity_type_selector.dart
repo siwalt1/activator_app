@@ -16,7 +16,7 @@ class ActivityTypeSelector extends StatelessWidget {
     return Row(
       children: [
         ActivityTypeItem(
-          title: 'Solo',
+          title: 'Single',
           icon: Icons.person,
           isSelected: selectedActivityType == ActivityType.solo,
           onTap: () => {
@@ -26,7 +26,7 @@ class ActivityTypeSelector extends StatelessWidget {
         ),
         const SizedBox(width: AppConstants.separatorSpacing),
         ActivityTypeItem(
-          title: 'Real-time',
+          title: 'Multi',
           icon: Icons.group,
           isSelected: selectedActivityType == ActivityType.multi,
           onTap: () => {

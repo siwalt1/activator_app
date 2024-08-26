@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/utils/format_duration.dart';
 import 'package:activator_app/src/core/widgets/custom_list_tile.dart';
+import 'package:activator_app/src/core/widgets/platform_alert_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
@@ -104,19 +105,14 @@ class _ActivityDurationSelectorState extends State<ActivityDurationSelector> {
       barrierDismissible: false,
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: const Text('Invalid Duration'),
+        return PlatformAlertDialog(
+          title: 'Invalid Duration',
           content: const Text(
               'Activity duration should be at least 5 minutes. Please select a valid duration.'),
-          actions: [
-            CupertinoButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _showTimePicker(); // Reopen the time picker
-              },
-              child: const Text('OK'),
-            ),
-          ],
+          showCancel: false,
+          onConfirm: () {
+            _showTimePicker(); // Reopen the time picker
+          },
         );
       },
     );

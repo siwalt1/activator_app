@@ -3,6 +3,7 @@ import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/widgets/custom_bottom_sheet_body.dart';
 import 'package:activator_app/src/core/widgets/custom_button.dart';
 import 'package:activator_app/src/core/widgets/custom_text_form_field.dart';
+import 'package:activator_app/src/core/widgets/platform_alert_dialog.dart';
 import 'package:activator_app/src/features/communities/widgets/activity_duration_selector.dart';
 import 'package:activator_app/src/features/communities/widgets/activity_type_selector.dart';
 import 'package:activator_app/src/features/communities/widgets/notification_type_selector.dart';
@@ -86,17 +87,11 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
         showDialog(
           context: context,
           builder: (context) {
-            return AlertDialog(
-              title: const Text('Something went wrong'),
-              content: const Text('Try again later.'),
-              actions: [
-                CupertinoButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Close'),
-                ),
-              ],
+            return const PlatformAlertDialog(
+              title: 'Something went wrong',
+              content: Text('Try again later.'),
+              showCancel: false,
+              confirmText: 'Close',
             );
           },
         );
@@ -181,8 +176,9 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
                       onTap: () {
                         showDialog(
                           context: context,
-                          builder: (BuildContext context) => AlertDialog(
-                            title: const Text('Activity types'),
+                          builder: (context) => PlatformAlertDialog(
+                            title:
+                                'Activity types${Theme.of(context).platform == TargetPlatform.iOS ? '\n' : ''}',
                             content: RichText(
                               text: TextSpan(
                                 style: TextStyle(
@@ -192,7 +188,7 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
                                 ),
                                 children: const <TextSpan>[
                                   TextSpan(
-                                    text: 'Solo',
+                                    text: 'Single',
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -202,7 +198,7 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
                                         ': Activities that are done alone, such as reading a book or meditating. These sessions are done separately and at different times.\n\n',
                                   ),
                                   TextSpan(
-                                    text: 'Real-time',
+                                    text: 'Multi',
                                     style:
                                         TextStyle(fontWeight: FontWeight.bold),
                                   ),
@@ -213,14 +209,7 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
                                 ],
                               ),
                             ),
-                            actions: [
-                              CupertinoButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: const Text('Close'),
-                              ),
-                            ],
+                            showCancel: false,
                           ),
                         );
                       },
@@ -324,7 +313,7 @@ class _NewCommunityModalState extends State<NewCommunityModal> {
               color: Theme.of(context).colorScheme.primary,
               textColor: Theme.of(context).colorScheme.onPrimary,
             ),
-            const SizedBox(height: AppConstants.separatorSpacing),
+            const SizedBox(height: AppConstants.separatorSpacing * 2),
           ],
         ),
       ),
