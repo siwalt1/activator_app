@@ -79,41 +79,48 @@ class DatabaseProvider with ChangeNotifier {
       throw Exception('Failed to fetch initial data');
     }
 
-    final List<dynamic> communities = response.first['communities'];
-    final List<dynamic> communityMembers = response.first['community_members'];
-    final List<dynamic> activities = response.first['activities'];
-    final List<dynamic> activityAttendances =
+    final List<dynamic>? communities = response.first['communities'];
+    final List<dynamic>? communityMembers = response.first['community_members'];
+    final List<dynamic>? activities = response.first['activities'];
+    final List<dynamic>? activityAttendances =
         response.first['activity_attendances'];
     final List<dynamic> profiles = response.first['profiles'];
 
     _clearData();
 
-    _communities.addAll(
-      communities.map((item) => Community.fromMap(item)).toList(),
-    );
+    if (communities != null ||
+        communityMembers != null ||
+        activities != null ||
+        activityAttendances != null) {
+      _communities.addAll(
+        communities!.map((item) => Community.fromMap(item)).toList(),
+      );
 
-    _communityMembers.addAll(
-      groupBy(
-        communityMembers.map((item) => CommunityMember.fromMap(item)).toList(),
-        (CommunityMember member) => member.communityId,
-      ),
-    );
+      _communityMembers.addAll(
+        groupBy(
+          communityMembers!
+              .map((item) => CommunityMember.fromMap(item))
+              .toList(),
+          (CommunityMember member) => member.communityId,
+        ),
+      );
 
-    _activities.addAll(
-      groupBy(
-        activities.map((item) => Activity.fromMap(item)).toList(),
-        (Activity activity) => activity.communityId,
-      ),
-    );
+      _activities.addAll(
+        groupBy(
+          activities!.map((item) => Activity.fromMap(item)).toList(),
+          (Activity activity) => activity.communityId,
+        ),
+      );
 
-    _activityAttendances.addAll(
-      groupBy(
-        activityAttendances
-            .map((item) => ActivityAttendance.fromMap(item))
-            .toList(),
-        (ActivityAttendance attendance) => attendance.activityId,
-      ),
-    );
+      _activityAttendances.addAll(
+        groupBy(
+          activityAttendances!
+              .map((item) => ActivityAttendance.fromMap(item))
+              .toList(),
+          (ActivityAttendance attendance) => attendance.activityId,
+        ),
+      );
+    }
 
     _profiles.addAll({
       for (var profile in profiles) profile['id']: Profile.fromMap(profile)
@@ -132,7 +139,7 @@ class DatabaseProvider with ChangeNotifier {
     _activityAttendances.clear();
     _profiles.clear();
     _isInitialized = false;
-    
+
     _lastChange = DateTime.now();
     notifyListeners();
   }
