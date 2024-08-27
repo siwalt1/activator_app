@@ -63,6 +63,7 @@ class CustomBottomSheetBody extends StatelessWidget {
                       right: AppConstants.paddingSpacing,
                     ),
                     child: SingleChildScrollView(
+                      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                       child: child,
                     ),
                   ),
