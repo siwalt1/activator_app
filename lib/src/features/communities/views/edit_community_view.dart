@@ -184,6 +184,8 @@ class _EditCommunityViewState extends State<EditCommunityView> {
                 top: 0,
               ),
               child: ListView(
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
                 children: [
                   Form(
                     key: _formKey,
@@ -207,8 +209,7 @@ class _EditCommunityViewState extends State<EditCommunityView> {
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 12.5, horizontal: 8),
                                     decoration: BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.circular(100),
+                                      borderRadius: BorderRadius.circular(100),
                                       border: Border.all(
                                         color: Theme.of(context)
                                             .dividerColor
