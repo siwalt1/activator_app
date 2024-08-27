@@ -7,7 +7,6 @@ import 'package:activator_app/src/core/widgets/platform_alert_dialog.dart';
 import 'package:activator_app/src/features/communities/widgets/activity_duration_selector.dart';
 import 'package:activator_app/src/features/communities/widgets/activity_type_selector.dart';
 import 'package:activator_app/src/features/communities/widgets/notification_type_selector.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 import 'package:provider/provider.dart';
