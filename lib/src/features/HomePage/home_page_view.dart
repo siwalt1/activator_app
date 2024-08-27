@@ -7,6 +7,12 @@ class HomePageView extends StatefulWidget {
 
   static const routeName = '/home';
 
+  static final globalKey = GlobalKey<_HomePageViewState>();
+
+  static void setInitialTab() {
+    globalKey.currentState?.setInitialTab();
+  }
+
   @override
   State<HomePageView> createState() => _HomePageViewState();
 }
@@ -22,6 +28,12 @@ class _HomePageViewState extends State<HomePageView> {
   _changeTab(int index) {
     setState(() {
       _selectedTab = index;
+    });
+  }
+
+  setInitialTab() {
+    setState(() {
+      _selectedTab = 0;
     });
   }
 

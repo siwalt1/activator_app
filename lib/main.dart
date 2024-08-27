@@ -78,6 +78,13 @@ void main() async {
         },
       ),
       GoRoute(
+        path: HomePageView.routeName,
+        pageBuilder: (context, state) => PlatformTransitionPage(
+          child: HomePageView(key: HomePageView.globalKey),
+          isCupertino: Theme.of(context).platform == TargetPlatform.iOS,
+        ),
+      ),
+      GoRoute(
         path: WelcomeView.routeName,
         pageBuilder: (context, state) => SlidePageTransition(
           direction: SlideDirection.leftToRight,
@@ -148,13 +155,6 @@ void main() async {
         path: ProfileThemeView.routeName,
         pageBuilder: (context, state) => PlatformTransitionPage(
           child: const ProfileThemeView(),
-          isCupertino: Theme.of(context).platform == TargetPlatform.iOS,
-        ),
-      ),
-      GoRoute(
-        path: HomePageView.routeName,
-        pageBuilder: (context, state) => PlatformTransitionPage(
-          child: const HomePageView(),
           isCupertino: Theme.of(context).platform == TargetPlatform.iOS,
         ),
       ),
