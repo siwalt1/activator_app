@@ -56,7 +56,7 @@ class ProfileView extends StatelessWidget {
                   onPressed: () => launchUrl(
                     Uri(
                       scheme: 'mailto',
-                      path: 'activator-app@walter-wm.de',
+                      path: 'info@activator-app.walter-wm.de',
                     ),
                   ),
                   marginBottom: AppConstants.listTileSpacing,
