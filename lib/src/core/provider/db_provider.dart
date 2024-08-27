@@ -222,7 +222,10 @@ class DatabaseProvider with ChangeNotifier {
             }
           });
         } else {
-          await _fetchSingleCommunity(newMember.communityId);
+          // if community is not already loaded, fetch it
+          if (!_communities.any((c) => c.id == newMember.communityId)) {
+            await _fetchSingleCommunity(newMember.communityId);
+          }
         }
         break;
       case 'activities':
@@ -642,93 +645,171 @@ class DatabaseProvider with ChangeNotifier {
   }
 
   Future<void> joinCommunity(String invitationToken) async {
-    await _supabaseService.rpcVoid(
+    final response = await _supabaseService.rpc(
       'join_community',
       params: {'p_invitation_token': invitationToken},
     );
+
+    if (response.isEmpty) {
+      throw Exception('Failed to join community');
+    }
+
+    final community = Community.fromMap(response.first['community']);
+    final members = response.first['members']
+        .map((m) => CommunityMember.fromMap(m))
+        .toList();
+    final activities =
+        response.first['activities'].map((a) => Activity.fromMap(a)).toList();
+    final attendances = response.first['attendances']
+        .map((a) => ActivityAttendance.fromMap(a))
+        .toList();
+    final profiles = response.first['profiles']
+        .map((p) => Profile.fromMap(p))
+        .toList();
+
+    if (!_communities.any((c) => c.id == community.id)) {
+      _communities.add(community);
+    }
+    _communityMembers[community.id] = members;
+    for (var profile in profiles) {
+      _profiles[profile.id] = profile;
+    }
+    _activities[community.id] = activities;
+    for (var attendance in attendances) {
+      if (!_activityAttendances.containsKey(attendance.activityId)) {
+        _activityAttendances[attendance.activityId] = [];
+      }
+      _activityAttendances[attendance.activityId]!.add(attendance);
+    }
+
+    _sortCommunitiesByLastActivity();
+    _lastChange = DateTime.now();
+    notifyListeners();
   }
 
   Future<void> _fetchSingleCommunity(String communityId) async {
-    try {
-      // Fetch the community by ID
-      final communityResponse = _supabaseService
-          .fetchData('communities', equals: {'id': communityId});
+    final response = await _supabaseService.rpc(
+      'get_community',
+      params: {'p_community_id': communityId},
+    );
 
-      // Fetch the community members and their profiles
-      final membersProfilesFuture = (() async {
-        final membersResponse = await _supabaseService.fetchData(
-            'community_members',
-            equals: {'community_id': communityId});
+    if (response.isEmpty) {
+      throw Exception('Community not found');
+    }
 
-        final memberIds = membersResponse.map((m) => m['user_id']).toList();
-        final profilesResponse = await _supabaseService.fetchData(
-          'profiles',
-          inFilter: {'id': memberIds},
-        );
+    final community = Community.fromMap(response.first['community']);
+    final members = response.first['members']
+        .map((m) => CommunityMember.fromMap(m))
+        .toList();
 
-        return {
-          'members': membersResponse,
-          'profiles': profilesResponse,
-        };
-      })();
+    final activities = response.first['activities']
+        .map((a) => Activity.fromMap(a))
+        .toList();
 
-      // Fetch the activities and their attendances
-      final activityAttendancesFuture = (() async {
-        final activitiesResponse = await _supabaseService
-            .fetchData('activities', equals: {'community_id': communityId});
+    final attendances = response.first['attendances']
+        .map((a) => ActivityAttendance.fromMap(a))
+        .toList();
 
-        final activityIds = activitiesResponse.map((a) => a['id']).toList();
-        final attendancesResponse = await _supabaseService.fetchData(
-          'activity_attendances',
-          inFilter: {'activity_id': activityIds},
-        );
+    final profiles = response.first['profiles']
+        .map((p) => Profile.fromMap(p))
+        .toList();
 
-        return {
-          'activities': activitiesResponse,
-          'attendances': attendancesResponse,
-        };
-      })();
-
-      final communityData = await communityResponse;
-      final membersProfilesResponse = await membersProfilesFuture;
-      final activityAttendancesResponse = await activityAttendancesFuture;
-
-      final community = Community.fromMap(communityData.first);
-      final members = (membersProfilesResponse['members'] as List?)
-              ?.map((m) => CommunityMember.fromMap(m))
-              .toList() ??
-          [];
-      final profiles = (membersProfilesResponse['profiles'] as List?)
-              ?.map((p) => Profile.fromMap(p))
-              .toList() ??
-          [];
-      final activities = (activityAttendancesResponse['activities'] as List?)
-              ?.map((a) => Activity.fromMap(a))
-              .toList() ??
-          [];
-      final attendances = (activityAttendancesResponse['attendances'] as List?)
-              ?.map((a) => ActivityAttendance.fromMap(a))
-              .toList() ??
-          [];
-
-      if (!_communities.any((c) => c.id == community.id)) {
-        _communities.add(community);
+    if (!_communities.any((c) => c.id == community.id)) {
+      _communities.add(community);
+    }
+    _communityMembers[communityId] = members;
+    for (var profile in profiles) {
+      _profiles[profile.id] = profile;
+    }
+    _activities[communityId] = activities;
+    for (var attendance in attendances) {
+      if (!_activityAttendances.containsKey(attendance.activityId)) {
+        _activityAttendances[attendance.activityId] = [];
       }
-      _communityMembers[communityId] = members;
-      for (var profile in profiles) {
-        _profiles[profile.id] = profile;
-      }
-      _activities[communityId] = activities;
-      for (var attendance in attendances) {
-        if (!_activityAttendances.containsKey(attendance.activityId)) {
-          _activityAttendances[attendance.activityId] = [];
-        }
-        _activityAttendances[attendance.activityId]!.add(attendance);
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print('Failed to fetch community: $e');
-      }
+      _activityAttendances[attendance.activityId]!.add(attendance);
     }
   }
+
+  //   try {
+  //     // Fetch the community by ID
+  //     final communityResponse = _supabaseService
+  //         .fetchData('communities', equals: {'id': communityId});
+
+  //     // Fetch the community members and their profiles
+  //     final membersProfilesFuture = (() async {
+  //       final membersResponse = await _supabaseService.fetchData(
+  //           'community_members',
+  //           equals: {'community_id': communityId});
+
+  //       final memberIds = membersResponse.map((m) => m['user_id']).toList();
+  //       final profilesResponse = await _supabaseService.fetchData(
+  //         'profiles',
+  //         inFilter: {'id': memberIds},
+  //       );
+
+  //       return {
+  //         'members': membersResponse,
+  //         'profiles': profilesResponse,
+  //       };
+  //     })();
+
+  //     // Fetch the activities and their attendances
+  //     final activityAttendancesFuture = (() async {
+  //       final activitiesResponse = await _supabaseService
+  //           .fetchData('activities', equals: {'community_id': communityId});
+
+  //       final activityIds = activitiesResponse.map((a) => a['id']).toList();
+  //       final attendancesResponse = await _supabaseService.fetchData(
+  //         'activity_attendances',
+  //         inFilter: {'activity_id': activityIds},
+  //       );
+
+  //       return {
+  //         'activities': activitiesResponse,
+  //         'attendances': attendancesResponse,
+  //       };
+  //     })();
+
+  //     final communityData = await communityResponse;
+  //     final membersProfilesResponse = await membersProfilesFuture;
+  //     final activityAttendancesResponse = await activityAttendancesFuture;
+
+  //     final community = Community.fromMap(communityData.first);
+  //     final members = (membersProfilesResponse['members'] as List?)
+  //             ?.map((m) => CommunityMember.fromMap(m))
+  //             .toList() ??
+  //         [];
+  //     final profiles = (membersProfilesResponse['profiles'] as List?)
+  //             ?.map((p) => Profile.fromMap(p))
+  //             .toList() ??
+  //         [];
+  //     final activities = (activityAttendancesResponse['activities'] as List?)
+  //             ?.map((a) => Activity.fromMap(a))
+  //             .toList() ??
+  //         [];
+  //     final attendances = (activityAttendancesResponse['attendances'] as List?)
+  //             ?.map((a) => ActivityAttendance.fromMap(a))
+  //             .toList() ??
+  //         [];
+
+  //     if (!_communities.any((c) => c.id == community.id)) {
+  //       _communities.add(community);
+  //     }
+  //     _communityMembers[communityId] = members;
+  //     for (var profile in profiles) {
+  //       _profiles[profile.id] = profile;
+  //     }
+  //     _activities[communityId] = activities;
+  //     for (var attendance in attendances) {
+  //       if (!_activityAttendances.containsKey(attendance.activityId)) {
+  //         _activityAttendances[attendance.activityId] = [];
+  //       }
+  //       _activityAttendances[attendance.activityId]!.add(attendance);
+  //     }
+  //   } catch (e) {
+  //     if (kDebugMode) {
+  //       print('Failed to fetch community: $e');
+  //     }
+  //   }
+  // }
 }

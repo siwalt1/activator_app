@@ -59,27 +59,4 @@ class SupabaseService {
       {Map<String, dynamic>? params}) async {
     return await supabase.rpc(function, params: params);
   }
-
-  Future<void> rpcVoid(String function, {Map<String, dynamic>? params}) async {
-    await supabase.rpc(function, params: params);
-  }
-
-  Future<void> insertData(String table, Map<String, dynamic> data) async {
-    await supabase.from(table).insert(data);
-  }
-
-  Future<void> updateData(String table, Map<String, dynamic> data,
-      {required String id}) async {
-    await supabase.from(table).update(data).eq('id', id);
-  }
-
-  Future<void> deleteData(String table, Map<String, dynamic> filters) async {
-    var query = supabase.from(table).delete();
-
-    filters.forEach((key, value) {
-      query = query.eq(key, value);
-    });
-
-    await query;
-  }
 }
