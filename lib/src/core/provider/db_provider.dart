@@ -545,6 +545,8 @@ class DatabaseProvider with ChangeNotifier {
       final index = activities.indexWhere((a) => a.id == activity.id);
       if (index != -1) {
         activities[index] = activity;
+      } else {
+        activities.add(activity);
       }
     } else {
       _activities[activity.communityId] = [activity];
@@ -556,6 +558,8 @@ class DatabaseProvider with ChangeNotifier {
           attendances.indexWhere((a) => a.userId == attendance.userId);
       if (index != -1) {
         attendances[index] = attendance;
+      } else {
+        attendances.add(attendance);
       }
     } else {
       _activityAttendances[attendance.activityId] = [attendance];
