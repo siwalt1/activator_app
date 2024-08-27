@@ -28,28 +28,46 @@ class CustomBottomSheetBody extends StatelessWidget {
         ),
         child: Stack(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(AppConstants.paddingSpacing),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  if (title != null)
-                    Text(
-                      title!,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(AppConstants.borderRadius),
+                      topRight: Radius.circular(AppConstants.borderRadius),
                     ),
-                  const SizedBox(height: AppConstants.separatorSpacing),
-                  Flexible(
+                  ),
+                  width: double.infinity,
+                  child: Column(
+                    children: [
+                      const SizedBox(height: AppConstants.paddingSpacing),
+                      if (title != null)
+                        Text(
+                          title!,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      const SizedBox(height: AppConstants.separatorSpacing),
+                    ],
+                  ),
+                ),
+                Flexible(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      left: AppConstants.paddingSpacing,
+                      right: AppConstants.paddingSpacing,
+                    ),
                     child: SingleChildScrollView(
                       child: child,
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
             Positioned(
               top: AppConstants.paddingSpacing / 2,
