@@ -2,8 +2,11 @@ import 'package:activator_app/src/core/provider/auth_provider.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/widgets/custom_progress_indicator.dart';
 import 'package:activator_app/src/core/widgets/custom_text_form_field.dart';
+import 'package:activator_app/src/features/HomePage/home_page_view.dart';
+import 'package:activator_app/src/features/communities/views/community_details_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class ChangePasswordView extends StatefulWidget {
@@ -115,6 +118,21 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                         ],
                       ),
                     ),
+                    TextButton(
+                      onPressed: () {
+                        context.go(HomePageView.routeName);
+                        WidgetsBinding.instance.addPostFrameCallback(
+                          (_) {
+                            HomePageView.setInitialTab();
+                            if (context.mounted) {
+                              context.push(
+                                  '${CommunityDetailsView.routeName}/4246e0b8-2a50-44d0-a104-22b7ab94e7fd');
+                            }
+                          },
+                        );
+                      },
+                      child: Text('click me'),
+                    )
                   ],
                 ),
               ),
