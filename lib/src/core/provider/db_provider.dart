@@ -654,16 +654,18 @@ class DatabaseProvider with ChangeNotifier {
       throw Exception('Failed to join community');
     }
 
-    final community = Community.fromMap(response.first['community']);
-    final members = response.first['members']
+    final community = Community.fromMap(response.first['communities'].first);
+    final members = (response.first['community_members'] as List<dynamic>)
         .map((m) => CommunityMember.fromMap(m))
         .toList();
-    final activities =
-        response.first['activities'].map((a) => Activity.fromMap(a)).toList();
-    final attendances = response.first['attendances']
-        .map((a) => ActivityAttendance.fromMap(a))
+    final activities = (response.first['activities'] as List<dynamic>)
+        .map((a) => Activity.fromMap(a))
         .toList();
-    final profiles = response.first['profiles']
+    final attendances =
+        (response.first['activity_attendances'] as List<dynamic>)
+            .map((a) => ActivityAttendance.fromMap(a))
+            .toList();
+    final profiles = (response.first['profiles'] as List<dynamic>)
         .map((p) => Profile.fromMap(p))
         .toList();
 
@@ -697,20 +699,21 @@ class DatabaseProvider with ChangeNotifier {
       throw Exception('Community not found');
     }
 
-    final community = Community.fromMap(response.first['community']);
-    final members = response.first['members']
+    final community = Community.fromMap(response.first['communities'].first);
+    final members = (response.first['community_members'] as List<dynamic>)
         .map((m) => CommunityMember.fromMap(m))
         .toList();
 
-    final activities = response.first['activities']
+    final activities = (response.first['activities'] as List<dynamic>)
         .map((a) => Activity.fromMap(a))
         .toList();
 
-    final attendances = response.first['attendances']
-        .map((a) => ActivityAttendance.fromMap(a))
-        .toList();
+    final attendances =
+        (response.first['activity_attendances'] as List<dynamic>)
+            .map((a) => ActivityAttendance.fromMap(a))
+            .toList();
 
-    final profiles = response.first['profiles']
+    final profiles = (response.first['profiles'] as List<dynamic>)
         .map((p) => Profile.fromMap(p))
         .toList();
 
@@ -729,87 +732,4 @@ class DatabaseProvider with ChangeNotifier {
       _activityAttendances[attendance.activityId]!.add(attendance);
     }
   }
-
-  //   try {
-  //     // Fetch the community by ID
-  //     final communityResponse = _supabaseService
-  //         .fetchData('communities', equals: {'id': communityId});
-
-  //     // Fetch the community members and their profiles
-  //     final membersProfilesFuture = (() async {
-  //       final membersResponse = await _supabaseService.fetchData(
-  //           'community_members',
-  //           equals: {'community_id': communityId});
-
-  //       final memberIds = membersResponse.map((m) => m['user_id']).toList();
-  //       final profilesResponse = await _supabaseService.fetchData(
-  //         'profiles',
-  //         inFilter: {'id': memberIds},
-  //       );
-
-  //       return {
-  //         'members': membersResponse,
-  //         'profiles': profilesResponse,
-  //       };
-  //     })();
-
-  //     // Fetch the activities and their attendances
-  //     final activityAttendancesFuture = (() async {
-  //       final activitiesResponse = await _supabaseService
-  //           .fetchData('activities', equals: {'community_id': communityId});
-
-  //       final activityIds = activitiesResponse.map((a) => a['id']).toList();
-  //       final attendancesResponse = await _supabaseService.fetchData(
-  //         'activity_attendances',
-  //         inFilter: {'activity_id': activityIds},
-  //       );
-
-  //       return {
-  //         'activities': activitiesResponse,
-  //         'attendances': attendancesResponse,
-  //       };
-  //     })();
-
-  //     final communityData = await communityResponse;
-  //     final membersProfilesResponse = await membersProfilesFuture;
-  //     final activityAttendancesResponse = await activityAttendancesFuture;
-
-  //     final community = Community.fromMap(communityData.first);
-  //     final members = (membersProfilesResponse['members'] as List?)
-  //             ?.map((m) => CommunityMember.fromMap(m))
-  //             .toList() ??
-  //         [];
-  //     final profiles = (membersProfilesResponse['profiles'] as List?)
-  //             ?.map((p) => Profile.fromMap(p))
-  //             .toList() ??
-  //         [];
-  //     final activities = (activityAttendancesResponse['activities'] as List?)
-  //             ?.map((a) => Activity.fromMap(a))
-  //             .toList() ??
-  //         [];
-  //     final attendances = (activityAttendancesResponse['attendances'] as List?)
-  //             ?.map((a) => ActivityAttendance.fromMap(a))
-  //             .toList() ??
-  //         [];
-
-  //     if (!_communities.any((c) => c.id == community.id)) {
-  //       _communities.add(community);
-  //     }
-  //     _communityMembers[communityId] = members;
-  //     for (var profile in profiles) {
-  //       _profiles[profile.id] = profile;
-  //     }
-  //     _activities[communityId] = activities;
-  //     for (var attendance in attendances) {
-  //       if (!_activityAttendances.containsKey(attendance.activityId)) {
-  //         _activityAttendances[attendance.activityId] = [];
-  //       }
-  //       _activityAttendances[attendance.activityId]!.add(attendance);
-  //     }
-  //   } catch (e) {
-  //     if (kDebugMode) {
-  //       print('Failed to fetch community: $e');
-  //     }
-  //   }
-  // }
 }
