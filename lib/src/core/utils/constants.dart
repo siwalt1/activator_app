@@ -44,7 +44,7 @@ class AppConstants {
     colorScheme: ColorScheme(
       primary: primaryRed,
       secondary: secondaryRed,
-      surface: Colors.grey.shade900,
+      surface: Color.fromARGB(255, 33, 33, 33),
       surfaceContainer: Colors.grey.shade800,
       error: errorRed,
       onPrimary: Colors.white,
