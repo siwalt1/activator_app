@@ -501,6 +501,13 @@ class DatabaseProvider with ChangeNotifier {
         ? ActivityAttendance.fromMap(response.first['activity_attendance'])
         : null;
 
+    final stoppedActivity = response.first['stopped_activity'] != null
+        ? Activity.fromMap(response.first['stopped_activity'])
+        : null;
+    final updatedAttendance = response.first['updated_attendance'] != null
+        ? ActivityAttendance.fromMap(response.first['updated_attendance'])
+        : null;
+
     if (deletedCommunity != null) {
       _communities.removeWhere((c) => c.id == deletedCommunity.id);
       _communityMembers.remove(deletedCommunity.id);
@@ -522,6 +529,26 @@ class DatabaseProvider with ChangeNotifier {
         _activityAttendances[activityAttendance.activityId] = [
           activityAttendance
         ];
+      }
+      if (stoppedActivity != null) {
+        final activities = _activities[stoppedActivity.communityId];
+        if (activities != null) {
+          final index =
+              activities.indexWhere((a) => a.id == stoppedActivity.id);
+          if (index != -1) {
+            activities[index] = stoppedActivity;
+          }
+        }
+      }
+      if (updatedAttendance != null) {
+        final attendances = _activityAttendances[updatedAttendance.activityId];
+        if (attendances != null) {
+          final index = attendances
+              .indexWhere((a) => a.userId == updatedAttendance.userId);
+          if (index != -1) {
+            attendances[index] = updatedAttendance;
+          }
+        }
       }
       _sortCommunitiesByLastActivity();
     }
