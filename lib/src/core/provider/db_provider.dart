@@ -9,7 +9,8 @@ import 'package:activator_app/src/core/services/supabase_service.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/utils/enum_converter.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
@@ -39,6 +40,8 @@ class DatabaseProvider with ChangeNotifier {
   bool get isInitialized => _isInitialized;
   bool get isConnected => _isConnected;
 
+  late final AppLifecycleListener appLifecycleListener;
+  late final AppLifecycleState? appLifecycleState;
   late final StreamSubscription<List<ConnectivityResult>>
       _connectivitySubscription;
 
@@ -54,16 +57,23 @@ class DatabaseProvider with ChangeNotifier {
       _updateConnectionStatus(results.first);
     });
 
-    if (_authProvider.user != null) {
-      _loadInitialData();
-      _setupRealtimeSubscription();
-    }
+    appLifecycleState = SchedulerBinding.instance.lifecycleState;
+    appLifecycleListener = AppLifecycleListener(
+      onRestart: () => {
+        _setupRealtimeSubscription(),
+        _loadInitialData(),
+      },
+      onPause: () => {
+        _realtimeChannel?.unsubscribe(),
+        _realtimeChannel = null,
+      },
+    );
   }
 
   void _authListener() {
     if (_authProvider.user != null) {
-      _loadInitialData();
       _setupRealtimeSubscription();
+      _loadInitialData();
     } else {
       _clearData();
       _realtimeChannel?.unsubscribe();
@@ -72,7 +82,11 @@ class DatabaseProvider with ChangeNotifier {
   }
 
   Future<void> _loadInitialData() async {
+    if (!_isConnected || _authProvider.user == null) {
+      return;
+    }
     print('#1.0 Loading initial data...');
+
     final response = await _supabaseService.rpc('fetch_initial_data');
 
     if (response.isEmpty) {
@@ -147,17 +161,24 @@ class DatabaseProvider with ChangeNotifier {
   Future<void> _updateConnectionStatus(ConnectivityResult result) async {
     _isConnected = result != ConnectivityResult.none;
 
-    if (_isConnected && _authProvider.user != null) {
+    if (_isConnected &&
+        _authProvider.user != null &&
+        _realtimeChannel == null) {
       _setupRealtimeSubscription();
+      _loadInitialData();
     } else {
       _realtimeChannel?.unsubscribe();
       _realtimeChannel = null;
     }
-    _lastChange = DateTime.now();
+
     notifyListeners();
   }
 
   void _setupRealtimeSubscription() {
+    if (_authProvider.user == null) {
+      return;
+    }
+
     _realtimeChannel = _supabaseService.supabase.channel('schema-db-changes');
 
     _realtimeChannel

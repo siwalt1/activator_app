@@ -9,6 +9,9 @@ class SupabaseService {
     return supabase.auth.getUser();
   }
 
+  // get offline user
+  User? get currentUser => supabase.auth.currentUser;
+
   Future<AuthResponse> login(String email, String password) async {
     return await supabase.auth
         .signInWithPassword(email: email, password: password);
