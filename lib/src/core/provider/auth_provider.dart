@@ -60,8 +60,14 @@ class AuthProvider with ChangeNotifier {
       }
       notifyListeners();
     } catch (e) {
-      _isAuthenticated = false;
-      _user = null;
+      User? cachedUser = _supabaseService.currentUser;
+      if (cachedUser != null) {
+        _user = cachedUser;
+        _isAuthenticated = true;
+      } else {
+        _isAuthenticated = false;
+        _user = null;
+      }
       notifyListeners();
     }
   }
