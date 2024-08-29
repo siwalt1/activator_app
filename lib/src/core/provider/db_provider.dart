@@ -161,17 +161,15 @@ class DatabaseProvider with ChangeNotifier {
   Future<void> _updateConnectionStatus(ConnectivityResult result) async {
     _isConnected = result != ConnectivityResult.none;
 
-    if (_isConnected &&
-        _authProvider.user != null &&
-        _realtimeChannel == null) {
-      _setupRealtimeSubscription();
-      _loadInitialData();
+    if (_isConnected && _authProvider.user != null) {
+      if (_realtimeChannel == null) {
+        _setupRealtimeSubscription();
+        _loadInitialData();
+      }
     } else {
       _realtimeChannel?.unsubscribe();
       _realtimeChannel = null;
     }
-
-    notifyListeners();
   }
 
   void _setupRealtimeSubscription() {
