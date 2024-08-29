@@ -66,7 +66,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
       canPop: !_isLoading,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Change Name'),
+          title: const Text('Change Password'),
           actions: [
             ValueListenableBuilder<TextEditingValue>(
               valueListenable: newPwdController,

@@ -88,7 +88,7 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
       canPop: !_isLoading,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Change Name'),
+          title: const Text('Change Email'),
           actions: [
             ValueListenableBuilder<TextEditingValue>(
               valueListenable: emailController,
