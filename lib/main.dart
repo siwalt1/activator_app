@@ -15,7 +15,6 @@ import 'package:activator_app/src/features/communities/views/community_settings_
 import 'package:activator_app/src/features/communities/views/edit_community_view.dart';
 import 'package:activator_app/src/features/communities/views/invitation_view.dart';
 import 'package:activator_app/src/features/initial/views/not_found_view.dart';
-import 'package:activator_app/src/features/initial/views/splash_view.dart';
 import 'package:activator_app/src/features/profile/views/change_email_view.dart';
 import 'package:activator_app/src/features/profile/views/change_name_view.dart';
 import 'package:activator_app/src/features/profile/views/change_password_view.dart';
@@ -40,25 +39,23 @@ void main() async {
     anonKey: AppConstants.SUPABASE_ANON_KEY,
   );
 
-  // Set up the SettingsController, which will glue user settings to multiple
-  // Flutter Widgets.
+  // Set up the SettingsController
   final settingsController = SettingsController(SettingsService());
-
-  // Load the user's preferred theme while the splash screen is displayed.
-  // This prevents a sudden theme change when the app is first displayed.
   await settingsController.loadSettings();
 
-  // Run the app and pass in the SettingsController. The app listens to the
-  // SettingsController for changes, then passes it further down to the
-  // SettingsViews.
+  // supabase service
+  final supabaseService = SupabaseService();
+
+  // Check user session
+  final authProvider = AuthProvider(supabaseService);
+  await authProvider.checkSession();
 
   final GoRouter router = GoRouter(
     errorBuilder: (context, state) => const NotFoundView(),
+    initialLocation: authProvider.isAuthenticated
+        ? HomePageView.routeName
+        : WelcomeView.routeName,
     routes: [
-      GoRoute(
-        path: '/',
-        builder: (context, state) => const SplashView(),
-      ),
       GoRoute(
         path: '/invite/:invitationToken',
         pageBuilder: (context, state) {
@@ -66,16 +63,8 @@ void main() async {
               state.pathParameters['invitationToken'];
           return SlidePageTransition(
             direction: SlideDirection.bottomToTop,
-            child: SplashView(invitationToken: invitationToken),
+            child: InvitationView(invitationToken: invitationToken),
           );
-        },
-      ),
-      GoRoute(
-        path: '${InvitationView.routeName}/:invitationToken',
-        builder: (context, state) {
-          final String? invitationToken =
-              state.pathParameters['invitationToken'];
-          return InvitationView(invitationToken: invitationToken);
         },
       ),
       GoRoute(
@@ -175,16 +164,14 @@ void main() async {
     MultiProvider(
       providers: [
         Provider<SupabaseService>(
-          create: (_) => SupabaseService(),
+          create: (_) => supabaseService,
           lazy: false,
         ),
         ChangeNotifierProvider(
           create: (_) => ConnectivityNotifier(),
         ),
         ChangeNotifierProvider(
-          create: (context) => AuthProvider(
-            Provider.of<SupabaseService>(context, listen: false),
-          ),
+          create: (context) => authProvider,
         ),
         ChangeNotifierProvider(
           create: (context) => DatabaseProvider(
