@@ -82,7 +82,7 @@ void main() async {
         path: HomePageView.routeName,
         pageBuilder: (context, state) => PlatformTransitionPage(
           child: HomePageView(key: HomePageView.globalKey),
-          isCupertino: Theme.of(context).platform == TargetPlatform.iOS,
+          disableAnimation: true,
         ),
       ),
       GoRoute(
