@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:activator_app/src/core/models/activity.dart';
 import 'package:activator_app/src/core/provider/auth_provider.dart';
+import 'package:activator_app/src/core/provider/connectivity_notifier.dart';
 import 'package:activator_app/src/core/provider/db_provider.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/utils/format_date.dart';
@@ -66,12 +67,11 @@ class _CommunitiesViewState extends State<CommunitiesView> {
             )
           : null,
       body: SafeArea(
-        child: Consumer<DatabaseProvider>(
-          builder:
-              (BuildContext context, DatabaseProvider value, Widget? child) {
-            if (!value.isInitialized) {
-              return const CustomProgressIndicator();
-            } else if (value.communities.isEmpty && value.isInitialized) {
+        child: Consumer2<DatabaseProvider, ConnectivityNotifier>(
+          builder: (BuildContext context, DatabaseProvider value,
+              ConnectivityNotifier connectivity, Widget? child) {
+            if (value.communities.isEmpty &&
+                (value.isInitialized || !connectivity.isConnected)) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -100,6 +100,8 @@ class _CommunitiesViewState extends State<CommunitiesView> {
                   ],
                 ),
               );
+            } else if (!value.isInitialized) {
+              return const CustomProgressIndicator();
             } else {
               return Consumer<AuthProvider>(
                 builder: (BuildContext context, AuthProvider authProvider,

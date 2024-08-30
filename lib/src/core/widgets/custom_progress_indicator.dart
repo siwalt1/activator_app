@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 
 class CustomProgressIndicator extends StatelessWidget {
-  const CustomProgressIndicator({super.key});
+  const CustomProgressIndicator(
+      {super.key, this.delay = const Duration(seconds: 1)});
+
+  final Duration delay;
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: Future.delayed(const Duration(seconds: 1)),
+      future: Future.delayed(delay),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Container(
