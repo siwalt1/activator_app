@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/utils/format_duration.dart';
 import 'package:activator_app/src/core/widgets/custom_list_tile.dart';
 import 'package:activator_app/src/core/widgets/platform_alert_dialog.dart';

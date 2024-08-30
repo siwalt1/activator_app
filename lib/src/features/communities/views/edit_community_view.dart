@@ -135,6 +135,9 @@ class _EditCommunityViewState extends State<EditCommunityView> {
           },
         );
       }
+    } else {
+      // Form is invalid, trigger a rebuild to show validation messages
+      setState(() {});
     }
   }
 
@@ -183,205 +186,196 @@ class _EditCommunityViewState extends State<EditCommunityView> {
                 bottom: AppConstants.paddingSpacing,
                 top: 0,
               ),
-              child: ListView(
+              child: SingleChildScrollView(
                 keyboardDismissBehavior:
                     ScrollViewKeyboardDismissBehavior.onDrag,
-                children: [
-                  Form(
-                    key: _formKey,
-                    child: Column(
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Center(
-                              child: Material(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .surfaceContainer,
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Center(
+                            child: Material(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .surfaceContainer,
+                              borderRadius: BorderRadius.circular(100),
+                              child: InkWell(
                                 borderRadius: BorderRadius.circular(100),
-                                child: InkWell(
-                                  borderRadius: BorderRadius.circular(100),
-                                  onTap: _pickIcon,
-                                  child: Container(
-                                    width: 100,
-                                    height: 100,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 12.5, horizontal: 8),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(100),
-                                      border: Border.all(
-                                        color: Theme.of(context)
-                                            .dividerColor
-                                            .withOpacity(0.05),
-                                        width: 2,
-                                      ),
+                                onTap: _pickIcon,
+                                child: Container(
+                                  width: 100,
+                                  height: 100,
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 12.5, horizontal: 8),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(100),
+                                    border: Border.all(
+                                      color: Theme.of(context)
+                                          .dividerColor
+                                          .withOpacity(0.05),
+                                      width: 2,
                                     ),
-                                    child: Icon(
-                                      _selectedIcon,
-                                      size: 40,
-                                    ),
+                                  ),
+                                  child: Icon(
+                                    _selectedIcon,
+                                    size: 40,
                                   ),
                                 ),
                               ),
                             ),
-                            const SizedBox(
-                                height: AppConstants.separatorSpacing),
-                            Row(
-                              children: [
-                                const Text(
-                                  'Type of activities',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                  ),
+                          ),
+                          const SizedBox(height: AppConstants.separatorSpacing),
+                          Row(
+                            children: [
+                              const Text(
+                                'Type of activities',
+                                style: TextStyle(
+                                  fontSize: 14,
                                 ),
-                                const SizedBox(
-                                    width: AppConstants.listTileSpacing),
-                                InkWell(
-                                  onTap: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) =>
-                                          PlatformAlertDialog(
-                                        title:
-                                            'Activity types${Theme.of(context).platform == TargetPlatform.iOS ? '\n' : ''}',
-                                        content: RichText(
-                                          text: TextSpan(
-                                            style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onSurface,
-                                              fontSize: 14,
-                                            ),
-                                            children: const <TextSpan>[
-                                              TextSpan(
-                                                text: 'Single',
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              TextSpan(
-                                                text:
-                                                    ': Activities that are done alone, such as reading a book or meditating. These sessions are done separately and at different times.\n\n',
-                                              ),
-                                              TextSpan(
-                                                text: 'Multi',
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              TextSpan(
-                                                text:
-                                                    ': Activities that require more than one person, like playing a board game or participating in team sports. These sessions are done in real-time.',
-                                              ),
-                                            ],
+                              ),
+                              const SizedBox(
+                                  width: AppConstants.listTileSpacing),
+                              InkWell(
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        PlatformAlertDialog(
+                                      title:
+                                          'Activity types${Theme.of(context).platform == TargetPlatform.iOS ? '\n' : ''}',
+                                      content: RichText(
+                                        text: TextSpan(
+                                          style: TextStyle(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurface,
+                                            fontSize: 14,
                                           ),
+                                          children: const <TextSpan>[
+                                            TextSpan(
+                                              text: 'Single',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            TextSpan(
+                                              text:
+                                                  ': Activities that are done alone, such as reading a book or meditating. These sessions are done separately and at different times.\n\n',
+                                            ),
+                                            TextSpan(
+                                              text: 'Multi',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            TextSpan(
+                                              text:
+                                                  ': Activities that require more than one person, like playing a board game or participating in team sports. These sessions are done in real-time.',
+                                            ),
+                                          ],
                                         ),
-                                        showCancel: false,
                                       ),
-                                    );
-                                  },
-                                  borderRadius: BorderRadius.circular(100),
-                                  child: const Icon(
-                                    Icons.help_outline,
-                                    size: 20,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                                height: AppConstants.separatorSpacing / 2),
-                            SizedBox(
-                              width: double.infinity,
-                              child: ActivityTypeSelector(
-                                selectedActivityType: _selectedActivityType,
-                                onActivityTypeSelected: (type) {
-                                  setState(() {
-                                    _selectedActivityType = type;
-                                    if (type == ActivityType.solo &&
-                                        _selectedNotificationType ==
-                                            NotificationType
-                                                .activityCreationNoJoin) {
-                                      _selectedNotificationType =
-                                          NotificationType.all;
-                                    }
-                                    _updateControllerListener();
-                                  });
+                                      showCancel: false,
+                                    ),
+                                  );
                                 },
+                                borderRadius: BorderRadius.circular(100),
+                                child: const Icon(
+                                  Icons.help_outline,
+                                  size: 20,
+                                ),
                               ),
-                            ),
-                            const SizedBox(
-                                height: AppConstants.separatorSpacing),
-                            CustomTextFormField(
-                              label: 'Community name',
-                              controller: _nameController,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter a name';
-                                }
-                                if (value.length > 30) {
-                                  return 'Name must be less than 30 characters';
-                                }
-                                if (value.endsWith(' ')) {
-                                  return 'Name should not end with spaces';
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(
-                                height: AppConstants.separatorSpacing),
-                            CustomTextFormField(
-                              label: 'Community description (optional)',
-                              maxLines: 2,
-                              keyboardType: TextInputType.multiline,
-                              controller: _descriptionController,
-                              validator: (value) {
-                                if (value != null &&
-                                    value.isNotEmpty &&
-                                    value.length > 500) {
-                                  return 'Description must be less than 500 characters';
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(
-                                height: AppConstants.separatorSpacing),
-                            NotificationTypeSelector(
-                              selectedNotificationType:
-                                  _selectedNotificationType,
-                              notificationTypeList: NotificationType.values
-                                  .where((type) => !(_selectedActivityType ==
-                                          ActivityType.solo &&
-                                      type ==
+                            ],
+                          ),
+                          const SizedBox(
+                              height: AppConstants.separatorSpacing / 2),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ActivityTypeSelector(
+                              selectedActivityType: _selectedActivityType,
+                              onActivityTypeSelected: (type) {
+                                setState(() {
+                                  _selectedActivityType = type;
+                                  if (type == ActivityType.solo &&
+                                      _selectedNotificationType ==
                                           NotificationType
-                                              .activityCreationNoJoin))
-                                  .toList(),
-                              onNotificationTypeSelected: (type) {
-                                setState(() {
-                                  _selectedNotificationType = type;
+                                              .activityCreationNoJoin) {
+                                    _selectedNotificationType =
+                                        NotificationType.all;
+                                  }
+                                  _updateControllerListener();
                                 });
-                                _updateControllerListener();
                               },
                             ),
-                            const SizedBox(
-                                height: AppConstants.listTileSpacing),
-                            ActivityDurationSelector(
-                              selectedActivityDuration:
-                                  _selectedActivityDuration,
-                              onActivityDurationTypeSelected: (duration) {
-                                setState(() {
-                                  _selectedActivityDuration = duration;
-                                });
-                                _updateControllerListener();
-                              },
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: AppConstants.separatorSpacing),
-                      ],
-                    ),
+                          ),
+                          const SizedBox(height: AppConstants.separatorSpacing),
+                          CustomTextFormField(
+                            label: 'Community name',
+                            controller: _nameController,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter a name';
+                              }
+                              if (value.length > 30) {
+                                return 'Name must be less than 30 characters';
+                              }
+                              if (value.endsWith(' ')) {
+                                return 'Name should not end with spaces';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: AppConstants.separatorSpacing),
+                          CustomTextFormField(
+                            label: 'Community description (optional)',
+                            maxLines: 2,
+                            keyboardType: TextInputType.multiline,
+                            controller: _descriptionController,
+                            validator: (value) {
+                              if (value != null &&
+                                  value.isNotEmpty &&
+                                  value.length > 500) {
+                                return 'Description must be less than 500 characters';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: AppConstants.separatorSpacing),
+                          NotificationTypeSelector(
+                            selectedNotificationType: _selectedNotificationType,
+                            notificationTypeList: NotificationType.values
+                                .where((type) => !(_selectedActivityType ==
+                                        ActivityType.solo &&
+                                    type ==
+                                        NotificationType
+                                            .activityCreationNoJoin))
+                                .toList(),
+                            onNotificationTypeSelected: (type) {
+                              setState(() {
+                                _selectedNotificationType = type;
+                              });
+                              _updateControllerListener();
+                            },
+                          ),
+                          const SizedBox(height: AppConstants.listTileSpacing),
+                          ActivityDurationSelector(
+                            selectedActivityDuration: _selectedActivityDuration,
+                            onActivityDurationTypeSelected: (duration) {
+                              setState(() {
+                                _selectedActivityDuration = duration;
+                              });
+                              _updateControllerListener();
+                            },
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: AppConstants.separatorSpacing),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),

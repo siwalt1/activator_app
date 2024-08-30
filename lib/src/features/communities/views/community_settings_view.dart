@@ -294,179 +294,182 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
                 SafeArea(
                   child: Padding(
                     padding: const EdgeInsets.all(AppConstants.paddingSpacing),
-                    child: ListView(
-                      children: <Widget>[
-                        Center(
-                          child: CircleAvatar(
-                            radius: 50,
-                            child: Icon(
-                              IconData(community?.iconCode ?? 983915,
-                                  fontFamily: 'MaterialIcons'),
-                              size: 75,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                            height: AppConstants.separatorSpacing / 2),
-                        Center(
-                          child: Text(
-                            community?.name ?? 'Loading...',
-                            style: const TextStyle(
-                              fontSize: 20,
-                            ),
-                          ),
-                        ),
-                        Center(
-                          child: Text(
-                            '${communityMemberships?.length ?? 0} ${communityMemberships?.length == 1 ? 'Member' : 'Members'}',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurfaceVariant,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: AppConstants.separatorSpacing),
-                        InfoBoxes(
-                          items: [
-                            IconLabelPair(
-                              icon: Icon(community?.type == ActivityType.solo
-                                  ? Icons.person
-                                  : Icons.people),
-                              label: community?.type == ActivityType.solo
-                                  ? 'single'
-                                  : 'multi',
-                            ),
-                            IconLabelPair(
-                              icon: const Icon(Icons.timelapse),
-                              label:
-                                  formatDuration(community!.activityDuration),
-                            ),
-                            IconLabelPair(
-                              icon: Icon(community!.notificationType ==
-                                      NotificationType.off
-                                  ? Icons.notifications_off_outlined
-                                  : Icons.notifications_on_outlined),
-                              label: community!.notificationType ==
-                                      NotificationType.off
-                                  ? 'off'
-                                  : community!.notificationType ==
-                                          NotificationType
-                                              .activityCreationNoJoin
-                                      ? 'activity started'
-                                      : 'on',
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                            height: AppConstants.separatorSpacing * 1.5),
-                        if (community?.description?.isNotEmpty ?? false)
-                          Column(
-                            children: [
-                              CustomTextFormField(
-                                initialValue: community!.description!,
-                                label: 'Description',
-                                maxLines: null,
-                                readOnly: true,
+                    child: SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      child: Column(
+                        children: <Widget>[
+                          Center(
+                            child: CircleAvatar(
+                              radius: 50,
+                              child: Icon(
+                                IconData(community?.iconCode ?? 983915,
+                                    fontFamily: 'MaterialIcons'),
+                                size: 75,
                               ),
-                              const SizedBox(
-                                  height: AppConstants.separatorSpacing),
+                            ),
+                          ),
+                          const SizedBox(
+                              height: AppConstants.separatorSpacing / 2),
+                          Center(
+                            child: Text(
+                              community?.name ?? 'Loading...',
+                              style: const TextStyle(
+                                fontSize: 20,
+                              ),
+                            ),
+                          ),
+                          Center(
+                            child: Text(
+                              '${communityMemberships?.length ?? 0} ${communityMemberships?.length == 1 ? 'Member' : 'Members'}',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: AppConstants.separatorSpacing),
+                          InfoBoxes(
+                            items: [
+                              IconLabelPair(
+                                icon: Icon(community?.type == ActivityType.solo
+                                    ? Icons.person
+                                    : Icons.people),
+                                label: community?.type == ActivityType.solo
+                                    ? 'single'
+                                    : 'multi',
+                              ),
+                              IconLabelPair(
+                                icon: const Icon(Icons.timelapse),
+                                label:
+                                    formatDuration(community!.activityDuration),
+                              ),
+                              IconLabelPair(
+                                icon: Icon(community!.notificationType ==
+                                        NotificationType.off
+                                    ? Icons.notifications_off_outlined
+                                    : Icons.notifications_on_outlined),
+                                label: community!.notificationType ==
+                                        NotificationType.off
+                                    ? 'off'
+                                    : community!.notificationType ==
+                                            NotificationType
+                                                .activityCreationNoJoin
+                                        ? 'activity started'
+                                        : 'on',
+                              ),
                             ],
                           ),
-                        Material(
-                          color: Theme.of(context).colorScheme.surfaceContainer,
-                          borderRadius:
-                              BorderRadius.circular(AppConstants.borderRadius),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(
-                                  AppConstants.borderRadius),
-                            ),
-                            child: Column(
+                          const SizedBox(
+                              height: AppConstants.separatorSpacing * 1.5),
+                          if (community?.description?.isNotEmpty ?? false)
+                            Column(
                               children: [
-                                InkWell(
-                                  borderRadius: BorderRadius.circular(
-                                      AppConstants.borderRadius),
-                                  onTap: () => _openInvitationModal(
-                                    community!.invitationToken,
-                                    community!.name,
-                                  ),
-                                  child: ListTile(
-                                    leading: CircleAvatar(
-                                      backgroundColor: Colors.transparent,
-                                      child: Icon(
-                                        Icons.add_link_outlined,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSurface,
-                                      ),
-                                    ),
-                                    title: const Text(
-                                        'Invite to community via link'),
-                                  ),
+                                CustomTextFormField(
+                                  initialValue: community!.description!,
+                                  label: 'Description',
+                                  maxLines: null,
+                                  readOnly: true,
                                 ),
-                                const CustomListTileDivider(),
-                                ...List.generate(
-                                  profiles?.length ?? 0,
-                                  (index) {
-                                    final Profile profile = profiles![index];
-                                    final CommunityMember membership =
-                                        communityMemberships!.firstWhere(
-                                            (membership) =>
-                                                membership.userId ==
-                                                profile.id);
-                                    return Column(
-                                      children: [
-                                        InkWell(
-                                          borderRadius: BorderRadius.circular(
-                                              AppConstants.borderRadius),
-                                          onTap: () {
-                                            final AuthProvider authProvider =
-                                                Provider.of<AuthProvider>(
-                                                    context,
-                                                    listen: false);
-                                            _openUserModal(
-                                              profile.id,
-                                              profile.name,
-                                              membership.createdAt,
-                                              membership.userId ==
-                                                  authProvider.user!.id,
-                                            );
-                                          },
-                                          child: ListTile(
-                                            leading: CircleAvatar(
-                                              child: Text(profile.name[0]),
-                                            ),
-                                            title: Text(profile.name),
-                                          ),
-                                        ),
-                                        index != profiles!.length - 1
-                                            ? const CustomListTileDivider()
-                                            : const SizedBox(),
-                                      ],
-                                    );
-                                  },
-                                ),
+                                const SizedBox(
+                                    height: AppConstants.separatorSpacing),
                               ],
                             ),
+                          Material(
+                            color:
+                                Theme.of(context).colorScheme.surfaceContainer,
+                            borderRadius: BorderRadius.circular(
+                                AppConstants.borderRadius),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                    AppConstants.borderRadius),
+                              ),
+                              child: Column(
+                                children: [
+                                  InkWell(
+                                    borderRadius: BorderRadius.circular(
+                                        AppConstants.borderRadius),
+                                    onTap: () => _openInvitationModal(
+                                      community!.invitationToken,
+                                      community!.name,
+                                    ),
+                                    child: ListTile(
+                                      leading: CircleAvatar(
+                                        backgroundColor: Colors.transparent,
+                                        child: Icon(
+                                          Icons.add_link_outlined,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurface,
+                                        ),
+                                      ),
+                                      title: const Text(
+                                          'Invite to community via link'),
+                                    ),
+                                  ),
+                                  const CustomListTileDivider(),
+                                  ...List.generate(
+                                    profiles?.length ?? 0,
+                                    (index) {
+                                      final Profile profile = profiles![index];
+                                      final CommunityMember membership =
+                                          communityMemberships!.firstWhere(
+                                              (membership) =>
+                                                  membership.userId ==
+                                                  profile.id);
+                                      return Column(
+                                        children: [
+                                          InkWell(
+                                            borderRadius: BorderRadius.circular(
+                                                AppConstants.borderRadius),
+                                            onTap: () {
+                                              final AuthProvider authProvider =
+                                                  Provider.of<AuthProvider>(
+                                                      context,
+                                                      listen: false);
+                                              _openUserModal(
+                                                profile.id,
+                                                profile.name,
+                                                membership.createdAt,
+                                                membership.userId ==
+                                                    authProvider.user!.id,
+                                              );
+                                            },
+                                            child: ListTile(
+                                              leading: CircleAvatar(
+                                                child: Text(profile.name[0]),
+                                              ),
+                                              title: Text(profile.name),
+                                            ),
+                                          ),
+                                          index != profiles!.length - 1
+                                              ? const CustomListTileDivider()
+                                              : const SizedBox(),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: AppConstants.separatorSpacing),
-                        CustomListTile(
-                          key: ValueKey(communityMemberships
-                              ?.length), // Force rebuild when memberships change
-                          text: communityMemberships?.length == 1
-                              ? 'Delete Community'
-                              : 'Leave Community',
-                          onPressed: () => _leaveCommunity(
-                              communityMemberships?.length == 1),
-                          showArrow: false,
-                          textAlign: TextAlign.center,
-                          textColor: Theme.of(context).colorScheme.onPrimary,
-                          backgroundColor: Theme.of(context).colorScheme.error,
-                        ),
-                      ],
+                          const SizedBox(height: AppConstants.separatorSpacing),
+                          CustomListTile(
+                            text: communityMemberships?.length == 1
+                                ? 'Delete Community'
+                                : 'Leave Community',
+                            onPressed: () => _leaveCommunity(
+                                communityMemberships?.length == 1),
+                            showArrow: false,
+                            textAlign: TextAlign.center,
+                            textColor: Theme.of(context).colorScheme.onPrimary,
+                            backgroundColor:
+                                Theme.of(context).colorScheme.error,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
