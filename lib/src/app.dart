@@ -91,6 +91,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                         child: Container(
                           color: Theme.of(context).colorScheme.error,
                           child: SafeArea(
+                            bottom: false,
                             child: Container(
                               color: Theme.of(context).colorScheme.error,
                               padding: const EdgeInsets.all(12.0),
