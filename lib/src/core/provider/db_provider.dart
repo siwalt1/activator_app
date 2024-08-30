@@ -5,6 +5,7 @@ import 'package:activator_app/src/core/models/community.dart';
 import 'package:activator_app/src/core/models/community_member.dart';
 import 'package:activator_app/src/core/models/profile.dart';
 import 'package:activator_app/src/core/provider/auth_provider.dart';
+import 'package:activator_app/src/core/provider/connectivity_notifier.dart';
 import 'package:activator_app/src/core/services/supabase_service.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
 import 'package:activator_app/src/core/utils/enum_converter.dart';
@@ -12,11 +13,11 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 
 class DatabaseProvider with ChangeNotifier {
   final SupabaseService _supabaseService;
   final AuthProvider _authProvider;
+  final ConnectivityNotifier _connectivityNotifier;
   RealtimeChannel? _realtimeChannel;
 
   DateTime? _lastChange;
@@ -28,7 +29,6 @@ class DatabaseProvider with ChangeNotifier {
   final _profiles = <String, Profile>{};
 
   bool _isInitialized = false;
-  bool _isConnected = false;
 
   DateTime? get lastChange => _lastChange;
   List<Community> get communities => _communities;
@@ -38,23 +38,19 @@ class DatabaseProvider with ChangeNotifier {
       _activityAttendances;
   Map<String, Profile> get profiles => _profiles;
   bool get isInitialized => _isInitialized;
-  bool get isConnected => _isConnected;
 
   late final AppLifecycleListener appLifecycleListener;
   late final AppLifecycleState? appLifecycleState;
-  late final StreamSubscription<List<ConnectivityResult>>
-      _connectivitySubscription;
 
-  DatabaseProvider(this._supabaseService, this._authProvider) {
+  DatabaseProvider(
+      this._supabaseService, this._authProvider, this._connectivityNotifier) {
     _initialize();
   }
 
   void _initialize() {
     _authProvider.addListener(_authListener);
-    _connectivitySubscription = Connectivity()
-        .onConnectivityChanged
-        .listen((List<ConnectivityResult> results) {
-      _updateConnectionStatus(results.first);
+    _connectivityNotifier.addListener(() {
+      _updateConnectionStatus(_connectivityNotifier.isConnected);
     });
 
     appLifecycleState = SchedulerBinding.instance.lifecycleState;
@@ -68,6 +64,8 @@ class DatabaseProvider with ChangeNotifier {
         _realtimeChannel = null,
       },
     );
+
+    _updateConnectionStatus(_connectivityNotifier.isConnected);
   }
 
   void _authListener() {
@@ -82,7 +80,7 @@ class DatabaseProvider with ChangeNotifier {
   }
 
   Future<void> _loadInitialData() async {
-    if (!_isConnected || _authProvider.user == null) {
+    if (!_connectivityNotifier.isConnected || _authProvider.user == null) {
       return;
     }
     print('#1.0 Loading initial data...');
@@ -158,10 +156,8 @@ class DatabaseProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
-    _isConnected = result != ConnectivityResult.none;
-
-    if (_isConnected && _authProvider.user != null) {
+  Future<void> _updateConnectionStatus(bool isConnected) async {
+    if (isConnected && _authProvider.user != null) {
       if (_realtimeChannel == null) {
         _setupRealtimeSubscription();
         _loadInitialData();
@@ -400,8 +396,10 @@ class DatabaseProvider with ChangeNotifier {
   @override
   void dispose() {
     _realtimeChannel?.unsubscribe();
-    _connectivitySubscription.cancel();
     _authProvider.removeListener(_authListener);
+    _connectivityNotifier.removeListener(() {
+      _updateConnectionStatus(_connectivityNotifier.isConnected);
+    });
     super.dispose();
   }
 

@@ -1,4 +1,5 @@
 import 'package:activator_app/src/core/provider/auth_provider.dart';
+import 'package:activator_app/src/core/provider/connectivity_notifier.dart';
 import 'package:activator_app/src/core/provider/db_provider.dart';
 import 'package:activator_app/src/core/services/supabase_service.dart';
 import 'package:activator_app/src/core/utils/constants.dart';
@@ -179,6 +180,9 @@ void main() async {
           lazy: false,
         ),
         ChangeNotifierProvider(
+          create: (_) => ConnectivityNotifier(),
+        ),
+        ChangeNotifierProvider(
           create: (context) => AuthProvider(
             Provider.of<SupabaseService>(context, listen: false),
           ),
@@ -187,11 +191,12 @@ void main() async {
           create: (context) => DatabaseProvider(
             Provider.of<SupabaseService>(context, listen: false),
             Provider.of<AuthProvider>(context, listen: false),
+            Provider.of<ConnectivityNotifier>(context, listen: false),
           ),
         ),
         ChangeNotifierProvider(
           create: (_) => settingsController,
-        )
+        ),
       ],
       child: MyApp(router: router),
     ),
