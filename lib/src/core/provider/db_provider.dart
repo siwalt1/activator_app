@@ -76,6 +76,7 @@ class DatabaseProvider with ChangeNotifier {
       _clearData();
       _realtimeChannel?.unsubscribe();
       _realtimeChannel = null;
+      notifyListeners();
     }
   }
 
@@ -151,9 +152,7 @@ class DatabaseProvider with ChangeNotifier {
     _activityAttendances.clear();
     _profiles.clear();
     _isInitialized = false;
-
     _lastChange = DateTime.now();
-    notifyListeners();
   }
 
   Future<void> _updateConnectionStatus(bool isConnected) async {
