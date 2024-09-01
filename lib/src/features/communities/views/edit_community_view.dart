@@ -190,6 +190,7 @@ class _EditCommunityViewState extends State<EditCommunityView> {
                 keyboardDismissBehavior:
                     ScrollViewKeyboardDismissBehavior.onDrag,
                 physics: const AlwaysScrollableScrollPhysics(),
+                clipBehavior: Clip.none,
                 child: Form(
                   key: _formKey,
                   child: Column(

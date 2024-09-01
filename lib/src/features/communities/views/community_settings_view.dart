@@ -296,6 +296,7 @@ class _CommunitySettingsViewState extends State<CommunitySettingsView> {
                     padding: const EdgeInsets.all(AppConstants.paddingSpacing),
                     child: SingleChildScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
+                      clipBehavior: Clip.none,
                       child: Column(
                         children: <Widget>[
                           Center(

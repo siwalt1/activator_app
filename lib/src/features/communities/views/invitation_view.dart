@@ -84,6 +84,7 @@ class _InvitationViewState extends State<InvitationView> {
                 child: Center(
                   child: SingleChildScrollView(
                     physics: const AlwaysScrollableScrollPhysics(),
+                    clipBehavior: Clip.none,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
