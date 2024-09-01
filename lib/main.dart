@@ -46,6 +46,9 @@ void main() async {
   // supabase service
   final supabaseService = SupabaseService();
 
+  // Connectivity notifier
+  final connectivityNotifier = ConnectivityNotifier();
+
   // Check user session
   final authProvider = AuthProvider(supabaseService);
   await authProvider.checkSession();
@@ -168,7 +171,7 @@ void main() async {
           lazy: false,
         ),
         ChangeNotifierProvider(
-          create: (_) => ConnectivityNotifier(),
+          create: (_) => connectivityNotifier,
         ),
         ChangeNotifierProvider(
           create: (context) => authProvider,

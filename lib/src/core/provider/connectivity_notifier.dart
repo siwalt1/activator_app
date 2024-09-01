@@ -4,7 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 
 class ConnectivityNotifier extends ChangeNotifier {
-  bool _isConnected = true;
+  bool _isConnected = false;
   bool get isConnected => _isConnected;
 
   late final StreamSubscription<List<ConnectivityResult>>
